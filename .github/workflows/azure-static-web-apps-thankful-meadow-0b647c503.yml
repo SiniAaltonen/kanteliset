@@ -25,7 +25,6 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_MEADOW_0B647C503 }}
           action: upload
 
-          # 👇 KRIITTINEN OSA
           app_location: "."
           output_location: "."
           api_location: ""
