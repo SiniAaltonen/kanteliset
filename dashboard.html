@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <title>Hääviikonlopun ilmoittautuminen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="container" style="max-width: 720px; margin-top: 40px;">
+
+  <h2 id="welcomeText">Tervetuloa 💍</h2>
+  <p id="familyInfo"></p>
+
+  <hr>
+
+  <h4>📅 Osallistuminen</h4>
+
+  <form id="rsvpForm">
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="days" value="friday">
+        Perjantai (sauna / illanvietto)
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="days" value="saturday">
+        Lauantai (vihkiminen + hääjuhla)
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="days" value="sunday">
+        Sunnuntai (brunssi)
+      </label>
+    </div>
+
+    <hr>
+
+    <h4>🏠 Majoitus</h4>
+    <div id="accommodationOptions"></div>
+
+    <hr>
+
+    <h4>🍽️ Erikoisruokavaliot / huomioitavaa</h4>
+    <textarea
+      class="form-control"
+      id="notes"
+      rows="3"
+      placeholder="Esim. gluteeniton, allergiat, liikuntarajoitteet..."
+    ></textarea>
+
+    <br>
+
+    <button type="submit" class="btn btn-primary btn-block">
+      Lähetä ilmoittautuminen
+    </button>
+
+  </form>
+
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>
