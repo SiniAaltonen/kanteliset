@@ -1,73 +1,150 @@
 <!DOCTYPE html>
-<html lang="fi">
+<html class="no-js">
 <head>
   <meta charset="utf-8">
-  <title>Hääviikonlopun ilmoittautuminen</title>
+  <title>Ilmoittautuminen – Kanteliset</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- Fonts & styles (SAMAT kuin indexissä) -->
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,600" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
+
   <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/animate.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<div class="container" style="max-width: 720px; margin-top: 40px;">
+<div id="page">
 
-  <h2 id="welcomeText">Tervetuloa 💍</h2>
-  <p id="familyInfo"></p>
-
-  <hr>
-
-  <h4>📅 Osallistuminen</h4>
-
-  <form id="rsvpForm">
-
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="days" value="friday">
-        Perjantai (sauna / illanvietto)
-      </label>
+  <!-- NAV (nyt aina näkyvissä, koska kirjautunut) -->
+  <nav class="fh5co-nav">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-2">
+          <div id="fh5co-logo"><a href="index.html">Kanteliset<strong>.</strong></a></div>
+        </div>
+        <div class="col-xs-10 text-right menu-1">
+          <ul>
+            <li><a href="dashboard.html">Ilmoittautuminen</a></li>
+            <li><a href="services.html">Häät</a></li>
+            <li><a href="gallery.html">Galleria</a></li>
+            <li><a href="contact.html">Yhteystiedot</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </nav>
 
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="days" value="saturday">
-        Lauantai (vihkiminen + hääjuhla)
-      </label>
+  <!-- HERO -->
+  <header class="fh5co-cover fh5co-cover-sm" style="background-image:url(images/villavellamo.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="display-t">
+        <div class="display-tc text-center">
+          <h1 id="welcomeTitle"></h1>
+          <h2>Olette lämpimästi tervetulleita juhlimaan kanssamme</h2>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="days" value="sunday">
-        Sunnuntai (brunssi)
-      </label>
+  <!-- CONTENT -->
+  <div class="fh5co-section">
+    <div class="container">
+
+      <!-- INFO -->
+      <div class="row animate-box">
+        <div class="col-md-8 col-md-offset-2 text-center">
+          <p id="guestInfo"></p>
+        </div>
+      </div>
+
+      <!-- ILMOITTAUTUMINEN -->
+      <div class="row animate-box">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Osallistuminen</h3></div>
+            <div class="panel-body">
+
+              <label><input type="checkbox"> Perjantai (spa & sauna)</label><br>
+              <label><input type="checkbox"> Lauantain vihkiminen & juhla</label><br>
+              <label><input type="checkbox"> Sunnuntain brunssi</label>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAJOITUS -->
+      <div class="row animate-box">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Majoitus</h3></div>
+            <div class="panel-body" id="accommodationOptions">
+              <!-- täytetään JS:llä -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LISÄTIEDOT -->
+      <div class="row animate-box">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Lisätiedot</h3></div>
+            <div class="panel-body">
+              <textarea class="form-control" rows="4"
+                placeholder="Erikoisruokavaliot, allergiat tai muu huomioitava"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="row animate-box">
+        <div class="col-md-4 col-md-offset-4 text-center">
+          <button class="btn btn-primary btn-lg btn-block">
+            Lähetä ilmoittautuminen
+          </button>
+        </div>
+      </div>
+
     </div>
-
-    <hr>
-
-    <h4>🏠 Majoitus</h4>
-    <div id="accommodationOptions"></div>
-
-    <hr>
-
-    <h4>🍽️ Erikoisruokavaliot / huomioitavaa</h4>
-    <textarea
-      class="form-control"
-      id="notes"
-      rows="3"
-      placeholder="Esim. gluteeniton, allergiat, liikuntarajoitteet..."
-    ></textarea>
-
-    <br>
-
-    <button type="submit" class="btn btn-primary btn-block">
-      Lähetä ilmoittautuminen
-    </button>
-
-  </form>
+  </div>
 
 </div>
 
-<script src="js/dashboard.js"></script>
+<!-- JS -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+  const login = JSON.parse(sessionStorage.getItem("login"));
+  if (!login) location.href = "/";
+
+  // Tervehdys
+  document.getElementById("welcomeTitle").innerText =
+    `Tervetuloa ${login.FamilyId.charAt(0).toUpperCase() + login.FamilyId.slice(1)} 💛`;
+
+  document.getElementById("guestInfo").innerText =
+    `Kutsu koskee ${login.Guests} henkilöä.`;
+
+  // Majoitusvaihtoehdot
+  const container = document.getElementById("accommodationOptions");
+
+  login.AllowedOptions.forEach(opt => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <label>
+        <input type="radio" name="accommodation">
+        ${opt.replace("_", " ").toUpperCase()}
+      </label><br>
+    `;
+    container.appendChild(div);
+  });
+</script>
+
 </body>
 </html>

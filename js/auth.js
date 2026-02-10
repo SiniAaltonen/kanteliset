@@ -24,13 +24,15 @@ async function login() {
 
     const data = await res.json();
 
-    // 🔐 tallennetaan kirjautumistieto
-    sessionStorage.setItem("isGuest", "true");
-    sessionStorage.setItem("user", JSON.stringify(data));
+    // ✅ Tallennetaan kirjautumistiedot
+    sessionStorage.setItem("isLoggedIn", "true");
+    sessionStorage.setItem("login", JSON.stringify(data));
 
+    // ✅ Ohjataan dashboardiin
     window.location.href = "/dashboard.html";
+
   } catch (err) {
-    console.error(err);
-    alert("Tekninen virhe");
+    console.error("Login error", err);
+    alert("Tekninen virhe. Yritä uudelleen.");
   }
 }
