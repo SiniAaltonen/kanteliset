@@ -103,7 +103,12 @@
 							<h1>Sini &amp; Petri</h1>
 							<h2>Me mennään naimisiin</h2>
 							<div class="simply-countdown simply-countdown-one"></div>
-							<p><a href="#" class="btn btn-default btn-sm">Save the date</a></p>
+							<p>
+  <a href="#" class="btn btn-default btn-sm" data-toggle="modal" data-target="#loginModal">
+    Vastaa kutsuun
+  </a>
+</p>
+
 						</div>
 					</div>
 				</div>
@@ -481,6 +486,29 @@ Tanssikuvat, halaukset ja ehkä yksi legendaarinen poseeraus, nämä hetket jä�
 	</footer>
 	</div>
 
+	<!-- Login modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Tervetuloa 💍</h4>
+      </div>
+      <div class="modal-body">
+        <p>Syötä kutsukoodi nähdäksesi hääviikonlopun tiedot</p>
+        <input
+          type="text"
+          id="inviteCode"
+          class="form-control"
+          placeholder="Kutsukoodi"
+        >
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default btn-block" onclick="login()">Jatka</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
 	</div>
@@ -508,7 +536,18 @@ Tanssikuvat, halaukset ja ehkä yksi legendaarinen poseeraus, nämä hetket jä�
 	<script src="js/simplyCountdown.js"></script>
 	<!-- Main -->
 	<script src="js/main.js"></script>
-
+	<!-- Auth -->
+	<script src="js/auth.js"></script>
+	<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (sessionStorage.getItem("isGuest") === "true") {
+      const nav = document.querySelector(".fh5co-nav");
+      if (nav) {
+        nav.style.display = "block";
+      }
+    }
+  });
+</script>
 	<script>
     //var d = new Date(new Date().getTime() + 200 * 120 * 120 * 2000);
 	var d = new Date(2026, 4, 23, 13, 0, 0); // 23.5.2026 klo 13:00 Suomen aikaa
@@ -542,4 +581,3 @@ plural: false
 
 	</body>
 </html>
-
