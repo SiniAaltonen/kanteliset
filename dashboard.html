@@ -12,6 +12,11 @@
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/animate.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/icomoon.css">
+<link rel="stylesheet" href="css/magnific-popup.css">
+<link rel="stylesheet" href="css/owl.carousel.min.css">
+<link rel="stylesheet" href="css/owl.theme.default.min.css">
+
 </head>
 
 <body>
@@ -31,6 +36,9 @@
             <li><a href="services.html">Häät</a></li>
             <li><a href="gallery.html">Galleria</a></li>
             <li><a href="contact.html">Yhteystiedot</a></li>
+            <li id="navDashboard" style="display:none;"><a href="dashboard.html">Ilmoittautuminen</a></li>
+<li id="navLogout" style="display:none;"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
+
           </ul>
         </div>
       </div>
@@ -119,22 +127,28 @@
 <!-- JS -->
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/auth.js"></script>
 
 <script>
-  const login = JSON.parse(sessionStorage.getItem("login"));
-  if (!login) location.href = "/";
+ const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+const login = JSON.parse(sessionStorage.getItem("login") || "null");
+
+if (!isLoggedIn || !login) {
+  window.location.href = "/index.html";
+}
+
 
   // Tervehdys
   document.getElementById("welcomeTitle").innerText =
-    `Tervetuloa ${login.FamilyId.charAt(0).toUpperCase() + login.FamilyId.slice(1)} `;
+    `Tervetuloa ${login.familyId.charAt(0).toUpperCase() + login.familyId.slice(1)} `;
 
   document.getElementById("guestInfo").innerText =
-    `Kutsu koskee ${login.Guests} henkilöä.`;
+    `Kutsu koskee ${login.guests} henkilöä.`;
 
   // Majoitusvaihtoehdot
   const container = document.getElementById("accommodationOptions");
 
-  login.AllowedOptions.forEach(opt => {
+  login.allowedOptions.forEach(opt => {
     const div = document.createElement("div");
     div.innerHTML = `
       <label>

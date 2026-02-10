@@ -24,15 +24,20 @@ async function login() {
 
     const data = await res.json();
 
-    // ✅ Tallennetaan kirjautumistiedot
-    sessionStorage.setItem("isLoggedIn", "true");
+    // ✅ YHTENÄINEN kirjautumistieto
     sessionStorage.setItem("login", JSON.stringify(data));
+    sessionStorage.setItem("isLoggedIn", "true");
 
-    // ✅ Ohjataan dashboardiin
     window.location.href = "/dashboard.html";
-
   } catch (err) {
-    console.error("Login error", err);
-    alert("Tekninen virhe. Yritä uudelleen.");
+    console.error(err);
+    alert("Tekninen virhe");
   }
+}
+
+// ✅ Logout
+function logout() {
+  sessionStorage.removeItem("login");
+  sessionStorage.removeItem("isLoggedIn");
+  window.location.href = "/index.html";
 }

@@ -53,6 +53,9 @@
                   <li><a href="services.html#ohjelma">Ohjelma</a></li>
                   <li><a href="services.html#yhteystiedot">Tärkeät yhteystiedot</a></li>
                   <li><a href="services.html#haapaiva">Hääpäivä</a></li>
+				  <li id="navDashboard" style="display:none;"><a href="dashboard.html">Ilmoittautuminen</a></li>
+<li id="navLogout" style="display:none;"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
+
                 </ul>
               </li>
               <li class="has-dropdown">
@@ -175,60 +178,18 @@
   <script src="js/jquery.magnific-popup.min.js"></script>
   <script src="js/magnific-popup-options.js"></script>
   <script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+
 
   <script>
-    // ✅ Guard: pakota kirjautuminen dashboardiin
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-    const loginRaw = sessionStorage.getItem("login");
-    if (!isLoggedIn || !loginRaw) {
-      window.location.href = "/index.html";
-    }
-
-    const login = JSON.parse(loginRaw);
-
-    // HUOM: sun backend palauttaa camelCase: role, familyId, guests, allowedOptions
-    const familyId = login.familyId || "";
-    const guests = login.guests || 0;
-    const allowedOptions = login.allowedOptions || [];
-
-    // Tervehdys
-    const niceName = familyId ? (familyId.charAt(0).toUpperCase() + familyId.slice(1)) : "vieraat";
-    document.getElementById("welcomeTitle").innerText = `Tervetuloa ${niceName}`;
-    document.getElementById("guestInfo").innerText = `Kutsu koskee ${guests} henkilöä.`;
-
-    // Majoitusvaihtoehdot
-    const container = document.getElementById("accommodationOptions");
-
-    if (!allowedOptions.length || (allowedOptions.length === 1 && allowedOptions[0] === "ALL")) {
-      container.innerHTML = "<p>Majoitusvaihtoehdot näkyvät täällä.</p>";
-    } else {
-      allowedOptions.forEach(opt => {
-        const labelText = (opt || "").replaceAll("_", " ");
-        const div = document.createElement("div");
-        div.className = "radio";
-        div.innerHTML = `
-          <label>
-            <input type="radio" name="accommodation" value="${opt}">
-            ${labelText.toUpperCase()}
-          </label>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    // Logout
-    document.getElementById("logoutBtn").addEventListener("click", function(e) {
-      e.preventDefault();
-      sessionStorage.removeItem("isLoggedIn");
-      sessionStorage.removeItem("login");
-      window.location.href = "/index.html";
-    });
-
-    // Submit (nyt vain demo)
-    document.getElementById("btnSubmit").addEventListener("click", function() {
-      alert("Tallennus tulee seuraavaksi (backend / excel / sähköposti).");
-    });
-  </script>
+document.addEventListener("DOMContentLoaded", function () {
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+  const d = document.getElementById("navDashboard");
+  const l = document.getElementById("navLogout");
+  if (d) d.style.display = isLoggedIn ? "inline-block" : "none";
+  if (l) l.style.display = isLoggedIn ? "inline-block" : "none";
+});
+</script>
 
 </body>
 </html>
