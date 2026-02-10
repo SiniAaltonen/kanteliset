@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html class="no-js">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Ilmoittautuminen – Kanteliset</title>
 
-  <!-- ✅ favicon -->
+  <!-- favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="images/wedding.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +17,7 @@
   <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
 
-  <!-- CSS (sama setti kuin indexissä, jotta nav & animaatiot toimii) -->
+  <!-- CSS (sama setti kuin indexissä) -->
   <link rel="stylesheet" href="css/animate.css">
   <link rel="stylesheet" href="css/icomoon.css">
   <link rel="stylesheet" href="css/bootstrap.css">
@@ -23,6 +26,7 @@
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
   <link rel="stylesheet" href="css/style.css">
 
+  <!-- Modernizr -->
   <script src="js/modernizr-2.6.2.min.js"></script>
   <!--[if lt IE 9]>
     <script src="js/respond.min.js"></script>
@@ -42,6 +46,7 @@
           <div class="col-xs-2">
             <div id="fh5co-logo"><a href="index.html">Kanteliset<strong>.</strong></a></div>
           </div>
+
           <div class="col-xs-10 text-right menu-1">
             <ul>
               <li><a href="index.html">Etusivu</a></li>
@@ -73,6 +78,7 @@
               <li><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
             </ul>
           </div>
+
         </div>
       </div>
     </nav>
@@ -107,10 +113,10 @@
               <div class="panel-heading"><h3 class="panel-title">Osallistuminen</h3></div>
               <div class="panel-body">
                 <div class="checkbox">
-                  <label><input id="chkFri" type="checkbox"> Perjantai (spa & sauna)</label>
+                  <label><input id="chkFri" type="checkbox"> Perjantai (spa &amp; sauna)</label>
                 </div>
                 <div class="checkbox">
-                  <label><input id="chkSat" type="checkbox"> Lauantain vihkiminen & juhla</label>
+                  <label><input id="chkSat" type="checkbox"> Lauantain vihkiminen &amp; juhla</label>
                 </div>
                 <div class="checkbox">
                   <label><input id="chkSun" type="checkbox"> Sunnuntain brunssi</label>
@@ -181,59 +187,80 @@
   <script src="js/magnific-popup-options.js"></script>
   <script src="js/main.js"></script>
 
-  <!-- Auth -->
+  <!-- Auth (sis. login() ja logout()) -->
   <script src="js/auth.js"></script>
 
   <script>
-    // 1) Guard: dashboardiin pääsee vain kirjautuneena
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-    const loginRaw = sessionStorage.getItem("login");
+    // ✅ 1) Guard: dashboardiin pääsee vain kirjautuneena
+    (function () {
+      const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+      const loginRaw = sessionStorage.getItem("login");
 
-    if (!isLoggedIn || !loginRaw) {
-      window.location.href = "/index.html";
-    }
+      if (!isLoggedIn || !loginRaw) {
+        window.location.replace("index.html");
+        return;
+      }
 
-    // 2) Data ulos sessionStoragesta
-    const login = JSON.parse(loginRaw);
+      // ✅ 2) Varmista että login on kelvollinen
+      let login;
+      try {
+        login = JSON.parse(loginRaw);
+      } catch (e) {
+        window.location.replace("index.html");
+        return;
+      }
 
-    // backend palauttaa camelCase: familyId, guests, allowedOptions
-    const familyId = login.familyId || "";
-    const guests = login.guests || 0;
-    const allowedOptions = login.allowedOptions || [];
+      // ✅ backend palauttaa camelCase: familyId, guests, allowedOptions
+      const familyId = login.familyId || "";
+      const guests = login.guests || 0;
+      const allowedOptions = login.allowedOptions || [];
 
-    // 3) Tervehdys
-    const niceName = familyId
-      ? (familyId.charAt(0).toUpperCase() + familyId.slice(1))
-      : "vieraat";
+      if (!familyId) {
+        window.location.replace("index.html");
+        return;
+      }
 
-    document.getElementById("welcomeTitle").innerText = `Tervetuloa ${niceName}`;
-    document.getElementById("guestInfo").innerText = `Kutsu koskee ${guests} henkilöä.`;
+      // ✅ 3) Tervehdys
+      const niceName = familyId
+        ? (familyId.charAt(0).toUpperCase() + familyId.slice(1))
+        : "vieraat";
 
-    // 4) Majoitusvaihtoehdot
-    const container = document.getElementById("accommodationOptions");
-    container.innerHTML = "";
+      const welcomeEl = document.getElementById("welcomeTitle");
+      const guestInfoEl = document.getElementById("guestInfo");
+      if (welcomeEl) welcomeEl.innerText = `Tervetuloa ${niceName}`;
+      if (guestInfoEl) guestInfoEl.innerText = `Kutsu koskee ${guests} henkilöä.`;
 
-    if (!allowedOptions.length || (allowedOptions.length === 1 && allowedOptions[0] === "ALL")) {
-      container.innerHTML = "<p>Majoitusvaihtoehdot näkyvät täällä.</p>";
-    } else {
-      allowedOptions.forEach(opt => {
-        const labelText = (opt || "").replaceAll("_", " ");
-        const div = document.createElement("div");
-        div.className = "radio";
-        div.innerHTML = `
-          <label>
-            <input type="radio" name="accommodation" value="${opt}">
-            ${labelText.toUpperCase()}
-          </label>
-        `;
-        container.appendChild(div);
-      });
-    }
+      // ✅ 4) Majoitusvaihtoehdot
+      const container = document.getElementById("accommodationOptions");
+      if (container) {
+        container.innerHTML = "";
 
-    // 5) Submit (placeholder)
-    document.getElementById("btnSubmit").addEventListener("click", function() {
-      alert("Tallennus tulee seuraavaksi (backend / excel / sähköposti).");
-    });
+        if (!allowedOptions.length || (allowedOptions.length === 1 && allowedOptions[0] === "ALL")) {
+          container.innerHTML = "<p>Majoitusvaihtoehdot näkyvät täällä.</p>";
+        } else {
+          allowedOptions.forEach(opt => {
+            const labelText = (opt || "").replaceAll("_", " ");
+            const div = document.createElement("div");
+            div.className = "radio";
+            div.innerHTML = `
+              <label>
+                <input type="radio" name="accommodation" value="${opt}">
+                ${labelText.toUpperCase()}
+              </label>
+            `;
+            container.appendChild(div);
+          });
+        }
+      }
+
+      // ✅ 5) Submit (placeholder)
+      const btn = document.getElementById("btnSubmit");
+      if (btn) {
+        btn.addEventListener("click", function () {
+          alert("Tallennus tulee seuraavaksi (backend / excel / sähköposti).");
+        });
+      }
+    })();
   </script>
 
 </body>
