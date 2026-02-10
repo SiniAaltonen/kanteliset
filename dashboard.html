@@ -2,163 +2,239 @@
 <html class="no-js">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Ilmoittautuminen – Kanteliset</title>
+
+  <!-- ✅ favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/wedding.png">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Fonts & styles (SAMAT kuin indexissä) -->
-  <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,600" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/bootstrap.css">
+  <!-- CSS (sama setti kuin indexissä, jotta nav & animaatiot toimii) -->
   <link rel="stylesheet" href="css/animate.css">
-  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/icomoon.css">
-<link rel="stylesheet" href="css/magnific-popup.css">
-<link rel="stylesheet" href="css/owl.carousel.min.css">
-<link rel="stylesheet" href="css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/magnific-popup.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/style.css">
 
+  <script src="js/modernizr-2.6.2.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="js/respond.min.js"></script>
+  <![endif]-->
 </head>
 
 <body>
 
-<div id="page">
+  <div class="fh5co-loader"></div>
 
-  <!-- NAV (nyt aina näkyvissä, koska kirjautunut) -->
-  <nav class="fh5co-nav">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-2">
-          <div id="fh5co-logo"><a href="index.html">Kanteliset<strong>.</strong></a></div>
-        </div>
-        <div class="col-xs-10 text-right menu-1">
-          <ul>
-            <li><a href="dashboard.html">Ilmoittautuminen</a></li>
-            <li><a href="services.html">Häät</a></li>
-            <li><a href="gallery.html">Galleria</a></li>
-            <li><a href="contact.html">Yhteystiedot</a></li>
-            <li id="navDashboard" style="display:none;"><a href="dashboard.html">Ilmoittautuminen</a></li>
-<li id="navLogout" style="display:none;"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
+  <div id="page">
 
-          </ul>
-        </div>
-      </div>
-    </div>
-  </nav>
+    <!-- NAV -->
+    <nav class="fh5co-nav" role="navigation">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-2">
+            <div id="fh5co-logo"><a href="index.html">Kanteliset<strong>.</strong></a></div>
+          </div>
+          <div class="col-xs-10 text-right menu-1">
+            <ul>
+              <li><a href="index.html">Etusivu</a></li>
+              <li><a href="about.html">Me</a></li>
 
-  <!-- HERO -->
-  <header class="fh5co-cover fh5co-cover-sm" style="background-image:url(images/villavellamo.jpg);">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="display-t">
-        <div class="display-tc text-center">
-          <h1 id="welcomeTitle"></h1>
-          <h2>Olette lämpimästi tervetulleita juhlimaan kanssamme</h2>
-        </div>
-      </div>
-    </div>
-  </header>
+              <li class="has-dropdown">
+                <a href="services.html">Häät</a>
+                <ul class="dropdown">
+                  <li><a href="services.html#majoitus">Majoitus</a></li>
+                  <li><a href="services.html#ohjelma">Ohjelma</a></li>
+                  <li><a href="services.html#yhteystiedot">Tärkeät yhteystiedot</a></li>
+                  <li><a href="services.html#haapaiva">Hääpäivä</a></li>
+                </ul>
+              </li>
 
-  <!-- CONTENT -->
-  <div class="fh5co-section">
-    <div class="container">
+              <li class="has-dropdown">
+                <a href="gallery.html">Galleria</a>
+                <ul class="dropdown">
+                  <li><a href="gallery.html#kihlajaiset">Kihlajaiset</a></li>
+                  <li><a href="gallery.html#perjantai">Perjantai</a></li>
+                  <li><a href="gallery.html#lauantai">Lauantai</a></li>
+                  <li><a href="gallery.html#sunnuntai">Sunnuntai</a></li>
+                </ul>
+              </li>
 
-      <!-- INFO -->
-      <div class="row animate-box">
-        <div class="col-md-8 col-md-offset-2 text-center">
-          <p id="guestInfo"></p>
+              <li><a href="contact.html">Ota yhteyttä</a></li>
+
+              <li class="active"><a href="dashboard.html">Ilmoittautuminen</a></li>
+              <li><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
+            </ul>
+          </div>
         </div>
       </div>
+    </nav>
 
-      <!-- ILMOITTAUTUMINEN -->
-      <div class="row animate-box">
-        <div class="col-md-8 col-md-offset-2">
-          <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Osallistuminen</h3></div>
-            <div class="panel-body">
-
-              <label><input type="checkbox"> Perjantai (spa & sauna)</label><br>
-              <label><input type="checkbox"> Lauantain vihkiminen & juhla</label><br>
-              <label><input type="checkbox"> Sunnuntain brunssi</label>
-
+    <!-- HERO -->
+    <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner"
+      style="background-image:url(images/villavellamo.jpg);" data-stellar-background-ratio="0.5">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2 text-center">
+            <div class="display-t">
+              <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                <h1 id="welcomeTitle">Tervetuloa</h1>
+                <h2>Olette lämpimästi tervetulleita juhlimaan kanssamme</h2>
+                <p id="guestInfo" style="margin-top:12px;"></p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </header>
 
-      <!-- MAJOITUS -->
-      <div class="row animate-box">
-        <div class="col-md-8 col-md-offset-2">
-          <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Majoitus</h3></div>
-            <div class="panel-body" id="accommodationOptions">
-              <!-- täytetään JS:llä -->
+    <!-- CONTENT -->
+    <div class="fh5co-section">
+      <div class="container">
+
+        <!-- Osallistuminen -->
+        <div class="row animate-box">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h3 class="panel-title">Osallistuminen</h3></div>
+              <div class="panel-body">
+                <div class="checkbox">
+                  <label><input id="chkFri" type="checkbox"> Perjantai (spa & sauna)</label>
+                </div>
+                <div class="checkbox">
+                  <label><input id="chkSat" type="checkbox"> Lauantain vihkiminen & juhla</label>
+                </div>
+                <div class="checkbox">
+                  <label><input id="chkSun" type="checkbox"> Sunnuntain brunssi</label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- LISÄTIEDOT -->
-      <div class="row animate-box">
-        <div class="col-md-8 col-md-offset-2">
-          <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Lisätiedot</h3></div>
-            <div class="panel-body">
-              <textarea class="form-control" rows="4"
-                placeholder="Erikoisruokavaliot, allergiat tai muu huomioitava"></textarea>
+        <!-- Majoitus -->
+        <div class="row animate-box">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h3 class="panel-title">Majoitus</h3></div>
+              <div class="panel-body" id="accommodationOptions">
+                <!-- täytetään JS:llä -->
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- SUBMIT -->
-      <div class="row animate-box">
-        <div class="col-md-4 col-md-offset-4 text-center">
-          <button class="btn btn-primary btn-lg btn-block">
-            Lähetä ilmoittautuminen
-          </button>
+        <!-- Lisätiedot -->
+        <div class="row animate-box">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h3 class="panel-title">Lisätiedot</h3></div>
+              <div class="panel-body">
+                <textarea id="txtNotes" class="form-control" rows="4"
+                  placeholder="Erikoisruokavaliot, allergiat tai muu huomioitava"></textarea>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
+        <!-- Lähetä -->
+        <div class="row animate-box">
+          <div class="col-md-4 col-md-offset-4 text-center">
+            <button id="btnSubmit" class="btn btn-default btn-lg btn-block">
+              Lähetä ilmoittautuminen
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
+
+    <footer id="fh5co-footer" role="contentinfo">
+      <div class="container">
+        <div class="row copyright">
+          <div class="col-md-12 text-center">
+            <p><small class="block">&copy; 2026 Sini Aaltonen (tuleva Kantelinen).</small></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
   </div>
 
-</div>
+  <!-- JS -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery.easing.1.3.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.countTo.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/magnific-popup-options.js"></script>
+  <script src="js/main.js"></script>
 
-<!-- JS -->
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/auth.js"></script>
+  <!-- Auth -->
+  <script src="js/auth.js"></script>
 
-<script>
- const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-const login = JSON.parse(sessionStorage.getItem("login") || "null");
+  <script>
+    // 1) Guard: dashboardiin pääsee vain kirjautuneena
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+    const loginRaw = sessionStorage.getItem("login");
 
-if (!isLoggedIn || !login) {
-  window.location.href = "/index.html";
-}
+    if (!isLoggedIn || !loginRaw) {
+      window.location.href = "/index.html";
+    }
 
+    // 2) Data ulos sessionStoragesta
+    const login = JSON.parse(loginRaw);
 
-  // Tervehdys
-  document.getElementById("welcomeTitle").innerText =
-    `Tervetuloa ${login.familyId.charAt(0).toUpperCase() + login.familyId.slice(1)} `;
+    // backend palauttaa camelCase: familyId, guests, allowedOptions
+    const familyId = login.familyId || "";
+    const guests = login.guests || 0;
+    const allowedOptions = login.allowedOptions || [];
 
-  document.getElementById("guestInfo").innerText =
-    `Kutsu koskee ${login.guests} henkilöä.`;
+    // 3) Tervehdys
+    const niceName = familyId
+      ? (familyId.charAt(0).toUpperCase() + familyId.slice(1))
+      : "vieraat";
 
-  // Majoitusvaihtoehdot
-  const container = document.getElementById("accommodationOptions");
+    document.getElementById("welcomeTitle").innerText = `Tervetuloa ${niceName}`;
+    document.getElementById("guestInfo").innerText = `Kutsu koskee ${guests} henkilöä.`;
 
-  login.allowedOptions.forEach(opt => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <label>
-        <input type="radio" name="accommodation">
-        ${opt.replace("_", " ").toUpperCase()}
-      </label><br>
-    `;
-    container.appendChild(div);
-  });
-</script>
+    // 4) Majoitusvaihtoehdot
+    const container = document.getElementById("accommodationOptions");
+    container.innerHTML = "";
+
+    if (!allowedOptions.length || (allowedOptions.length === 1 && allowedOptions[0] === "ALL")) {
+      container.innerHTML = "<p>Majoitusvaihtoehdot näkyvät täällä.</p>";
+    } else {
+      allowedOptions.forEach(opt => {
+        const labelText = (opt || "").replaceAll("_", " ");
+        const div = document.createElement("div");
+        div.className = "radio";
+        div.innerHTML = `
+          <label>
+            <input type="radio" name="accommodation" value="${opt}">
+            ${labelText.toUpperCase()}
+          </label>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // 5) Submit (placeholder)
+    document.getElementById("btnSubmit").addEventListener("click", function() {
+      alert("Tallennus tulee seuraavaksi (backend / excel / sähköposti).");
+    });
+  </script>
 
 </body>
 </html>
