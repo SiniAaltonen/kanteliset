@@ -8,14 +8,24 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Kanteliset &mdash; 22.-24.5.2026</title>
 
-  <!-- ✅ favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="images/wedding.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Kanteliset - häät 22.-24.5.2026" />
   <meta name="keywords" content="häät, lehmonkärki, kanteliset" />
+  <meta name="author" content="FREEHTML5.CO" />
 
-  <!-- Fonts -->
+  <!-- Facebook and Twitter integration -->
+  <meta property="og:title" content=""/>
+  <meta property="og:image" content=""/>
+  <meta property="og:url" content=""/>
+  <meta property="og:site_name" content=""/>
+  <meta property="og:description" content=""/>
+  <meta name="twitter:title" content="" />
+  <meta name="twitter:image" content="" />
+  <meta name="twitter:url" content="" />
+  <meta name="twitter:card" content="" />
+
   <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
 
@@ -75,7 +85,7 @@
 
               <li><a href="contact.html">Ota yhteyttä</a></li>
 
-              <!-- ✅ NÄKYVÄT VAIN KIRJAUTUNEENA -->
+              <!-- näkyy vain kirjautuneena -->
               <li id="navDashboard" style="display:none;"><a href="dashboard.html">Ilmoittautuminen</a></li>
               <li id="navLogout" style="display:none;"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
             </ul>
@@ -85,7 +95,8 @@
     </nav>
 
     <!-- HERO -->
-    <header id="fh5co-header" class="fh5co-cover" role="banner" style="background-image:url(images/sinijapete3.jpg);" data-stellar-background-ratio="0.5">
+    <header id="fh5co-header" class="fh5co-cover" role="banner"
+      style="background-image:url(images/sinijapete3.jpg);" data-stellar-background-ratio="0.5">
       <div class="overlay"></div>
       <div class="container">
         <div class="row">
@@ -94,13 +105,22 @@
               <div class="display-tc animate-box" data-animate-effect="fadeIn">
                 <h1>Sini &amp; Petri</h1>
                 <h2>Me mennään naimisiin</h2>
+
                 <div class="simply-countdown simply-countdown-one"></div>
+
+                <p><a href="#" class="btn btn-default btn-sm">Save the date</a></p>
+
                 <p>
-                  <!-- Jos kirjautunut: ohjaa dashboardiin. Jos ei: avaa modal -->
-                  <a href="#" id="ctaRsvp" class="btn btn-default btn-sm" data-toggle="modal" data-target="#loginModal">
+                  <a
+                    href="#"
+                    id="ctaRsvp"
+                    class="btn btn-default btn-sm"
+                    data-toggle="modal"
+                    data-target="#loginModal">
                     Vastaa kutsuun
                   </a>
                 </p>
+
               </div>
             </div>
           </div>
@@ -122,6 +142,7 @@
         <div class="row">
           <div class="col-md-12 col-md-offset-0">
             <ul class="timeline animate-box">
+
               <li class="animate-box">
                 <div class="timeline-badge" style="background-image:url(images/aisti.jpg);"></div>
                 <div class="timeline-panel">
@@ -160,9 +181,11 @@
                   </div>
                 </div>
               </li>
+
             </ul>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -268,6 +291,195 @@
       </div>
     </div>
 
+    <!-- COUNTER -->
+    <div id="fh5co-counter" class="fh5co-bg fh5co-counter" style="background-image:url(images/kukka.JPG);">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="display-t">
+            <div class="display-tc">
+              <div class="col-md-3 col-sm-6 animate-box">
+                <div class="feature-center">
+                  <span class="icon"><i class="icon-users"></i></span>
+                  <span class="counter js-counter" data-from="0" data-to="7" data-speed="5000" data-refresh-interval="50">1</span>
+                  <span class="counter-label">Yhteisiä vuosia</span>
+                </div>
+              </div>
+
+              <div class="col-md-3 col-sm-6 animate-box">
+                <div class="feature-center">
+                  <span class="icon"><i class="icon-user"></i></span>
+                  <span class="counter js-counter" data-from="0" data-to="2" data-speed="5000" data-refresh-interval="50">2</span>
+                  <span class="counter-label">elinikäistä lupausta</span>
+                </div>
+              </div>
+
+              <div class="col-md-3 col-sm-6 animate-box">
+                <div class="feature-center">
+                  <span class="icon"><i class="icon-calendar"></i></span>
+                  <span class="counter js-counter" data-from="0" data-to="2" data-speed="5000" data-refresh-interval="50">1</span>
+                  <span class="counter-label">Yhteistä kotia</span>
+                </div>
+              </div>
+
+              <div class="col-md-3 col-sm-6 animate-box">
+                <div class="feature-center">
+                  <span class="icon"><i class="icon-clock"></i></span>
+                  <span class="counter js-counter" data-from="0" data-to="2" data-speed="5000" data-refresh-interval="50">1</span>
+                  <span class="counter-label">Yhteistä lemmikkiä</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TESTIMONIAL -->
+    <div id="fh5co-testimonial">
+      <div class="container">
+        <div class="row">
+          <div class="row animate-box">
+            <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+              <span>Häätiimin</span>
+              <h2>Terveiset</h2>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 animate-box">
+              <div class="wrap-testimony">
+                <div class="owl-carousel-fullwidth">
+
+                  <div class="item">
+                    <div class="testimony-slide active text-center">
+                      <figure><img src="images/couple-1.jpg" alt="user"></figure>
+                      <span>Hääpari <a href="#" class="twitter">Sini & Petri</a></span>
+                      <blockquote>
+                        <p>"Toivomme, että häälahjan sijasta panostatte majoitukseen ja tulette viettämään viikonlopun kanssamme Lehmonkärkeen."</p>
+                      </blockquote>
+                    </div>
+                  </div>
+
+                  <div class="item">
+                    <div class="testimony-slide active text-center">
+                      <figure><img src="images/couple-2.jpg" alt="user"></figure>
+                      <span>Sini, morsian <a href="#" class="twitter">toivoo</a></span>
+                      <blockquote>
+                        <p>"Toivon, että ihmiset saapuvat paikalle ja osallistuvat häihimme. Suurin lahja, jonka voimme saada on rakkaidemme läsnäolo juhlassa."</p>
+                      </blockquote>
+                    </div>
+                  </div>
+
+                  <div class="item">
+                    <div class="testimony-slide active text-center">
+                      <figure><img src="images/couple-3.jpg" alt="user"></figure>
+                      <span>Petri, sulhanen <a href="#" class="twitter">ilmoittaa</a></span>
+                      <blockquote>
+                        <p>"Juhla on jännittävä ja tärkeä päivä, olisi kunnia jos olisitte jakamassa tärkeän päivämme."</p>
+                      </blockquote>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICES + YOUTUBE -->
+    <div id="fh5co-services" class="fh5co-section-gray">
+      <div class="container">
+
+        <div class="row animate-box">
+          <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+            <h2>Musiikki – ja mitä sen jälkeen tapahtuu</h2>
+            <p>Kun musiikki käynnistyy, tapahtuu yleensä kolme asiaa. Tässä meidän veikkauksemme illan kulusta:</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+              <span class="icon"><i class="icon-calendar"></i></span>
+              <div class="feature-copy">
+                <h3>Tanssilattia täyttyy</h3>
+                <p>Aluksi vähän varovaisesti. Sitten yhtäkkiä kaikki. Bilebändi hoitaa tunnelman nousun, ja loput tapahtuu ihan itsestään. Kyllä, myös ne, jotka ”ei yleensä tanssi”.</p>
+              </div>
+            </div>
+
+            <div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+              <span class="icon"><i class="icon-image"></i></span>
+              <div class="feature-copy">
+                <h3>Muistoja syntyy</h3>
+                <p>Kun nauru raikaa ja tunnelma on kohdillaan, joku kaivaa puhelimen esiin. Tanssikuvat, halaukset ja ehkä yksi legendaarinen poseeraus – nämä hetket jäävät elämään vielä pitkään sunnuntain jälkeenkin.</p>
+              </div>
+            </div>
+
+            <div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+              <span class="icon"><i class="icon-video"></i></span>
+              <div class="feature-copy">
+                <h3>Ilta venyy (hyvällä tavalla)</h3>
+                <p>Kun biisit osuvat ja fiilis on katossa, kukaan ei ole kiireessä nukkumaan.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 animate-box">
+            <div class="fh5co-video">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe
+                  class="embed-responsive-item"
+                  src="https://www.youtube.com/embed/2p-0RtstTgM?rel=0"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STARTED -->
+    <div id="fh5co-started" class="fh5co-bg" style="background-image:url(images/img_bg_4.jpg);">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row animate-box">
+          <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+            <h2>Oletko tulossa?</h2>
+            <p>Täytä ilmoittautumisesi ja saat ilmoittautumiskaavakkeen sähköpostiisi.</p>
+          </div>
+        </div>
+        <div class="row animate-box">
+          <div class="col-md-10 col-md-offset-1">
+            <form class="form-inline">
+              <div class="col-md-4 col-sm-4">
+                <div class="form-group">
+                  <label for="nimi" class="sr-only">Nimi</label>
+                  <input type="text" class="form-control" id="nimi" placeholder="Nimi">
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-4">
+                <div class="form-group">
+                  <label for="email" class="sr-only">Sähköposti</label>
+                  <input type="email" class="form-control" id="email" placeholder="Sähköposti">
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-4">
+                <button type="submit" class="btn btn-default btn-block">Osallistun häihin!</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- FOOTER -->
     <footer id="fh5co-footer" role="contentinfo">
       <div class="container">
@@ -320,8 +532,9 @@
   <script src="js/auth.js"></script>
 
   <script>
-    // Countdown 23.5.2026 klo 13:00
+    // Countdown 23.5.2026 klo 13:00 Suomen aikaa
     var d = new Date(2026, 4, 23, 13, 0, 0);
+
     simplyCountdown('.simply-countdown-one', {
       year: d.getFullYear(),
       month: d.getMonth() + 1,
@@ -330,19 +543,25 @@
       minutes: d.getMinutes(),
       seconds: d.getSeconds(),
       enableUtc: false,
-      words: { days: 'päivää', hours: 'tuntia', minutes: 'minuuttia', seconds: 'sekuntia', pluralLetter: '' },
+      words: {
+        days: 'päivää',
+        hours: 'tuntia',
+        minutes: 'minuuttia',
+        seconds: 'sekuntia',
+        pluralLetter: ''
+      },
       plural: false
     });
 
-    // Näytä/piilota navin kirjautuneen jutut + CTA käyttäytyminen
+    // Nav + CTA käyttäytyminen kirjautumistilan mukaan
     document.addEventListener("DOMContentLoaded", function () {
       const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+
       const navDash = document.getElementById("navDashboard");
       const navLogout = document.getElementById("navLogout");
       if (navDash) navDash.style.display = isLoggedIn ? "inline-block" : "none";
       if (navLogout) navLogout.style.display = isLoggedIn ? "inline-block" : "none";
 
-      // CTA: jos kirjautunut -> dashboardiin, muuten avaa modal kuten ennen
       const cta = document.getElementById("ctaRsvp");
       if (cta && isLoggedIn) {
         cta.removeAttribute("data-toggle");
