@@ -34,14 +34,6 @@
 </head>
 
 <body>
-<script>
-console.log("Login state:", localStorage.getItem("isLoggedIn"));
-
-if (localStorage.getItem("isLoggedIn") !== "true") {
-    alert("Et ole kirjautunut sisään");
-    window.location.href = "login.html";
-}
-</script>
 
   <div class="fh5co-loader"></div>
 
@@ -198,78 +190,94 @@ if (localStorage.getItem("isLoggedIn") !== "true") {
   <!-- Auth (sis. login() ja logout()) -->
   <script src="js/auth.js"></script>
 
-  <script>
-    // ✅ 1) Guard: dashboardiin pääsee vain kirjautuneena
-    (function () {
-      const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-      const loginRaw = sessionStorage.getItem("login");
+ <script>
+  console.log("---- DASHBOARD LOAD ----");
 
-      if (!isLoggedIn || !loginRaw) {
-        window.location.replace("index.html");
-        return;
-      }
+  // 🔎 Debug – katso mitä storageissa on
+  console.log("sessionStorage.isLoggedIn:", sessionStorage.getItem("isLoggedIn"));
+  console.log("sessionStorage.login:", sessionStorage.getItem("login"));
+  console.log("localStorage.kanteliset_session:", localStorage.getItem("kanteliset_session"));
 
-      // ✅ 2) Varmista että login on kelvollinen
-      let login;
-      try {
-        login = JSON.parse(loginRaw);
-      } catch (e) {
-        window.location.replace("index.html");
-        return;
-      }
+  (function () {
 
-      // ✅ backend palauttaa camelCase: familyId, guests, allowedOptions
-      const familyId = login.familyId || "";
-      const guests = login.guests || 0;
-      const allowedOptions = login.allowedOptions || [];
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+    const loginRaw = sessionStorage.getItem("login");
 
-      if (!familyId) {
-        window.location.replace("index.html");
-        return;
-      }
+    if (!isLoggedIn || !loginRaw) {
+      console.warn("❌ Session puuttuu tai login ei kelpaa");
+      alert("Session puuttuu – et ole kirjautunut sisään.");
+      window.location.replace("index.html");
+      return;
+    }
 
-      // ✅ 3) Tervehdys
-      const niceName = familyId
-        ? (familyId.charAt(0).toUpperCase() + familyId.slice(1))
-        : "vieraat";
+    let login;
+    try {
+      login = JSON.parse(loginRaw);
+      console.log("Parsed login:", login);
+    } catch (e) {
+      console.error("❌ Login JSON parse epäonnistui", e);
+      alert("Kirjautumistiedot virheelliset.");
+      window.location.replace("index.html");
+      return;
+    }
 
-      const welcomeEl = document.getElementById("welcomeTitle");
-      const guestInfoEl = document.getElementById("guestInfo");
-      if (welcomeEl) welcomeEl.innerText = `Tervetuloa ${niceName}`;
-      if (guestInfoEl) guestInfoEl.innerText = `Kutsu koskee ${guests} henkilöä.`;
+    const familyId = login.familyId || "";
+    const guests = login.guests || 0;
+    const allowedOptions = login.allowedOptions || [];
 
-      // ✅ 4) Majoitusvaihtoehdot
-      const container = document.getElementById("accommodationOptions");
-      if (container) {
-        container.innerHTML = "";
+    if (!familyId) {
+      console.warn("❌ familyId puuttuu");
+      alert("Kirjautumistiedot puutteelliset.");
+      window.location.replace("index.html");
+      return;
+    }
 
-        if (!allowedOptions.length || (allowedOptions.length === 1 && allowedOptions[0] === "ALL")) {
-          container.innerHTML = "<p>Majoitusvaihtoehdot näkyvät täällä.</p>";
-        } else {
-          allowedOptions.forEach(opt => {
-            const labelText = (opt || "").replaceAll("_", " ");
-            const div = document.createElement("div");
-            div.className = "radio";
-            div.innerHTML = `
-              <label>
-                <input type="radio" name="accommodation" value="${opt}">
-                ${labelText.toUpperCase()}
-              </label>
-            `;
-            container.appendChild(div);
-          });
-        }
-      }
+    console.log("✅ Login OK:", familyId, guests, allowedOptions);
 
-      // ✅ 5) Submit (placeholder)
-      const btn = document.getElementById("btnSubmit");
-      if (btn) {
-        btn.addEventListener("click", function () {
-          alert("Tallennus tulee seuraavaksi (backend / excel / sähköposti).");
+    // Tervehdys
+    const niceName = familyId
+      ? (familyId.charAt(0).toUpperCase() + familyId.slice(1))
+      : "vieraat";
+
+    const welcomeEl = document.getElementById("welcomeTitle");
+    const guestInfoEl = document.getElementById("guestInfo");
+
+    if (welcomeEl) welcomeEl.innerText = `Tervetuloa ${niceName}`;
+    if (guestInfoEl) guestInfoEl.innerText = `Kutsu koskee ${guests} henkilöä.`;
+
+    // Majoitusvaihtoehdot
+    const container = document.getElementById("accommodationOptions");
+
+    if (container) {
+      container.innerHTML = "";
+
+      if (!allowedOptions.length || (allowedOptions.length === 1 && allowedOptions[0] === "ALL")) {
+        container.innerHTML = "<p>Majoitusvaihtoehdot näkyvät täällä.</p>";
+      } else {
+        allowedOptions.forEach(opt => {
+          const labelText = (opt || "").replaceAll("_", " ");
+          const div = document.createElement("div");
+          div.className = "radio";
+          div.innerHTML = `
+            <label>
+              <input type="radio" name="accommodation" value="${opt}">
+              ${labelText.toUpperCase()}
+            </label>
+          `;
+          container.appendChild(div);
         });
       }
-    })();
-  </script>
+    }
+
+    const btn = document.getElementById("btnSubmit");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        alert("Tallennus tulee seuraavaksi (backend / excel / sähköposti).");
+      });
+    }
+
+  })();
+</script>
 
 </body>
 </html>
