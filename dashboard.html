@@ -34,6 +34,14 @@
 </head>
 
 <body>
+<script>
+console.log("Login state:", localStorage.getItem("isLoggedIn"));
+
+if (localStorage.getItem("isLoggedIn") !== "true") {
+    alert("Et ole kirjautunut sisään");
+    window.location.href = "login.html";
+}
+</script>
 
   <div class="fh5co-loader"></div>
 
