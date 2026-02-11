@@ -221,9 +221,9 @@
       return;
     }
 
-    const familyId = login.familyId || "";
-    const guests = login.guests || 0;
-    const allowedOptions = login.allowedOptions || [];
+    const familyId = login.FamilyId || "";
+    const guests = login.Guests || 0;
+    const allowedOptions = login.AllowedOptions || [];
 
     if (!familyId) {
       console.warn("❌ familyId puuttuu");
