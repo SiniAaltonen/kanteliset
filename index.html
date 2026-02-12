@@ -86,8 +86,8 @@
               <li><a href="contact.html">Ota yhteyttä</a></li>
 
               <!-- näkyy vain kirjautuneena -->
-              <li id="navDashboard" style="display:none;"><a href="dashboard.html">Ilmoittautuminen</a></li>
-              <li id="navLogout" style="display:none;"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
+              <li id="navDashboard"><a href="dashboard.html">Ilmoittautuminen</a></li>
+              <li id="navLogout"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
             </ul>
           </div>
         </div>
@@ -535,36 +535,23 @@
       plural: false
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
 
-    console.log("Nav check running...");
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
 
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
-    console.log("isLoggedIn value:", isLoggedIn);
+  const navDash = document.getElementById("navDashboard");
+  const navLogout = document.getElementById("navLogout");
 
-    const loggedIn = isLoggedIn === "true";
+  // Piilotetaan oletuksena
+  if (navDash) navDash.style.display = "none";
+  if (navLogout) navLogout.style.display = "none";
 
-    const navDash = document.getElementById("navDashboard");
-    const navLogout = document.getElementById("navLogout");
-
-      if (navDash) {
-  navDash.style.display = loggedIn ? "list-item" : "none";
-}
-
-if (navLogout) {
-  navLogout.style.display = loggedIn ? "list-item" : "none";
-}
-
-    const ctaTop = document.getElementById("ctaRsvpTop");
-const ctaBottom = document.getElementById("ctaRsvpBottom");
-
-[ctaTop, ctaBottom].forEach(cta => {
-  if (cta && loggedIn) {
-    cta.removeAttribute("data-toggle");
-    cta.removeAttribute("data-target");
-    cta.href = "dashboard.html";
+  // Näytetään jos kirjautunut
+  if (isLoggedIn) {
+    if (navDash) navDash.style.display = "list-item";
+    if (navLogout) navLogout.style.display = "list-item";
   }
-});
+
 });
 
   </script>
