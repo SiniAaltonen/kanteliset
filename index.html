@@ -547,13 +547,13 @@
     const navDash = document.getElementById("navDashboard");
     const navLogout = document.getElementById("navLogout");
 
-    if (navDash) {
-      navDash.style.display = loggedIn ? "inline-block" : "none";
-    }
+      if (navDash) {
+  navDash.style.display = loggedIn ? "list-item" : "none";
+}
 
-    if (navLogout) {
-      navLogout.style.display = loggedIn ? "inline-block" : "none";
-    }
+if (navLogout) {
+  navLogout.style.display = loggedIn ? "list-item" : "none";
+}
 
     // Muuta CTA nappi jos kirjautunut
     const cta = document.getElementById("ctaRsvp");
