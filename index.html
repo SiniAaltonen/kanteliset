@@ -110,7 +110,7 @@
                 <p>
                   <a
                     href="#"
-                    id="ctaRsvp"
+                    id="ctaRsvpTop"
                     class="btn btn-default btn-sm"
                     data-toggle="modal"
                     data-target="#loginModal">
@@ -447,7 +447,7 @@
             <div class="text-center" style="margin-top: 30px;">
   <a
     href="#"
-    id="ctaRsvp"
+    id="ctaRsvpBottom"
     class="btn btn-primary btn-lg"
     data-toggle="modal"
     data-target="#loginModal"
@@ -555,15 +555,18 @@ if (navLogout) {
   navLogout.style.display = loggedIn ? "list-item" : "none";
 }
 
-    // Muuta CTA nappi jos kirjautunut
-    const cta = document.getElementById("ctaRsvp");
-    if (cta && loggedIn) {
-      cta.removeAttribute("data-toggle");
-      cta.removeAttribute("data-target");
-      cta.href = "dashboard.html";
-    }
+    const ctaTop = document.getElementById("ctaRsvpTop");
+const ctaBottom = document.getElementById("ctaRsvpBottom");
 
-  });
+[ctaTop, ctaBottom].forEach(cta => {
+  if (cta && loggedIn) {
+    cta.removeAttribute("data-toggle");
+    cta.removeAttribute("data-target");
+    cta.href = "dashboard.html";
+  }
+});
+});
+
   </script>
 
 </body>
