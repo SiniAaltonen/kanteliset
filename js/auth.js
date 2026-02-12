@@ -45,3 +45,20 @@ function logout() {
   sessionStorage.clear();
   window.location.href = "index.html";
 }
+
+// 🔐 MENU LOGIC
+window.addEventListener("load", function () {
+
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+
+  const navItems = document.querySelectorAll("#navDashboard, #navLogout");
+
+  navItems.forEach(el => {
+    if (isLoggedIn) {
+      el.classList.remove("hidden-auth");
+    } else {
+      el.classList.add("hidden-auth");
+    }
+  });
+
+});
