@@ -36,8 +36,12 @@ async function login() {
 }
 
 // ✅ Logout
+//function logout() {
+//  sessionStorage.removeItem("login");
+//  sessionStorage.removeItem("isLoggedIn");
+//  window.location.href = "/index.html";
+//}
 function logout() {
-  sessionStorage.removeItem("login");
-  sessionStorage.removeItem("isLoggedIn");
-  window.location.href = "/index.html";
+  sessionStorage.clear();
+  window.location.href = "index.html";
 }
