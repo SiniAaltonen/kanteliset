@@ -86,8 +86,8 @@
               <li><a href="contact.html">Ota yhteyttä</a></li>
 
               <!-- näkyy vain kirjautuneena -->
-              <li id="navDashboard" style="display:none;"><a href="dashboard.html">Ilmoittautuminen</a></li>
-              <li id="navLogout" style="display:none;"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
+              <li id="navDashboard" class="hidden-auth"><a href="dashboard.html">Ilmoittautuminen</a></li>
+              <li id="navLogout" class="hidden-auth"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
             </ul>
           </div>
         </div>
@@ -537,18 +537,18 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+  const isLoggedIn =
+    sessionStorage.getItem("isLoggedIn") === "true";
 
   const navDash = document.getElementById("navDashboard");
   const navLogout = document.getElementById("navLogout");
 
   if (isLoggedIn) {
-    if (navDash) navDash.style.display = "list-item";
-    if (navLogout) navLogout.style.display = "list-item";
+    if (navDash) navDash.classList.remove("hidden-auth");
+    if (navLogout) navLogout.classList.remove("hidden-auth");
   }
 
 });
-
   </script>
 
 </body>

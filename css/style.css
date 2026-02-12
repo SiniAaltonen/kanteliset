@@ -1839,3 +1839,7 @@ form label {
 .js .animate-box {
   opacity: 0;
 }
+
+.hidden-auth {
+  display: none !important;
+}
