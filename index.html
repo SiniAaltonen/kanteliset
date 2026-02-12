@@ -61,7 +61,7 @@
           <div class="col-xs-10 text-right menu-1">
             <ul>
               <li class="active"><a href="index.html">Etusivu</a></li>
-              <li><a href="about.html">Me</a></li>
+              <li><a href="about.html">Tärkeää</a></li>
 
               <li class="has-dropdown">
                 <a href="services.html">Häät</a>
@@ -535,22 +535,35 @@
       plural: false
     });
 
-    // Nav + CTA käyttäytyminen kirjautumistilan mukaan
     document.addEventListener("DOMContentLoaded", function () {
-      const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
 
-      const navDash = document.getElementById("navDashboard");
-      const navLogout = document.getElementById("navLogout");
-      if (navDash) navDash.style.display = isLoggedIn ? "inline-block" : "none";
-      if (navLogout) navLogout.style.display = isLoggedIn ? "inline-block" : "none";
+    console.log("Nav check running...");
 
-      const cta = document.getElementById("ctaRsvp");
-      if (cta && isLoggedIn) {
-        cta.removeAttribute("data-toggle");
-        cta.removeAttribute("data-target");
-        cta.href = "dashboard.html";
-      }
-    });
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    console.log("isLoggedIn value:", isLoggedIn);
+
+    const loggedIn = isLoggedIn === "true";
+
+    const navDash = document.getElementById("navDashboard");
+    const navLogout = document.getElementById("navLogout");
+
+    if (navDash) {
+      navDash.style.display = loggedIn ? "inline-block" : "none";
+    }
+
+    if (navLogout) {
+      navLogout.style.display = loggedIn ? "inline-block" : "none";
+    }
+
+    // Muuta CTA nappi jos kirjautunut
+    const cta = document.getElementById("ctaRsvp");
+    if (cta && loggedIn) {
+      cta.removeAttribute("data-toggle");
+      cta.removeAttribute("data-target");
+      cta.href = "dashboard.html";
+    }
+
+  });
   </script>
 
 </body>
