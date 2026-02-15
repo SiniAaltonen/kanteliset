@@ -187,13 +187,17 @@
 <div class="fh5co-section">
   <div class="container">
 
+    <!-- YLÄINFO -->
     <div class="row animate-box">
       <div class="col-md-8 col-md-offset-2 text-center">
-        <span class="pill">Ilmoittautuminen</span>
-        <span class="pill">Täytä 1 kerta</span>
-        <p class="muted" style="margin-top:10px;">
-          Täytä osallistujat ja erikoisruokavaliot henkilökohtaisesti – näin osaamme varautua oikein.
-        </p>
+        <span class="pill">Seurueilmoittautuminen</span>
+        <span class="pill">Täytä kerran koko seurueelle</span>
+
+        <div class="section-hint" style="margin-top:15px;">
+          <strong>Kutsunne koskee <span id="invitedCountLabel"></span> henkilöä.</strong><br>
+          Yksi henkilö voi täyttää tämän lomakkeen koko seurueen puolesta.
+          Ilmoita jokaisen osallistujan etunimi ja mahdollinen erikoisruokavalio.
+        </div>
       </div>
     </div>
 
@@ -208,13 +212,14 @@
           </div>
           <div class="card-body">
             <label style="font-weight:600;">
-              <input id="chkFri" type="checkbox"> Me osallistumme perjantain spa & sauna -vuoroon
+              <input id="chkFri" type="checkbox">
+              Seurueestamme osallistuu perjantain spa & sauna -vuoroon
             </label>
 
             <div id="friDetails" class="section-hint hidden">
               <div class="row" style="margin-top:10px;">
                 <div class="col-sm-6">
-                  <label>Kuinka moni seurueestanne osallistuu?</label>
+                  <label>Kuinka moni osallistuu?</label>
                   <select id="friCount" class="form-control"></select>
                 </div>
               </div>
@@ -235,13 +240,14 @@
           </div>
           <div class="card-body">
             <label style="font-weight:600;">
-              <input id="chkSat" type="checkbox"> Me osallistumme lauantain vihkimiseen ja hääjuhlaan
+              <input id="chkSat" type="checkbox">
+              Seurueestamme osallistuu lauantain vihkimiseen ja hääjuhlaan
             </label>
 
             <div id="satDetails" class="section-hint hidden">
               <div class="row" style="margin-top:10px;">
                 <div class="col-sm-6">
-                  <label>Kuinka moni seurueestanne osallistuu?</label>
+                  <label>Kuinka moni osallistuu?</label>
                   <select id="satCount" class="form-control"></select>
                 </div>
               </div>
@@ -262,13 +268,14 @@
           </div>
           <div class="card-body">
             <label style="font-weight:600;">
-              <input id="chkSun" type="checkbox"> Me osallistumme sunnuntain brunssille
+              <input id="chkSun" type="checkbox">
+              Seurueestamme osallistuu sunnuntain brunssille
             </label>
 
             <div id="sunDetails" class="section-hint hidden">
               <div class="row" style="margin-top:10px;">
                 <div class="col-sm-6">
-                  <label>Kuinka moni seurueestanne osallistuu?</label>
+                  <label>Kuinka moni osallistuu?</label>
                   <select id="sunCount" class="form-control"></select>
                 </div>
               </div>
@@ -277,25 +284,6 @@
                 <div class="muted" style="margin-bottom:6px;">Osallistujien etunimet + erikoisruokavaliot</div>
                 <div id="sunAttendees"></div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- MAJOITUS -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Majoitus</h3>
-            <div class="muted">Valitse teille sopivin vaihtoehto</div>
-          </div>
-          <div class="card-body">
-            <div id="accommodationLoading" class="muted">Haetaan majoitusvaihtoehtoja…</div>
-            <div id="accommodationGrid" class="accom-grid"></div>
-
-            <div id="petRow" class="section-hint hidden" style="margin-top:12px;">
-              <label style="font-weight:600;">
-                <input id="chkPet" type="checkbox"> Meille tulee lemmikki mukaan
-              </label>
-              <div class="muted">Huom: Kaikki huvilat eivät salli lemmikkejä.</div>
             </div>
           </div>
         </div>
@@ -317,7 +305,6 @@
           <button id="btnSubmit" type="button" class="btn-primary-soft btn-lg" style="width:100%;">
             Lähetä ilmoittautuminen
           </button>
-          <div id="saveStatus" class="muted" style="margin-top:10px;"></div>
         </div>
 
       </div>
@@ -325,6 +312,82 @@
 
   </div>
 </div>
+
+<script>
+(function () {
+
+  const loginRaw = sessionStorage.getItem("login");
+  if (!loginRaw) return;
+
+  const login = JSON.parse(loginRaw);
+  const guestsInvited = Number(login.Guests || 0);
+
+  // 🔹 Tämä on se invitedCountLabel-rivi
+  document.getElementById("invitedCountLabel").innerText = guestsInvited;
+
+  function fillSelect(select, max) {
+    select.innerHTML = "";
+    for (let i = 0; i <= max; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = i;
+      select.appendChild(opt);
+    }
+  }
+
+  function renderRows(container, count, withDiet) {
+    container.innerHTML = "";
+    for (let i = 1; i <= count; i++) {
+      const row = document.createElement("div");
+      row.className = "attendee-row";
+
+      row.innerHTML = `
+        <input type="text" class="form-control name" placeholder="Etunimi ${i}">
+        ${withDiet ? '<input type="text" class="form-control diet" placeholder="Erikoisruokavalio">' : ''}
+      `;
+
+      container.appendChild(row);
+    }
+  }
+
+  const chkFri = document.getElementById("chkFri");
+  const chkSat = document.getElementById("chkSat");
+  const chkSun = document.getElementById("chkSun");
+
+  const friDetails = document.getElementById("friDetails");
+  const satDetails = document.getElementById("satDetails");
+  const sunDetails = document.getElementById("sunDetails");
+
+  const friCount = document.getElementById("friCount");
+  const satCount = document.getElementById("satCount");
+  const sunCount = document.getElementById("sunCount");
+
+  const friAttendees = document.getElementById("friAttendees");
+  const satAttendees = document.getElementById("satAttendees");
+  const sunAttendees = document.getElementById("sunAttendees");
+
+  fillSelect(friCount, guestsInvited);
+  fillSelect(satCount, guestsInvited);
+  fillSelect(sunCount, guestsInvited);
+
+  chkFri.addEventListener("change", () => {
+    friDetails.classList.toggle("hidden", !chkFri.checked);
+  });
+
+  chkSat.addEventListener("change", () => {
+    satDetails.classList.toggle("hidden", !chkSat.checked);
+  });
+
+  chkSun.addEventListener("change", () => {
+    sunDetails.classList.toggle("hidden", !chkSun.checked);
+  });
+
+  friCount.addEventListener("change", () => renderRows(friAttendees, Number(friCount.value), false));
+  satCount.addEventListener("change", () => renderRows(satAttendees, Number(satCount.value), true));
+  sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
+
+})();
+</script>
 
 
   <!-- JS -->
@@ -338,6 +401,7 @@
   <script src="js/jquery.magnific-popup.min.js"></script>
   <script src="js/magnific-popup-options.js"></script>
   <script src="js/main.js"></script>
+  
 
   <!-- Auth (sis. login() ja logout()) -->
   <script src="js/auth.js"></script>
