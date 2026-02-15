@@ -31,6 +31,70 @@
   <!--[if lt IE 9]>
     <script src="js/respond.min.js"></script>
   <![endif]-->
+
+  <style>
+  .card {
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.05);
+    margin-bottom: 18px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .card-header {
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.9);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .card-title { margin: 0; font-weight: 600; }
+  .card-body { padding: 16px; }
+  .muted { opacity: 0.75; }
+  .pill {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.04);
+    margin-right: 6px;
+    font-size: 13px;
+  }
+  .attendee-row {
+    display:flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .attendee-row input { height: 44px; }
+  .attendee-row .name { flex: 1.2; }
+  .attendee-row .diet { flex: 1; }
+  .section-hint {
+    background: rgba(0,0,0,0.03);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 10px;
+  }
+  .accom-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .accom-card img {
+    width:100%;
+    height: 150px;
+    object-fit: cover;
+    display:block;
+  }
+  .accom-card .meta { padding: 12px 12px 14px; }
+  .btn-primary-soft {
+    background: #111;
+    border: 0;
+    color: #fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-weight: 600;
+  }
+  .btn-primary-soft:hover { opacity: 0.92; }
+  .hidden { display:none !important; }
+</style>
+
 </head>
 
 <body>
@@ -119,78 +183,149 @@
       </div>
     </header>
 
-    <!-- CONTENT -->
-    <div class="fh5co-section">
-      <div class="container">
+<!-- CONTENT -->
+<div class="fh5co-section">
+  <div class="container">
 
-        <!-- Osallistuminen -->
-        <div class="row animate-box">
-          <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-              <div class="panel-heading"><h3 class="panel-title">Osallistuminen</h3></div>
-              <div class="panel-body">
-                <div class="checkbox">
-                  <label><input id="chkFri" type="checkbox"> Perjantai (spa &amp; sauna)</label>
-                </div>
-                <div class="checkbox">
-                  <label><input id="chkSat" type="checkbox"> Lauantain vihkiminen &amp; juhla</label>
-                </div>
-                <div class="checkbox">
-                  <label><input id="chkSun" type="checkbox"> Sunnuntain brunssi</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Majoitus -->
-        <div class="row animate-box">
-          <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-              <div class="panel-heading"><h3 class="panel-title">Majoitus</h3></div>
-              <div class="panel-body" id="accommodationOptions">
-                <!-- täytetään JS:llä -->
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lisätiedot -->
-        <div class="row animate-box">
-          <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-              <div class="panel-heading"><h3 class="panel-title">Lisätiedot</h3></div>
-              <div class="panel-body">
-                <textarea id="txtNotes" class="form-control" rows="4"
-                  placeholder="Erikoisruokavaliot, allergiat tai muu huomioitava"></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lähetä -->
-        <div class="row animate-box">
-          <div class="col-md-4 col-md-offset-4 text-center">
-            <button id="btnSubmit" class="btn btn-default btn-lg btn-block">
-              Lähetä ilmoittautuminen
-            </button>
-          </div>
-        </div>
-
+    <div class="row animate-box">
+      <div class="col-md-8 col-md-offset-2 text-center">
+        <span class="pill">Ilmoittautuminen</span>
+        <span class="pill">Täytä 1 kerta</span>
+        <p class="muted" style="margin-top:10px;">
+          Täytä osallistujat ja erikoisruokavaliot henkilökohtaisesti – näin osaamme varautua oikein.
+        </p>
       </div>
     </div>
 
-    <footer id="fh5co-footer" role="contentinfo">
-      <div class="container">
-        <div class="row copyright">
-          <div class="col-md-12 text-center">
-            <p><small class="block">&copy; 2026 Sini Aaltonen (tuleva Kantelinen).</small></p>
+    <form id="rsvpForm" class="row animate-box">
+      <div class="col-md-8 col-md-offset-2">
+
+        <!-- PERJANTAI -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Perjantai – Spa & sauna (20:00–22:00)</h3>
+            <div class="muted">Yksityiskäyttö • K18 • 39 € / hlö</div>
+          </div>
+          <div class="card-body">
+            <label style="font-weight:600;">
+              <input id="chkFri" type="checkbox"> Me osallistumme perjantain spa & sauna -vuoroon
+            </label>
+
+            <div id="friDetails" class="section-hint hidden">
+              <div class="row" style="margin-top:10px;">
+                <div class="col-sm-6">
+                  <label>Kuinka moni seurueestanne osallistuu?</label>
+                  <select id="friCount" class="form-control"></select>
+                </div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <div class="muted" style="margin-bottom:6px;">Osallistujien etunimet</div>
+                <div id="friAttendees"></div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- LAUANTAI -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Lauantai – Vihkiminen & hääjuhla</h3>
+            <div class="muted">Vihkiminen klo 13 • Juhla & iltapala</div>
+          </div>
+          <div class="card-body">
+            <label style="font-weight:600;">
+              <input id="chkSat" type="checkbox"> Me osallistumme lauantain vihkimiseen ja hääjuhlaan
+            </label>
+
+            <div id="satDetails" class="section-hint hidden">
+              <div class="row" style="margin-top:10px;">
+                <div class="col-sm-6">
+                  <label>Kuinka moni seurueestanne osallistuu?</label>
+                  <select id="satCount" class="form-control"></select>
+                </div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <div class="muted" style="margin-bottom:6px;">Osallistujien etunimet + erikoisruokavaliot</div>
+                <div id="satAttendees"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUNNUNTAI -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Sunnuntai – Brunssi</h3>
+            <div class="muted">Brunssi hääviikonlopun päätökseksi</div>
+          </div>
+          <div class="card-body">
+            <label style="font-weight:600;">
+              <input id="chkSun" type="checkbox"> Me osallistumme sunnuntain brunssille
+            </label>
+
+            <div id="sunDetails" class="section-hint hidden">
+              <div class="row" style="margin-top:10px;">
+                <div class="col-sm-6">
+                  <label>Kuinka moni seurueestanne osallistuu?</label>
+                  <select id="sunCount" class="form-control"></select>
+                </div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <div class="muted" style="margin-bottom:6px;">Osallistujien etunimet + erikoisruokavaliot</div>
+                <div id="sunAttendees"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAJOITUS -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Majoitus</h3>
+            <div class="muted">Valitse teille sopivin vaihtoehto</div>
+          </div>
+          <div class="card-body">
+            <div id="accommodationLoading" class="muted">Haetaan majoitusvaihtoehtoja…</div>
+            <div id="accommodationGrid" class="accom-grid"></div>
+
+            <div id="petRow" class="section-hint hidden" style="margin-top:12px;">
+              <label style="font-weight:600;">
+                <input id="chkPet" type="checkbox"> Meille tulee lemmikki mukaan
+              </label>
+              <div class="muted">Huom: Kaikki huvilat eivät salli lemmikkejä.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LISÄTIEDOT -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Lisätiedot</h3>
+            <div class="muted">Allergiat, huomioitavat asiat tai toiveet</div>
+          </div>
+          <div class="card-body">
+            <textarea id="txtNotes" class="form-control" rows="4"
+              placeholder="Esim. tarkennus erikoisruokavalioista, aikataulutoive, muu huomioitava"></textarea>
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="text-center" style="margin-top: 10px;">
+          <button id="btnSubmit" type="button" class="btn-primary-soft btn-lg" style="width:100%;">
+            Lähetä ilmoittautuminen
+          </button>
+          <div id="saveStatus" class="muted" style="margin-top:10px;"></div>
+        </div>
+
       </div>
-    </footer>
+    </form>
 
   </div>
+</div>
+
 
   <!-- JS -->
   <script src="js/jquery.min.js"></script>
