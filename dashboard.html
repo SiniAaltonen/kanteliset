@@ -39,50 +39,67 @@
 
   <div id="page">
 
-    <!-- NAV -->
-    <nav class="fh5co-nav" role="navigation">
-      <div class="container">
-        <div class="row">
-          <div class="col-xs-2">
-            <div id="fh5co-logo"><a href="index.html">Kanteliset<strong>.</strong></a></div>
-          </div>
-
-          <div class="col-xs-10 text-right menu-1">
-            <ul>
-              <li><a href="index.html">Etusivu</a></li>
-              <li><a href="about.html">Me</a></li>
-
-              <li class="has-dropdown">
-                <a href="services.html">Häät</a>
-                <ul class="dropdown">
-                  <li><a href="services.html#majoitus">Majoitus</a></li>
-                  <li><a href="services.html#ohjelma">Ohjelma</a></li>
-                  <li><a href="services.html#yhteystiedot">Tärkeät yhteystiedot</a></li>
-                  <li><a href="services.html#haapaiva">Hääpäivä</a></li>
-                </ul>
-              </li>
-
-              <li class="has-dropdown">
-                <a href="gallery.html">Galleria</a>
-                <ul class="dropdown">
-                  <li><a href="gallery.html#kihlajaiset">Kihlajaiset</a></li>
-                  <li><a href="gallery.html#perjantai">Perjantai</a></li>
-                  <li><a href="gallery.html#lauantai">Lauantai</a></li>
-                  <li><a href="gallery.html#sunnuntai">Sunnuntai</a></li>
-                </ul>
-              </li>
-
-              <li><a href="contact.html">Ota yhteyttä</a></li>
-
-              <li class="active"><a href="dashboard.html">Ilmoittautuminen</a></li>
-              <li><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
-            </ul>
-          </div>
-
+   <!-- NAV -->
+<nav class="fh5co-nav" role="navigation">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-2">
+        <div id="fh5co-logo">
+          <a href="index.html">Kanteliset<strong>.</strong></a>
         </div>
       </div>
-    </nav>
 
+      <div class="col-xs-10 text-right menu-1">
+        <ul>
+
+          <!-- ETUSIVU -->
+          <li><a href="index.html">Etusivu</a></li>
+
+          <!-- TÄRKEÄÄ -->
+          <li class="has-dropdown">
+            <a href="info.html">Tärkeää</a>
+            <ul class="dropdown">
+              <li><a href="info.html#saapuminen">Saapuminen & Osoite</a></li>
+              <li><a href="info.html#majoitus">Majoitus</a></li>
+              <li><a href="info.html#pukukoodi">Pukukoodi</a></li>
+              <li><a href="info.html#aikataulu">Aikataulu</a></li>
+              <li><a href="info.html#faq">Usein kysyttyä</a></li>
+            </ul>
+          </li>
+
+          <!-- OHJELMA -->
+          <li class="has-dropdown">
+            <a href="ohjelma.html">Ohjelma</a>
+            <ul class="dropdown">
+              <li><a href="ohjelma.html#perjantai">Perjantai & Aktiviteetit</a></li>
+              <li><a href="ohjelma.html#puhe">Pidä puhe / Ilmoita ohjelma</a></li>
+              <li><a href="ohjelma.html#spotify">Lisää bilebiisi</a></li>
+              <li><a href="ohjelma.html#visa">Häävisa</a></li>
+              <li><a href="ohjelma.html#brunssi">Brunssi</a></li>
+            </ul>
+          </li>
+
+          <!-- MEIDÄN TARINA -->
+          <li><a href="tarina.html">Meidän tarina</a></li>
+
+          <!-- GALLERIA -->
+          <li><a href="gallery.html">Galleria</a></li>
+
+          <!-- ILMOITTAUTUMINEN -->
+          <li id="navDashboard" class="active hidden-auth">
+            <a href="dashboard.html">Ilmoittautuminen</a>
+          </li>
+
+          <!-- LOGOUT -->
+          <li id="navLogout" class="hidden-auth">
+            <a href="#" onclick="logout(); return false;">Kirjaudu ulos</a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
     <!-- HERO -->
     <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner"
       style="background-image:url(images/villavellamo.jpg);" data-stellar-background-ratio="0.5">
