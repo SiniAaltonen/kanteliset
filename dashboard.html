@@ -288,6 +288,68 @@
           </div>
         </div>
 
+        <!-- MAJOITUS -->
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Majoitus</h3>
+    <div class="muted">Valitse teille varattu majoitusvaihtoehto</div>
+  </div>
+  <div class="card-body">
+
+    <!-- Näkyy jos heille on majoitus -->
+    <div id="accommodationWrapper" class="hidden">
+
+      <div id="accommodationCard" class="section-hint">
+
+        <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:flex-start;">
+          
+          <img id="accomImage" src="" 
+               style="width:180px; height:120px; object-fit:cover; border-radius:10px;">
+
+          <div style="flex:1;">
+            <h4 id="accomTitle" style="margin-top:0;"></h4>
+
+            <div class="muted" id="accomDescription"></div>
+
+            <div style="margin-top:8px;">
+              <span class="pill" id="accomPrice"></span>
+              <span class="pill" id="accomPets"></span>
+            </div>
+
+            <div class="muted" style="margin-top:6px;" id="accomShare"></div>
+          </div>
+
+        </div>
+
+        <hr style="margin:15px 0;">
+
+        <label style="font-weight:600;">
+          <input type="checkbox" id="chkAccommodation">
+          Haluamme varata tämän majoituksen
+        </label>
+
+        <div id="petRow" class="hidden" style="margin-top:10px;">
+          <label>
+            <input type="checkbox" id="chkPet">
+            Seurueestamme tulee lemmikki mukaan
+          </label>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Näkyy jos ei ole majoitusta -->
+    <div id="noAccommodationWrapper" class="hidden">
+      <div class="muted">
+        Teille ei ole varattu majoitusta hääpaikalta.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
         <!-- LISÄTIEDOT -->
         <div class="card">
           <div class="card-header">
@@ -385,6 +447,77 @@
   friCount.addEventListener("change", () => renderRows(friAttendees, Number(friCount.value), false));
   satCount.addEventListener("change", () => renderRows(satAttendees, Number(satCount.value), true));
   sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
+
+  // --------------------
+// MAJOITUS LOGIIKKA
+// --------------------
+
+const allowedOptions = login.AllowedOptions || [];
+
+const accommodationWrapper = document.getElementById("accommodationWrapper");
+const noAccommodationWrapper = document.getElementById("noAccommodationWrapper");
+
+if (!allowedOptions.length || allowedOptions[0] === "ALL") {
+  // Näytetään default
+  accommodationWrapper.classList.remove("hidden");
+} else if (allowedOptions.length === 1) {
+  accommodationWrapper.classList.remove("hidden");
+} else {
+  accommodationWrapper.classList.remove("hidden");
+}
+
+// Jos ei ole mitään majoitusta
+if (!allowedOptions.length) {
+  noAccommodationWrapper.classList.remove("hidden");
+}
+
+// Demo-data (myöhemmin haetaan Azuresta)
+const accommodationData = {
+  "villa_aurum": {
+    title: "Villa Aurum",
+    description: "Tilava huvila yhteismajoitukseen.",
+    pricePerPerson: 115,
+    petsAllowed: false,
+    share: "Jaetaan muiden Aurum-vieraiden kanssa.",
+    image: "images/villaaurum.jpg"
+  },
+  "huvila_1": {
+    title: "Huvila 1",
+    description: "Tunnelmallinen huvila lähellä rantaa.",
+    pricePerPerson: 95,
+    petsAllowed: true,
+    share: "Jaetaan Huvila 1 -seurueen kanssa.",
+    image: "images/huvila1.jpg"
+  }
+};
+
+// Oletetaan että yksi vaihtoehto
+const selectedId = allowedOptions[0];
+const data = accommodationData[selectedId];
+
+if (data) {
+  document.getElementById("accomTitle").innerText = data.title;
+  document.getElementById("accomDescription").innerText = data.description;
+  document.getElementById("accomPrice").innerText = data.pricePerPerson + " € / hlö";
+  document.getElementById("accomPets").innerText = data.petsAllowed ? "Lemmikit sallittu" : "Ei lemmikkejä";
+  document.getElementById("accomShare").innerText = data.share;
+  document.getElementById("accomImage").src = data.image;
+
+  if (!data.petsAllowed) {
+    document.getElementById("petRow").classList.add("hidden");
+  }
+}
+
+document.getElementById("chkAccommodation").addEventListener("change", function() {
+  const petRow = document.getElementById("petRow");
+  if (this.checked && data && data.petsAllowed) {
+    petRow.classList.remove("hidden");
+  } else {
+    petRow.classList.add("hidden");
+    document.getElementById("chkPet").checked = false;
+  }
+});
+
 
 })();
 </script>
