@@ -205,7 +205,7 @@
       <div class="col-md-8 col-md-offset-2">
 
         <!-- PERJANTAI -->
-        <div class="card">
+        <div class="card" id="accommodationCardWrapper">
           <div class="card-header">
             <h3 class="card-title">Perjantai – Spa & sauna (20:00–22:00)</h3>
             <div class="muted">Yksityiskäyttö • K18 • 39 € / hlö</div>
@@ -339,13 +339,6 @@
 
     </div>
 
-    <!-- Näkyy jos ei ole majoitusta -->
-    <div id="noAccommodationWrapper" class="hidden">
-      <div class="muted">
-        Teille ei ole varattu majoitusta hääpaikalta.
-      </div>
-    </div>
-
   </div>
 </div>
 
@@ -449,46 +442,41 @@
   sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
 
 // --------------------
-// MAJOITUS
+// MAJOITUS LOGIIKKA
 // --------------------
 
+const accommodationCardWrapper = document.getElementById("accommodationCardWrapper");
 const accommodation = login.Accommodation;
 
-const accommodationWrapper = document.getElementById("accommodationWrapper");
-const noAccommodationWrapper = document.getElementById("noAccommodationWrapper");
-
-if (!accommodation || !accommodation.Title) {
-
-  // ❌ Ei majoitusta
-  accommodationWrapper.classList.add("hidden");
-  noAccommodationWrapper.classList.remove("hidden");
-
-} else {
-
-  // ✅ On majoitus
-  noAccommodationWrapper.classList.add("hidden");
-  accommodationWrapper.classList.remove("hidden");
+// Jos EI ole majoitusta → piilotetaan koko kortti
+if (!accommodation) {
+  accommodationCardWrapper.classList.add("hidden");
+} 
+else {
+  accommodationCardWrapper.classList.remove("hidden");
 
   document.getElementById("accomTitle").innerText = accommodation.Title;
   document.getElementById("accomShare").innerText = accommodation.ShareText || "";
+
   document.getElementById("accomImage").src = "images/" + accommodation.Image;
 
-  // Hinta pill
-  const pricePill = document.getElementById("accomPrice");
+  document.getElementById("accomPets").innerText =
+    accommodation.PetsAllowed ? "Lemmikit sallittu" : "Ei lemmikkejä";
+
+  let priceText = "";
 
   if (accommodation.IsAccommodationHosted) {
-    pricePill.innerText = "Majoitus maksettu ❤️";
+    priceText = "Majoitus maksettu ❤️";
   } else {
-    pricePill.innerText = accommodation.AccommodationTotal + " €";
+    priceText = accommodation.AccommodationTotal + " €";
   }
 
-  // Lemmikit
-  const petsPill = document.getElementById("accomPets");
-  petsPill.innerText = accommodation.PetsAllowed
-    ? "Lemmikit sallittu"
-    : "Ei lemmikkejä";
+  if (!accommodation.IsSpaHosted) {
+    priceText += " + Spa " + accommodation.SpaPricePerPerson + " € / hlö";
+  }
 
-  // Pet checkbox näkyy vain jos sallittu
+  document.getElementById("accomPrice").innerText = priceText;
+
   const petRow = document.getElementById("petRow");
   if (accommodation.PetsAllowed) {
     petRow.classList.remove("hidden");
