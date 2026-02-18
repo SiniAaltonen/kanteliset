@@ -470,26 +470,27 @@ if (!allowedOptions.length || allowedOptions[0] === "ALL") {
 if (!allowedOptions.length) {
   noAccommodationWrapper.classList.remove("hidden");
 }
+async function loadAccommodation(familyId) {
 
-// Demo-data (myöhemmin haetaan Azuresta)
-const accommodationData = {
-  "villa_aurum": {
-    title: "Villa Aurum",
-    description: "Tilava huvila yhteismajoitukseen.",
-    pricePerPerson: 115,
-    petsAllowed: false,
-    share: "Jaetaan muiden Aurum-vieraiden kanssa.",
-    image: "images/villaaurum.jpg"
-  },
-  "huvila_1": {
-    title: "Huvila 1",
-    description: "Tunnelmallinen huvila lähellä rantaa.",
-    pricePerPerson: 95,
-    petsAllowed: true,
-    share: "Jaetaan Huvila 1 -seurueen kanssa.",
-    image: "images/huvila1.jpg"
+  const res = await fetch(`${API_BASE}/api/accommodation/${familyId}`);
+  if (!res.ok) return;
+
+  const data = await res.json();
+
+  if (!data.title) {
+    document.getElementById("noAccommodationWrapper").classList.remove("hidden");
+    return;
   }
-};
+
+  document.getElementById("accommodationWrapper").classList.remove("hidden");
+
+  document.getElementById("accomTitle").innerText = data.title;
+  document.getElementById("accomDescription").innerText = data.description;
+  document.getElementById("accomPrice").innerText = data.pricePerPerson + " € / hlö";
+  document.getElementById("accomPets").innerText = data.petsAllowed ? "Lemmikit sallittu" : "Ei lemmikkejä";
+  document.getElementById("accomShare").innerText = data.shareText;
+  document.getElementById("accomImage").src = "images/" + data.image;
+}
 
 // Oletetaan että yksi vaihtoehto
 const selectedId = allowedOptions[0];
@@ -536,96 +537,106 @@ document.getElementById("chkAccommodation").addEventListener("change", function(
   <script src="js/main.js"></script>
   
 
-  <!-- Auth (sis. login() ja logout()) -->
-  <script src="js/auth.js"></script>
+<!-- Auth -->
+<script src="js/auth.js"></script>
 
- <script>
+<script>
+(function () {
+
   console.log("---- DASHBOARD LOAD ----");
 
-  // 🔎 Debug – katso mitä storageissa on
-  console.log("sessionStorage.isLoggedIn:", sessionStorage.getItem("isLoggedIn"));
-  console.log("sessionStorage.login:", sessionStorage.getItem("login"));
-  console.log("localStorage.kanteliset_session:", localStorage.getItem("kanteliset_session"));
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+  const loginRaw = sessionStorage.getItem("login");
 
-  (function () {
+  if (!isLoggedIn || !loginRaw) {
+    alert("Session puuttuu – et ole kirjautunut sisään.");
+    window.location.replace("index.html");
+    return;
+  }
 
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-    const loginRaw = sessionStorage.getItem("login");
+  const login = JSON.parse(loginRaw);
+  const familyId = login.FamilyId;
+  const guests = login.Guests || 0;
+  const accommodation = login.Accommodation;
 
-    if (!isLoggedIn || !loginRaw) {
-      console.warn("❌ Session puuttuu tai login ei kelpaa");
-      alert("Session puuttuu – et ole kirjautunut sisään.");
-      window.location.replace("index.html");
-      return;
-    }
+  if (!familyId) {
+    alert("Kirjautumistiedot puutteelliset.");
+    window.location.replace("index.html");
+    return;
+  }
 
-    let login;
-    try {
-      login = JSON.parse(loginRaw);
-      console.log("Parsed login:", login);
-    } catch (e) {
-      console.error("❌ Login JSON parse epäonnistui", e);
-      alert("Kirjautumistiedot virheelliset.");
-      window.location.replace("index.html");
-      return;
-    }
+  // -------------------------
+  // TERVEHdYS
+  // -------------------------
 
-    const familyId = login.FamilyId || "";
-    const guests = login.Guests || 0;
-    const allowedOptions = login.AllowedOptions || [];
+  document.getElementById("welcomeTitle").innerText =
+    `Tervetuloa ${login.DisplayName}`;
 
-    if (!familyId) {
-      console.warn("❌ familyId puuttuu");
-      alert("Kirjautumistiedot puutteelliset.");
-      window.location.replace("index.html");
-      return;
-    }
+  document.getElementById("guestInfo").innerText =
+    `Kutsu koskee ${guests} henkilöä.`;
 
-    console.log("✅ Login OK:", familyId, guests, allowedOptions);
+  document.getElementById("invitedCountLabel").innerText = guests;
 
-    // Tervehdys
-    const niceName = familyId
-      ? (familyId.charAt(0).toUpperCase() + familyId.slice(1))
-      : "vieraat";
+  // -------------------------
+  // MAJOITUS
+  // -------------------------
 
-    const welcomeEl = document.getElementById("welcomeTitle");
-    const guestInfoEl = document.getElementById("guestInfo");
+  const wrapper = document.getElementById("accommodationWrapper");
+  const noWrapper = document.getElementById("noAccommodationWrapper");
 
-    if (welcomeEl) welcomeEl.innerText = `Tervetuloa ${niceName}`;
-    if (guestInfoEl) guestInfoEl.innerText = `Kutsu koskee ${guests} henkilöä.`;
+  if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
 
-    // Majoitusvaihtoehdot
-    const container = document.getElementById("accommodationOptions");
+    noWrapper.classList.remove("hidden");
+    return;
+  }
 
-    if (container) {
-      container.innerHTML = "";
+  wrapper.classList.remove("hidden");
 
-      if (!allowedOptions.length || (allowedOptions.length === 1 && allowedOptions[0] === "ALL")) {
-        container.innerHTML = "<p>Majoitusvaihtoehdot näkyvät täällä.</p>";
+  document.getElementById("accomTitle").innerText =
+    accommodation.Title;
+
+  document.getElementById("accomShare").innerText =
+    accommodation.ShareText || "";
+
+  document.getElementById("accomImage").src =
+    "images/" + accommodation.Image;
+
+  // Hinta
+
+  if (accommodation.IsAccommodationHosted) {
+    document.getElementById("accomPrice").innerText =
+      "Majoitus maksettu ❤️";
+  } else {
+    document.getElementById("accomPrice").innerText =
+      accommodation.AccommodationTotal + " €";
+  }
+
+  // Lemmikit
+
+  const petsLabel = document.getElementById("accomPets");
+  const petRow = document.getElementById("petRow");
+
+  if (accommodation.PetsAllowed) {
+    petsLabel.innerText = "Lemmikit sallittu";
+  } else {
+    petsLabel.innerText = "Ei lemmikkejä";
+    petRow.classList.add("hidden");
+  }
+
+  // Checkbox logiikka
+
+  document.getElementById("chkAccommodation")
+    .addEventListener("change", function () {
+
+      if (this.checked && accommodation.PetsAllowed) {
+        petRow.classList.remove("hidden");
       } else {
-        allowedOptions.forEach(opt => {
-          const labelText = (opt || "").replaceAll("_", " ");
-          const div = document.createElement("div");
-          div.className = "radio";
-          div.innerHTML = `
-            <label>
-              <input type="radio" name="accommodation" value="${opt}">
-              ${labelText.toUpperCase()}
-            </label>
-          `;
-          container.appendChild(div);
-        });
+        petRow.classList.add("hidden");
+        document.getElementById("chkPet").checked = false;
       }
-    }
+    });
 
-    const btn = document.getElementById("btnSubmit");
-    if (btn) {
-      btn.addEventListener("click", function () {
-        alert("Tallennus tulee seuraavaksi (backend / excel / sähköposti).");
-      });
-    }
-
-  })();
+})();
 </script>
 
 </body>
