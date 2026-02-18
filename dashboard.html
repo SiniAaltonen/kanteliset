@@ -450,6 +450,9 @@
 
   satCount.addEventListener("change", () => renderRows(satAttendees, Number(satCount.value), true));
   sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
+  friCount.addEventListener("change", () =>
+  renderRows(friAttendees, Number(friCount.value), false));
+
 
 })();
 </script>
