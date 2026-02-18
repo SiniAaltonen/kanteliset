@@ -518,7 +518,18 @@ const accommodationWrapper = document.getElementById("accommodationWrapper");
 
 if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
   accommodationCard.classList.add("hidden");
-  return;
+} else {
+  accommodationCard.classList.remove("hidden");
+  accommodationWrapper.classList.remove("hidden");
+
+  document.getElementById("accomTitle").innerText =
+    accommodation.Title;
+
+  document.getElementById("accomShare").innerText =
+    accommodation.ShareText || "";
+
+  document.getElementById("accomImage").src =
+    "images/" + accommodation.Image;
 }
 
 // Näytetään koko kortti
