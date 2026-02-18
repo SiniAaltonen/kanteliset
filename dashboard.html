@@ -342,6 +342,17 @@
   </div>
 </div>
 
+<div id="paymentInfo" class="section-hint hidden" style="margin-top:15px;">
+  <h4 style="margin-top:0;">Maksuohje</h4>
+
+  <div id="paymentAmount" style="font-weight:600; margin-bottom:8px;"></div>
+
+  <div>
+    Maksu Sinin ja Petrin hallinnoimalle tilille:<br>
+    <strong>Sini Aaltonen</strong><br>
+    FI15 5722 9020 3631 79
+  </div>
+</div>
 
         <!-- LISÄTIEDOT -->
         <div class="card">
@@ -524,21 +535,26 @@ document.getElementById("accomShare").innerText =
 document.getElementById("accomImage").src =
   "images/" + accommodation.Image;
 
-// Hinta
+// -------------------------
+// HINTALOGIIKKA
+// -------------------------
 
-let priceText = "";
+let priceParts = [];
 
+// Majoitus
 if (accommodation.IsAccommodationHosted) {
-  priceText = "Majoitus maksettu ❤️";
-} else {
-  priceText = accommodation.AccommodationTotal + " €";
+  priceParts.push("Majoitus maksettu ❤️");
+} else if (accommodation.AccommodationTotal > 0) {
+  priceParts.push(accommodation.AccommodationTotal + " €");
 }
 
-if (!accommodation.IsSpaHosted) {
-  priceText += " + Spa " + accommodation.SpaPricePerPerson + " € / hlö";
+// Spa
+if (!accommodation.IsSpaHosted && accommodation.SpaPricePerPerson > 0) {
+  priceParts.push("Spa " + accommodation.SpaPricePerPerson + " € / hlö");
 }
 
-document.getElementById("accomPrice").innerText = priceText;
+// Näytetään pill-teksti
+document.getElementById("accomPrice").innerText = priceParts.join(" + ");
 
 // Lemmikit
 
