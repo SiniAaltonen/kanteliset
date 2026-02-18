@@ -532,40 +532,40 @@ if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
     "images/" + accommodation.Image;
 }
 
-// Näytetään koko kortti
-accommodationCard.classList.remove("hidden");
-accommodationWrapper.classList.remove("hidden");
-
-// Täytetään tiedot
-document.getElementById("accomTitle").innerText =
-  accommodation.Title;
-
-document.getElementById("accomShare").innerText =
-  accommodation.ShareText || "";
-
-document.getElementById("accomImage").src =
-  "images/" + accommodation.Image;
-
 // -------------------------
-// HINTALOGIIKKA
+// MAKSULOGIIKKA (toimii myös ilman majoitusta)
 // -------------------------
 
-let priceParts = [];
+let totalToPay = 0;
+let paymentParts = [];
 
 // Majoitus
-if (accommodation.IsAccommodationHosted) {
-  priceParts.push("Majoitus maksettu ❤️");
-} else if (accommodation.AccommodationTotal > 0) {
-  priceParts.push(accommodation.AccommodationTotal + " €");
+if (accommodation && !accommodation.IsAccommodationHosted && accommodation.AccommodationTotal > 0) {
+  totalToPay += accommodation.AccommodationTotal;
+  paymentParts.push("Majoitus " + accommodation.AccommodationTotal + " €");
 }
 
 // Spa
-if (!accommodation.IsSpaHosted && accommodation.SpaPricePerPerson > 0) {
-  priceParts.push("Spa " + accommodation.SpaPricePerPerson + " € / hlö");
+if (accommodation && !accommodation.IsSpaHosted && accommodation.SpaPricePerPerson > 0) {
+  totalToPay += accommodation.SpaPricePerPerson * guests;
+  paymentParts.push("Spa " + accommodation.SpaPricePerPerson + " € / hlö");
 }
 
-// Näytetään pill-teksti
-document.getElementById("accomPrice").innerText = priceParts.join(" + ");
+// Näytetään maksublokki vain jos maksettavaa on
+const paymentInfo = document.getElementById("paymentInfo");
+const paymentAmount = document.getElementById("paymentAmount");
+
+if (totalToPay > 0) {
+
+  paymentAmount.innerText =
+    paymentParts.join(" + ") + 
+    " — Yhteensä: " + totalToPay + " €";
+
+  paymentInfo.classList.remove("hidden");
+
+} else {
+  paymentInfo.classList.add("hidden");
+}
 
 // Lemmikit
 
@@ -574,7 +574,7 @@ const petRow = document.getElementById("petRow");
 
 if (accommodation.PetsAllowed) {
   petsLabel.innerText = "Lemmikit sallittu";
-} else {
+} else if (accommodation) {
   petsLabel.innerText = "Ei lemmikkejä";
   petRow.classList.add("hidden");
 }
