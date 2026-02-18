@@ -498,63 +498,72 @@
 
   document.getElementById("invitedCountLabel").innerText = guests;
 
-  // -------------------------
-  // MAJOITUS
-  // -------------------------
+ // -------------------------
+// MAJOITUS
+// -------------------------
 
 const accommodationCard = document.getElementById("accommodationCard");
+const accommodationWrapper = document.getElementById("accommodationWrapper");
 
-
-  if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
+if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
   accommodationCard.classList.add("hidden");
   return;
 }
 
-  wrapper.classList.remove("hidden");
+// Näytetään koko kortti
+accommodationCard.classList.remove("hidden");
+accommodationWrapper.classList.remove("hidden");
 
-  document.getElementById("accomTitle").innerText =
-    accommodation.Title;
+// Täytetään tiedot
+document.getElementById("accomTitle").innerText =
+  accommodation.Title;
 
-  document.getElementById("accomShare").innerText =
-    accommodation.ShareText || "";
+document.getElementById("accomShare").innerText =
+  accommodation.ShareText || "";
 
-  document.getElementById("accomImage").src =
-    "images/" + accommodation.Image;
+document.getElementById("accomImage").src =
+  "images/" + accommodation.Image;
 
-  // Hinta
+// Hinta
 
-  if (accommodation.IsAccommodationHosted) {
-    document.getElementById("accomPrice").innerText =
-      "Majoitus maksettu ❤️";
-  } else {
-    document.getElementById("accomPrice").innerText =
-      accommodation.AccommodationTotal + " €";
-  }
+let priceText = "";
 
-  // Lemmikit
+if (accommodation.IsAccommodationHosted) {
+  priceText = "Majoitus maksettu ❤️";
+} else {
+  priceText = accommodation.AccommodationTotal + " €";
+}
 
-  const petsLabel = document.getElementById("accomPets");
-  const petRow = document.getElementById("petRow");
+if (!accommodation.IsSpaHosted) {
+  priceText += " + Spa " + accommodation.SpaPricePerPerson + " € / hlö";
+}
 
-  if (accommodation.PetsAllowed) {
-    petsLabel.innerText = "Lemmikit sallittu";
-  } else {
-    petsLabel.innerText = "Ei lemmikkejä";
-    petRow.classList.add("hidden");
-  }
+document.getElementById("accomPrice").innerText = priceText;
 
-  // Checkbox logiikka
+// Lemmikit
 
-  document.getElementById("chkAccommodation")
-    .addEventListener("change", function () {
+const petsLabel = document.getElementById("accomPets");
+const petRow = document.getElementById("petRow");
 
-      if (this.checked && accommodation.PetsAllowed) {
-        petRow.classList.remove("hidden");
-      } else {
-        petRow.classList.add("hidden");
-        document.getElementById("chkPet").checked = false;
-      }
-    });
+if (accommodation.PetsAllowed) {
+  petsLabel.innerText = "Lemmikit sallittu";
+} else {
+  petsLabel.innerText = "Ei lemmikkejä";
+  petRow.classList.add("hidden");
+}
+
+// Checkbox logiikka
+
+document.getElementById("chkAccommodation")
+  .addEventListener("change", function () {
+
+    if (this.checked && accommodation.PetsAllowed) {
+      petRow.classList.remove("hidden");
+    } else {
+      petRow.classList.add("hidden");
+      document.getElementById("chkPet").checked = false;
+    }
+  });
 
 })();
 </script>
