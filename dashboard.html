@@ -448,14 +448,6 @@
     sunDetails.classList.toggle("hidden", !chkSun.checked);
   });
 
-  friCount.addEventListener("change", () => {
-  renderRows(friAttendees, Number(friCount.value), false);
-
-  if (typeof calculatePayment === "function") {
-    calculatePayment();
-  }
-});
-
   satCount.addEventListener("change", () => renderRows(satAttendees, Number(satCount.value), true));
   sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
 
@@ -550,8 +542,12 @@ function calculatePayment() {
   const friCountValue = Number(document.getElementById("friCount").value || 0);
 
   // SPA
-  if (accommodation && !accommodation.IsSpaHosted && accommodation.SpaPricePerPerson > 0 && friCountValue > 0) {
-
+  if (
+    accommodation &&
+    !accommodation.IsSpaHosted &&
+    accommodation.SpaPricePerPerson > 0 &&
+    friCountValue > 0
+  ) {
     const spaTotal = accommodation.SpaPricePerPerson * friCountValue;
     totalToPay += spaTotal;
 
@@ -562,27 +558,16 @@ function calculatePayment() {
   }
 
   // MAJOITUS
-  if (accommodation && !accommodation.IsAccommodationHosted) {
+  if (
+    accommodation &&
+    !accommodation.IsAccommodationHosted &&
+    accommodation.AccommodationTotal > 0
+  ) {
+    totalToPay += accommodation.AccommodationTotal;
 
-    if (accommodation.PriceMode === "perPerson") {
-
-      const accomTotal = accommodation.PricePerPerson * guests;
-
-      totalToPay += accomTotal;
-
-      paymentParts.push(
-        "Majoitus " + guests + " × " +
-        accommodation.PricePerPerson + " €"
-      );
-
-    } else if (accommodation.AccommodationTotal > 0) {
-
-      totalToPay += accommodation.AccommodationTotal;
-
-      paymentParts.push(
-        "Majoitus " + accommodation.AccommodationTotal + " €"
-      );
-    }
+    paymentParts.push(
+      "Majoitus " + accommodation.AccommodationTotal + " €"
+    );
   }
 
   const paymentInfo = document.getElementById("paymentInfo");
@@ -600,6 +585,18 @@ function calculatePayment() {
     paymentInfo.classList.add("hidden");
   }
 }
+
+// Päivitetään hinta kun perjantain osallistujamäärä muuttuu
+document.getElementById("friCount").addEventListener("change", calculatePayment);
+
+// Päivitetään hinta myös kun perjantai checkbox menee päälle/pois
+document.getElementById("chkFri").addEventListener("change", () => {
+  // jos checkbox pois -> asetetaan friCount 0, niin hinta putoaa oikein
+  if (!document.getElementById("chkFri").checked) {
+    document.getElementById("friCount").value = "0";
+  }
+  calculatePayment();
+});
 
 // Lemmikit
 
