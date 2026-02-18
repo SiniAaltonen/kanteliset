@@ -448,77 +448,54 @@
   satCount.addEventListener("change", () => renderRows(satAttendees, Number(satCount.value), true));
   sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
 
-  // --------------------
-// MAJOITUS LOGIIKKA
+// --------------------
+// MAJOITUS
 // --------------------
 
-const allowedOptions = login.AllowedOptions || [];
+const accommodation = login.Accommodation;
 
 const accommodationWrapper = document.getElementById("accommodationWrapper");
 const noAccommodationWrapper = document.getElementById("noAccommodationWrapper");
 
-if (!allowedOptions.length || allowedOptions[0] === "ALL") {
-  // Näytetään default
-  accommodationWrapper.classList.remove("hidden");
-} else if (allowedOptions.length === 1) {
-  accommodationWrapper.classList.remove("hidden");
-} else {
-  accommodationWrapper.classList.remove("hidden");
-}
+if (!accommodation || !accommodation.Title) {
 
-// Jos ei ole mitään majoitusta
-if (!allowedOptions.length) {
+  // ❌ Ei majoitusta
+  accommodationWrapper.classList.add("hidden");
   noAccommodationWrapper.classList.remove("hidden");
-}
-async function loadAccommodation(familyId) {
 
-  const res = await fetch(`${API_BASE}/api/accommodation/${familyId}`);
-  if (!res.ok) return;
+} else {
 
-  const data = await res.json();
+  // ✅ On majoitus
+  noAccommodationWrapper.classList.add("hidden");
+  accommodationWrapper.classList.remove("hidden");
 
-  if (!data.title) {
-    document.getElementById("noAccommodationWrapper").classList.remove("hidden");
-    return;
+  document.getElementById("accomTitle").innerText = accommodation.Title;
+  document.getElementById("accomShare").innerText = accommodation.ShareText || "";
+  document.getElementById("accomImage").src = "images/" + accommodation.Image;
+
+  // Hinta pill
+  const pricePill = document.getElementById("accomPrice");
+
+  if (accommodation.IsAccommodationHosted) {
+    pricePill.innerText = "Majoitus maksettu ❤️";
+  } else {
+    pricePill.innerText = accommodation.AccommodationTotal + " €";
   }
 
-  document.getElementById("accommodationWrapper").classList.remove("hidden");
+  // Lemmikit
+  const petsPill = document.getElementById("accomPets");
+  petsPill.innerText = accommodation.PetsAllowed
+    ? "Lemmikit sallittu"
+    : "Ei lemmikkejä";
 
-  document.getElementById("accomTitle").innerText = data.title;
-  document.getElementById("accomDescription").innerText = data.description;
-  document.getElementById("accomPrice").innerText = data.pricePerPerson + " € / hlö";
-  document.getElementById("accomPets").innerText = data.petsAllowed ? "Lemmikit sallittu" : "Ei lemmikkejä";
-  document.getElementById("accomShare").innerText = data.shareText;
-  document.getElementById("accomImage").src = "images/" + data.image;
-}
-
-// Oletetaan että yksi vaihtoehto
-const selectedId = allowedOptions[0];
-const data = accommodationData[selectedId];
-
-if (data) {
-  document.getElementById("accomTitle").innerText = data.title;
-  document.getElementById("accomDescription").innerText = data.description;
-  document.getElementById("accomPrice").innerText = data.pricePerPerson + " € / hlö";
-  document.getElementById("accomPets").innerText = data.petsAllowed ? "Lemmikit sallittu" : "Ei lemmikkejä";
-  document.getElementById("accomShare").innerText = data.share;
-  document.getElementById("accomImage").src = data.image;
-
-  if (!data.petsAllowed) {
-    document.getElementById("petRow").classList.add("hidden");
-  }
-}
-
-document.getElementById("chkAccommodation").addEventListener("change", function() {
+  // Pet checkbox näkyy vain jos sallittu
   const petRow = document.getElementById("petRow");
-  if (this.checked && data && data.petsAllowed) {
+  if (accommodation.PetsAllowed) {
     petRow.classList.remove("hidden");
   } else {
     petRow.classList.add("hidden");
-    document.getElementById("chkPet").checked = false;
   }
-});
-
+}
 
 })();
 </script>
