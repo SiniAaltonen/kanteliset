@@ -441,50 +441,6 @@
   satCount.addEventListener("change", () => renderRows(satAttendees, Number(satCount.value), true));
   sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
 
-// --------------------
-// MAJOITUS LOGIIKKA
-// --------------------
-
-const accommodationCardWrapper = document.getElementById("accommodationCardWrapper");
-const accommodation = login.Accommodation;
-
-// Jos EI ole majoitusta → piilotetaan koko kortti
-if (!accommodation) {
-  accommodationCardWrapper.classList.add("hidden");
-} 
-else {
-  accommodationCardWrapper.classList.remove("hidden");
-
-  document.getElementById("accomTitle").innerText = accommodation.Title;
-  document.getElementById("accomShare").innerText = accommodation.ShareText || "";
-
-  document.getElementById("accomImage").src = "images/" + accommodation.Image;
-
-  document.getElementById("accomPets").innerText =
-    accommodation.PetsAllowed ? "Lemmikit sallittu" : "Ei lemmikkejä";
-
-  let priceText = "";
-
-  if (accommodation.IsAccommodationHosted) {
-    priceText = "Majoitus maksettu ❤️";
-  } else {
-    priceText = accommodation.AccommodationTotal + " €";
-  }
-
-  if (!accommodation.IsSpaHosted) {
-    priceText += " + Spa " + accommodation.SpaPricePerPerson + " € / hlö";
-  }
-
-  document.getElementById("accomPrice").innerText = priceText;
-
-  const petRow = document.getElementById("petRow");
-  if (accommodation.PetsAllowed) {
-    petRow.classList.remove("hidden");
-  } else {
-    petRow.classList.add("hidden");
-  }
-}
-
 })();
 </script>
 
@@ -546,14 +502,13 @@ else {
   // MAJOITUS
   // -------------------------
 
-  const wrapper = document.getElementById("accommodationWrapper");
-  const noWrapper = document.getElementById("noAccommodationWrapper");
+const accommodationCard = document.getElementById("accommodationCard");
+
 
   if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
-
-    noWrapper.classList.remove("hidden");
-    return;
-  }
+  accommodationCard.classList.add("hidden");
+  return;
+}
 
   wrapper.classList.remove("hidden");
 
