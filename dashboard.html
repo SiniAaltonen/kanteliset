@@ -448,7 +448,14 @@
     sunDetails.classList.toggle("hidden", !chkSun.checked);
   });
 
-  friCount.addEventListener("change", () => renderRows(friAttendees, Number(friCount.value), false));
+  friCount.addEventListener("change", () => {
+  renderRows(friAttendees, Number(friCount.value), false);
+
+  if (typeof calculatePayment === "function") {
+    calculatePayment();
+  }
+});
+
   satCount.addEventListener("change", () => renderRows(satAttendees, Number(satCount.value), true));
   sunCount.addEventListener("change", () => renderRows(sunAttendees, Number(sunCount.value), true));
 
@@ -535,36 +542,63 @@ if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
 // -------------------------
 // MAKSULOGIIKKA (toimii myös ilman majoitusta)
 // -------------------------
+function calculatePayment() {
 
-let totalToPay = 0;
-let paymentParts = [];
+  let totalToPay = 0;
+  let paymentParts = [];
 
-// Majoitus
-if (accommodation && !accommodation.IsAccommodationHosted && accommodation.AccommodationTotal > 0) {
-  totalToPay += accommodation.AccommodationTotal;
-  paymentParts.push("Majoitus " + accommodation.AccommodationTotal + " €");
-}
+  const friCountValue = Number(document.getElementById("friCount").value || 0);
 
-// Spa
-if (accommodation && !accommodation.IsSpaHosted && accommodation.SpaPricePerPerson > 0) {
-  totalToPay += accommodation.SpaPricePerPerson * guests;
-  paymentParts.push("Spa " + accommodation.SpaPricePerPerson + " € / hlö");
-}
+  // SPA
+  if (accommodation && !accommodation.IsSpaHosted && accommodation.SpaPricePerPerson > 0 && friCountValue > 0) {
 
-// Näytetään maksublokki vain jos maksettavaa on
-const paymentInfo = document.getElementById("paymentInfo");
-const paymentAmount = document.getElementById("paymentAmount");
+    const spaTotal = accommodation.SpaPricePerPerson * friCountValue;
+    totalToPay += spaTotal;
 
-if (totalToPay > 0) {
+    paymentParts.push(
+      "Spa " + friCountValue + " × " +
+      accommodation.SpaPricePerPerson + " €"
+    );
+  }
 
-  paymentAmount.innerText =
-    paymentParts.join(" + ") + 
-    " — Yhteensä: " + totalToPay + " €";
+  // MAJOITUS
+  if (accommodation && !accommodation.IsAccommodationHosted) {
 
-  paymentInfo.classList.remove("hidden");
+    if (accommodation.PriceMode === "perPerson") {
 
-} else {
-  paymentInfo.classList.add("hidden");
+      const accomTotal = accommodation.PricePerPerson * guests;
+
+      totalToPay += accomTotal;
+
+      paymentParts.push(
+        "Majoitus " + guests + " × " +
+        accommodation.PricePerPerson + " €"
+      );
+
+    } else if (accommodation.AccommodationTotal > 0) {
+
+      totalToPay += accommodation.AccommodationTotal;
+
+      paymentParts.push(
+        "Majoitus " + accommodation.AccommodationTotal + " €"
+      );
+    }
+  }
+
+  const paymentInfo = document.getElementById("paymentInfo");
+  const paymentAmount = document.getElementById("paymentAmount");
+
+  if (totalToPay > 0) {
+
+    paymentAmount.innerText =
+      paymentParts.join(" + ") +
+      " — Yhteensä: " + totalToPay + " €";
+
+    paymentInfo.classList.remove("hidden");
+
+  } else {
+    paymentInfo.classList.add("hidden");
+  }
 }
 
 // Lemmikit
@@ -592,6 +626,7 @@ document.getElementById("chkAccommodation")
     }
   });
 
+  calculatePayment();
 })();
 </script>
 
