@@ -93,8 +93,8 @@ pre {
 
 try {
   const res = await fetch(
-    `${API_BASE}/admin/rsvps?familyId=${encodeURIComponent(login.FamilyId)}`
-  );
+  `${API_BASE}/admin-rsvps?familyId=${encodeURIComponent(login.FamilyId)}`
+);
 
   if (!res.ok) throw new Error();
   data = await res.json();
