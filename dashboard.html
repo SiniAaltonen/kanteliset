@@ -611,15 +611,20 @@ function calculatePayment() {
   const spaChecked = document.getElementById("chkFri").checked;
   const accommodationChecked = document.getElementById("chkAccommodation").checked;
 
+  if (!accommodationData) return;
+
+  // ------------------
   // SPA
+  // ------------------
   if (
     spaChecked &&
-    accommodationData &&
     !accommodationData.IsSpaHosted &&
     accommodationData.SpaPricePerPerson > 0 &&
     friCountValue > 0
   ) {
+
     const spaTotal = accommodationData.SpaPricePerPerson * friCountValue;
+
     totalToPay += spaTotal;
 
     paymentParts.push(
@@ -627,6 +632,44 @@ function calculatePayment() {
       accommodationData.SpaPricePerPerson + " €"
     );
   }
+
+  // ------------------
+  // MAJOITUS
+  // ------------------
+  if (
+    accommodationChecked &&
+    !accommodationData.IsAccommodationHosted &&
+    accommodationData.AccommodationTotal > 0
+  ) {
+
+    totalToPay += accommodationData.AccommodationTotal;
+
+    paymentParts.push(
+      "Majoitus " + accommodationData.AccommodationTotal + " €"
+    );
+  }
+
+  // ------------------
+  // NÄYTTÖ
+  // ------------------
+
+  const paymentInfo = document.getElementById("paymentInfo");
+  const paymentAmount = document.getElementById("paymentAmount");
+
+  if (totalToPay > 0) {
+
+    paymentAmount.innerText =
+      paymentParts.join(" + ") +
+      " — Yhteensä: " + totalToPay + " €";
+
+    paymentInfo.classList.remove("hidden");
+
+  } else {
+
+    paymentInfo.classList.add("hidden");
+    paymentAmount.innerText = "";
+  }
+}
 
   // MAJOITUS
   if (
