@@ -619,25 +619,12 @@ function calculatePayment() {
   ) {
 
     const spaTotal = accommodationData.SpaPricePerPerson * friCountValue;
-
     totalToPay += spaTotal;
 
-   if (accommodationData.PricePerPerson > 0 && login.Guests > 0) {
-
-  const perPerson = accommodationData.PricePerPerson;
-  const guestCount = login.Guests;
-  const total = accommodationData.AccommodationTotal;
-
-  paymentParts.push(
-    "Majoitus " + guestCount + " × " + perPerson + " €"
-  );
-
-} else {
-
-  paymentParts.push(
-    "Majoitus " + accommodationData.AccommodationTotal + " €"
-  );
-}
+    paymentParts.push(
+      "Spa " + friCountValue + " × " + accommodationData.SpaPricePerPerson + " €"
+    );
+  }
 
   // ------------------
   // MAJOITUS
@@ -650,9 +637,24 @@ function calculatePayment() {
 
     totalToPay += accommodationData.AccommodationTotal;
 
-    paymentParts.push(
-      "Majoitus " + accommodationData.AccommodationTotal + " €"
-    );
+    if (accommodationData.PricePerPerson > 0 && login.Guests > 0) {
+
+      paymentParts.push(
+        "Majoitus " +
+        login.Guests +
+        " × " +
+        accommodationData.PricePerPerson +
+        " €"
+      );
+
+    } else {
+
+      paymentParts.push(
+        "Majoitus " +
+        accommodationData.AccommodationTotal +
+        " €"
+      );
+    }
   }
 
   // ------------------
