@@ -453,6 +453,10 @@
   friCount.addEventListener("change", () =>
   renderRows(friAttendees, Number(friCount.value), false));
 
+  // Päivitä maksut kun arvot muuttuvat
+document.getElementById("chkFri").addEventListener("change", calculatePayment);
+document.getElementById("friCount").addEventListener("change", calculatePayment);
+document.getElementById("chkAccommodation").addEventListener("change", calculatePayment);
 
 })();
 </script>
@@ -523,6 +527,17 @@ if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
   accommodationCard.classList.add("hidden");
 } else {
 
+  // Näytä majoituksen hinta
+if (accommodation.AccommodationTotal > 0) {
+  document.getElementById("accomPrice").innerText =
+    accommodation.AccommodationTotal + " €";
+} else if (accommodation.PricePerPerson > 0) {
+  document.getElementById("accomPrice").innerText =
+    accommodation.PricePerPerson + " € / hlö";
+} else {
+  document.getElementById("accomPrice").innerText = "";
+}
+
   accommodationCard.classList.remove("hidden");
   accommodationWrapper.classList.remove("hidden");
 
@@ -582,6 +597,67 @@ if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
   }
 
   // -------------------------
+// MAKSULASKENTA
+// -------------------------
+
+const accommodationData = login.Accommodation;
+
+function calculatePayment() {
+
+  let totalToPay = 0;
+  let paymentParts = [];
+
+  const friCountValue = Number(document.getElementById("friCount").value || 0);
+  const spaChecked = document.getElementById("chkFri").checked;
+  const accommodationChecked = document.getElementById("chkAccommodation").checked;
+
+  // SPA
+  if (
+    spaChecked &&
+    accommodationData &&
+    !accommodationData.IsSpaHosted &&
+    accommodationData.SpaPricePerPerson > 0 &&
+    friCountValue > 0
+  ) {
+    const spaTotal = accommodationData.SpaPricePerPerson * friCountValue;
+    totalToPay += spaTotal;
+
+    paymentParts.push(
+      "Spa " + friCountValue + " × " +
+      accommodationData.SpaPricePerPerson + " €"
+    );
+  }
+
+  // MAJOITUS
+  if (
+    accommodationChecked &&
+    accommodationData &&
+    !accommodationData.IsAccommodationHosted &&
+    accommodationData.AccommodationTotal > 0
+  ) {
+    totalToPay += accommodationData.AccommodationTotal;
+
+    paymentParts.push(
+      "Majoitus " + accommodationData.AccommodationTotal + " €"
+    );
+  }
+
+  const paymentInfo = document.getElementById("paymentInfo");
+  const paymentAmount = document.getElementById("paymentAmount");
+
+  if (totalToPay > 0) {
+    paymentAmount.innerText =
+      paymentParts.join(" + ") +
+      " — Yhteensä: " + totalToPay + " €";
+
+    paymentInfo.classList.remove("hidden");
+  } else {
+    paymentInfo.classList.add("hidden");
+    paymentAmount.innerText = "";
+  }
+}
+
+  // -------------------------
   // HAE RSVP (korjattu endpoint)
   // -------------------------
 
@@ -616,6 +692,8 @@ if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
       document.getElementById("txtNotes").value = rsvpData.notes || "";
 
       document.getElementById("chkAccommodation").checked = !!rsvpData.accommodation;
+
+      
 
       calculatePayment();
     }
