@@ -70,10 +70,32 @@
 
 <body>
 
+<!-- 🔝 NAV -->
+<nav class="fh5co-nav" role="navigation">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-2">
+        <div id="fh5co-logo">
+          <a href="index.html">Kanteliset<strong>.</strong></a>
+        </div>
+      </div>
+      <div class="col-xs-10 text-right menu-1">
+        <ul>
+          <li><a href="index.html">Etusivu</a></li>
+          <li><a href="info.html">Tärkeää</a></li>
+          <li><a href="ohjelma.html">Ohjelma</a></li>
+          <li><a href="tarina.html">Meidän tarina</a></li>
+          <li><a href="gallery.html">Galleria</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
 <header class="hero">
   <div class="overlay">
-    <h1>Vastauksenne:</h1>
-    <p>Tässä on se, minkä lähetit. Voit tarvittaessa muokata lopuksi.</p>
+    <h1>Vastauksenne</h1>
+    <p>Tässä on tallennettu ilmoittautumisenne.</p>
   </div>
 </header>
 
@@ -83,11 +105,11 @@
       <div class="card">
 
         <div style="background:#111; color:#fff; padding:18px; border-radius:12px; margin-bottom:25px; text-align:center;">
-  <strong>Vastauksesi on tallennettu.</strong><br>
-  Mikäli vastauksesi muuttuu, olethan yhteydessä hääpariin mahdollisimman pian.
-</div>
+          <strong>Vastauksesi on tallennettu.</strong><br>
+          Mikäli vastauksesi muuttuu, olethan yhteydessä hääpariin mahdollisimman pian.
+        </div>
+
         <h3 id="familyName"></h3>
-        <div class="muted" id="updatedUtc"></div>
 
         <div id="attendanceSection"></div>
 
@@ -112,7 +134,6 @@
 
         <div class="text-center" style="margin-top:25px;">
           <a href="kiitos.html" class="btn-soft">Takaisin</a>
-          <a href="dashboard.html" class="btn-soft">Muokkaa vastausta</a>
         </div>
 
       </div>
@@ -123,101 +144,81 @@
 <script>
 (async function () {
 
-  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-  const loginRaw = sessionStorage.getItem("login");
-
-  if (!isLoggedIn || !loginRaw) {
-    window.location.replace("index.html");
-    return;
-  }
-
-  const login = JSON.parse(loginRaw);
+  const login = JSON.parse(sessionStorage.getItem("login") || "{}");
   const familyId = login.FamilyId;
-
-  document.getElementById("familyName").innerText = login.DisplayName;
+  document.getElementById("familyName").innerText = login.DisplayName || "";
 
   const API_BASE = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api";
+  const res = await fetch(`${API_BASE}/rsvp/${encodeURIComponent(familyId)}`);
+  if (!res.ok) return;
 
-  async function fetchRsvp() {
-    let res = await fetch(`${API_BASE}/rsvp/${encodeURIComponent(familyId)}`);
-    if (res.ok) return await res.json();
-
-    res = await fetch(`${API_BASE}/getRsvp?familyId=${encodeURIComponent(familyId)}`);
-    if (res.ok) return await res.json();
-
-    return null;
-  }
-
-  const rsvp = await fetchRsvp();
-  if (!rsvp) return;
+  const rsvp = await res.json();
 
   function pick(obj, key) {
     const pascal = key.charAt(0).toUpperCase() + key.slice(1);
     return obj?.[key] ?? obj?.[pascal];
   }
 
-  const friAttending = !!pick(rsvp, "friAttending");
-  const friCount = Number(pick(rsvp, "friCount") || 0);
-  const friAttendees = pick(rsvp, "friAttendees") || [];
-
-  const satAttending = !!pick(rsvp, "satAttending");
-  const satCount = Number(pick(rsvp, "satCount") || 0);
-  const satAttendees = pick(rsvp, "satAttendees") || [];
-
-  const sunAttending = !!pick(rsvp, "sunAttending");
-  const sunCount = Number(pick(rsvp, "sunCount") || 0);
-  const sunAttendees = pick(rsvp, "sunAttendees") || [];
-
-  const accommodation = !!pick(rsvp, "accommodation");
-  const paymentSummary = (pick(rsvp, "paymentSummary") || "").toString();
-  const notes = (pick(rsvp, "notes") || "").toString();
-
   function renderAttendees(list) {
     if (!Array.isArray(list) || list.length === 0) return "";
     let html = `<div style="margin-top:8px; margin-left:10px;">`;
     list.forEach(a => {
-      html += `<div style="margin-bottom:4px;">• ${a.name || ""}`;
-      if (a.diet && a.diet.trim() !== "") {
-        html += ` – <em>${a.diet}</em>`;
-      }
+      html += `<div>• ${a.name || ""}`;
+      if (a.diet) html += ` – <em>${a.diet}</em>`;
       html += `</div>`;
     });
     html += `</div>`;
     return html;
   }
 
+  const friCount = Number(pick(rsvp,"friCount")||0);
+  const satCount = Number(pick(rsvp,"satCount")||0);
+  const sunCount = Number(pick(rsvp,"sunCount")||0);
+
   let html = '<div class="section-title">Osallistuminen</div>';
 
   html += `<div class="line">
-    Perjantai spa: <strong>${friAttending ? "Kyllä" : "Ei"}</strong> (${friCount} hlö)
-    ${renderAttendees(friAttendees)}
+    Perjantai spa: <strong>${pick(rsvp,"friAttending")?"Kyllä":"Ei"}</strong> (${friCount} hlö)
+    ${renderAttendees(pick(rsvp,"friAttendees"))}
   </div>`;
 
   html += `<div class="line">
-    Lauantai juhla: <strong>${satAttending ? "Kyllä" : "Ei"}</strong> (${satCount} hlö)
-    ${renderAttendees(satAttendees)}
+    Lauantai juhla: <strong>${pick(rsvp,"satAttending")?"Kyllä":"Ei"}</strong> (${satCount} hlö)
+    ${renderAttendees(pick(rsvp,"satAttendees"))}
   </div>`;
 
   html += `<div class="line">
-    Sunnuntai brunssi: <strong>${sunAttending ? "Kyllä" : "Ei"}</strong> (${sunCount} hlö)
-    ${renderAttendees(sunAttendees)}
+    Sunnuntai brunssi: <strong>${pick(rsvp,"sunAttending")?"Kyllä":"Ei"}</strong> (${sunCount} hlö)
+    ${renderAttendees(pick(rsvp,"sunAttendees"))}
   </div>`;
 
   document.getElementById("attendanceSection").innerHTML = html;
 
-  if (accommodation) {
-    document.getElementById("accommodationSection").classList.remove("hidden");
-    document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
-  }
+  // 💰 Maksuerittely korjaus
+  const paymentSummary = (pick(rsvp,"paymentSummary")||"").toString();
 
   if (paymentSummary.trim() !== "") {
+
+    // jos löytyy muoto "Majoitus 266 €" -> muutetaan muotoon 2 × 133 € = 266 €
+    const guests = login.Guests || 0;
+    const match = paymentSummary.match(/Majoitus (\d+) €/);
+
+    if (match && guests > 0) {
+      const total = Number(match[1]);
+      const perPerson = Math.round(total / guests);
+      const newLine = `Majoitus ${guests} × ${perPerson} € = ${total} €`;
+      document.getElementById("paymentInfoBox").innerText =
+        paymentSummary.replace(match[0], newLine);
+    } else {
+      document.getElementById("paymentInfoBox").innerText = paymentSummary;
+    }
+
     document.getElementById("paymentSection").classList.remove("hidden");
-    document.getElementById("paymentInfoBox").innerText = paymentSummary;
   }
 
-  if (notes.trim() !== "") {
+  if (pick(rsvp,"notes")) {
     document.getElementById("notesSection").classList.remove("hidden");
-    document.getElementById("notesBox").innerText = notes;
+    document.getElementById("notesBox").innerText = pick(rsvp,"notes");
   }
 
 })();
