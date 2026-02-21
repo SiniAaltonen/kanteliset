@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Vastauksesi – Kanteliset</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/wedding.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    body { background: #faf9f7; }
+
+    .hero {
+      background-image:url(images/villavellamo.jpg);
+      background-size:cover;
+      background-position:center;
+      padding:120px 0;
+      text-align:center;
+    }
+    .hero .overlay {
+      background:rgba(0,0,0,0.35);
+      padding:40px 0;
+    }
+    .hero h1 {
+      font-family:'Sacramento';
+      font-size:48px;
+      margin:0;
+      color:#fff !important;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.45);
+    }
+    .hero p { color:#fff; margin-top:10px; font-size:18px; }
+
+    .card {
+      background:#fff;
+      border-radius:16px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+      padding:40px;
+      margin-top:-80px;
+      position:relative;
+      z-index:2;
+    }
+
+    .section-title { font-weight:600; margin-top:30px; margin-bottom:10px; font-size:18px; }
+    .line { padding:10px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
+    .muted { opacity:0.75; }
+    .box { background:#f4f3f1; padding:16px; border-radius:12px; white-space: pre-wrap; }
+
+    .btn-soft {
+      background:#111;
+      color:#fff;
+      border-radius:12px;
+      padding:14px 24px;
+      border:none;
+      display:inline-block;
+      text-decoration:none;
+      margin: 8px;
+    }
+    .btn-soft:hover { opacity:0.9; color:#fff; }
+
+    .hidden { display:none; }
+  </style>
+</head>
+
+<body>
+
+<header class="hero">
+  <div class="overlay">
+    <h1>Vastauksesi 💌</h1>
+    <p>Tässä on se, minkä lähetit — voit tarvittaessa muokata lopuksi</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="card">
+
+        <h3 id="familyName"></h3>
+        <div class="muted" id="updatedUtc"></div>
+
+        <div id="attendanceSection"></div>
+
+        <div id="accommodationSection" class="hidden">
+          <div class="section-title">Majoitus</div>
+          <div id="accommodationInfo"></div>
+        </div>
+
+        <div id="paymentSection" class="hidden">
+          <div class="section-title">Maksutiedot</div>
+          <div id="paymentInfoBox" class="box"></div>
+          <div style="margin-top:10px;">
+            Maksu Sinin ja Petrin tilille:<br>
+            <strong>FI15 5722 9020 3631 79</strong>
+          </div>
+        </div>
+
+        <div id="notesSection" class="hidden">
+          <div class="section-title">Lisätiedot</div>
+          <div id="notesBox" class="box"></div>
+        </div>
+
+        <div class="text-center" style="margin-top:25px;">
+          <a href="kiitos.html" class="btn-soft">Takaisin</a>
+          <a href="dashboard.html" class="btn-soft">Muokkaa vastausta</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(async function () {
+
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+  const loginRaw = sessionStorage.getItem("login");
+
+  if (!isLoggedIn || !loginRaw) {
+    window.location.replace("index.html");
+    return;
+  }
+
+  const login = JSON.parse(loginRaw);
+  const familyId = login.FamilyId;
+
+  document.getElementById("familyName").innerText = login.DisplayName;
+
+  const API_BASE = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api";
+
+  async function fetchRsvp() {
+    let res = await fetch(`${API_BASE}/rsvp/${encodeURIComponent(familyId)}`);
+    if (res.ok) return await res.json();
+
+    res = await fetch(`${API_BASE}/getRsvp?familyId=${encodeURIComponent(familyId)}`);
+    if (res.ok) return await res.json();
+
+    return null;
+  }
+
+  const rsvp = await fetchRsvp();
+  if (!rsvp) return;
+
+  // Päivitysaika jos talletat sen payloadiin joskus; muuten jätetään piiloon
+  if (rsvp.UpdatedUtc) {
+    document.getElementById("updatedUtc").innerText = `Päivitetty: ${rsvp.UpdatedUtc}`;
+  }
+
+  // Osallistumiset
+  const attendanceSection = document.getElementById("attendanceSection");
+  let html = '<div class="section-title">Osallistuminen</div>';
+
+  html += `<div class="line">Perjantai spa: <strong>${rsvp.FriAttending ? "Kyllä" : "Ei"}</strong> (${rsvp.FriCount || 0} hlö)</div>`;
+  html += `<div class="line">Lauantai juhla: <strong>${rsvp.SatAttending ? "Kyllä" : "Ei"}</strong> (${rsvp.SatCount || 0} hlö)</div>`;
+  html += `<div class="line">Sunnuntai brunssi: <strong>${rsvp.SunAttending ? "Kyllä" : "Ei"}</strong> (${rsvp.SunCount || 0} hlö)</div>`;
+
+  attendanceSection.innerHTML = html;
+
+  // Majoitus
+  if (rsvp.Accommodation) {
+    document.getElementById("accommodationSection").classList.remove("hidden");
+    document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
+  }
+
+  // Maksu
+  if (rsvp.PaymentSummary && String(rsvp.PaymentSummary).trim() !== "") {
+    document.getElementById("paymentSection").classList.remove("hidden");
+    document.getElementById("paymentInfoBox").innerText = rsvp.PaymentSummary;
+  }
+
+  // Lisätiedot
+  if (rsvp.Notes && String(rsvp.Notes).trim() !== "") {
+    document.getElementById("notesSection").classList.remove("hidden");
+    document.getElementById("notesBox").innerText = rsvp.Notes;
+  }
+
+})();
+</script>
+
+</body>
+</html>
