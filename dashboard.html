@@ -650,36 +650,40 @@ function calculatePayment() {
     );
   }
 
-  // ------------------
-  // MAJOITUS
-  // ------------------
-  if (
-    accommodationChecked &&
-    !accommodationData.IsAccommodationHosted &&
-    accommodationData.AccommodationTotal > 0
-  ) {
+// ------------------
+// MAJOITUS
+// ------------------
+if (
+  accommodationChecked &&
+  !accommodationData.IsAccommodationHosted &&
+  accommodationData.AccommodationTotal > 0
+) {
 
-    totalToPay += accommodationData.AccommodationTotal;
+  totalToPay += accommodationData.AccommodationTotal;
 
-    if (accommodationData.PricePerPerson > 0 && login.Guests > 0) {
+  if (accommodationData.PricePerPerson > 0 && login.Guests > 0) {
 
-      paymentParts.push(
-        "Majoitus " +
-        login.Guests +
-        " × " +
-        accommodationData.PricePerPerson +
-        " €"
-      );
+    const total = accommodationData.AccommodationTotal;
 
-    } else {
+    paymentParts.push(
+      "Majoitus " +
+      login.Guests +
+      " × " +
+      accommodationData.PricePerPerson +
+      " € = " +
+      total +
+      " €"
+    );
 
-      paymentParts.push(
-        "Majoitus " +
-        accommodationData.AccommodationTotal +
-        " €"
-      );
-    }
+  } else {
+
+    paymentParts.push(
+      "Majoitus " +
+      accommodationData.AccommodationTotal +
+      " €"
+    );
   }
+}
 
   // ------------------
   // NÄYTTÖ
