@@ -627,11 +627,7 @@ function calculatePayment() {
       accommodationData.SpaPricePerPerson + " €"
     );
   }
-  
-  // Päivitä maksut kun arvot muuttuvat
-document.getElementById("chkFri").addEventListener("change", calculatePayment);
-document.getElementById("friCount").addEventListener("change", calculatePayment);
-document.getElementById("chkAccommodation").addEventListener("change", calculatePayment);
+
   // ------------------
   // MAJOITUS
   // ------------------
@@ -670,6 +666,10 @@ document.getElementById("chkAccommodation").addEventListener("change", calculate
   }
 }
 
+  // Päivitä maksut kun arvot muuttuvat
+document.getElementById("chkFri").addEventListener("change", calculatePayment);
+document.getElementById("friCount").addEventListener("change", calculatePayment);
+document.getElementById("chkAccommodation").addEventListener("change", calculatePayment);
   // -------------------------
   // HAE RSVP (korjattu endpoint)
   // -------------------------
