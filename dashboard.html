@@ -479,6 +479,8 @@
 
   console.log("---- DASHBOARD LOAD ----");
 
+  const API_BASE = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api";
+
   const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
   const loginRaw = sessionStorage.getItem("login");
 
@@ -491,24 +493,6 @@
   const login = JSON.parse(loginRaw);
   const familyId = login.FamilyId;
 
-  try {
-
-    const response = await fetch(
-  "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/getRsvp?familyId=" + familyId
-);
-
-    if (response.ok) {
-      const rsvpData = await response.json();
-      console.log("RSVP DATA:", rsvpData);
-    }
-
-  } catch (error) {
-    console.error("RSVP fetch failed", error);
-  }
-
-  const guests = login.Guests || 0;
-  const accommodation = login.Accommodation;
-
   if (!familyId) {
     alert("Kirjautumistiedot puutteelliset.");
     window.location.replace("index.html");
@@ -516,169 +500,134 @@
   }
 
   // -------------------------
-  // TERVEHdYS
+  // TERVEHDYS
   // -------------------------
 
   document.getElementById("welcomeTitle").innerText =
     `Tervetuloa ${login.DisplayName}`;
 
   document.getElementById("guestInfo").innerText =
-    `Kutsu koskee ${guests} henkilöä.`;
+    `Kutsu koskee ${login.Guests || 0} henkilöä.`;
 
-  document.getElementById("invitedCountLabel").innerText = guests;
+  document.getElementById("invitedCountLabel").innerText = login.Guests || 0;
 
- // -------------------------
-// MAJOITUS
-// -------------------------
+  // -------------------------
+  // HELPERIT (uusi)
+  // -------------------------
 
-const accommodationCard = document.getElementById("accommodationCard");
-const accommodationWrapper = document.getElementById("accommodationWrapper");
+  function collectAttendees(containerId, withDiet) {
+    const container = document.getElementById(containerId);
+    const rows = Array.from(container.querySelectorAll(".attendee-row"));
 
-if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
-  accommodationCard.classList.add("hidden");
-} else {
-  accommodationCard.classList.remove("hidden");
-  accommodationWrapper.classList.remove("hidden");
-
-  document.getElementById("accomTitle").innerText =
-    accommodation.Title;
-
-  document.getElementById("accomShare").innerText =
-    accommodation.ShareText || "";
-
-  document.getElementById("accomImage").src =
-    "images/" + accommodation.Image;
-}
-
-// -------------------------
-// MAKSULOGIIKKA (toimii myös ilman majoitusta)
-// -------------------------
-function calculatePayment() {
-
-  let totalToPay = 0;
-  let paymentParts = [];
-
-  const friCountValue = Number(document.getElementById("friCount").value || 0);
-
-  // SPA
-  if (
-    accommodation &&
-    !accommodation.IsSpaHosted &&
-    accommodation.SpaPricePerPerson > 0 &&
-    friCountValue > 0
-  ) {
-    const spaTotal = accommodation.SpaPricePerPerson * friCountValue;
-    totalToPay += spaTotal;
-
-    paymentParts.push(
-      "Spa " + friCountValue + " × " +
-      accommodation.SpaPricePerPerson + " €"
-    );
+    return rows
+      .map(r => {
+        const name = (r.querySelector(".name")?.value || "").trim();
+        const diet = withDiet ? (r.querySelector(".diet")?.value || "").trim() : "";
+        return { name, diet };
+      })
+      .filter(x => x.name !== "" || x.diet !== "");
   }
 
-  // MAJOITUS
-  if (
-    accommodation &&
-    !accommodation.IsAccommodationHosted &&
-    accommodation.AccommodationTotal > 0
-  ) {
-    totalToPay += accommodation.AccommodationTotal;
+  function fillAttendees(containerId, list, withDiet) {
+    if (!Array.isArray(list)) return;
 
-    paymentParts.push(
-      "Majoitus " + accommodation.AccommodationTotal + " €"
-    );
+    const container = document.getElementById(containerId);
+    renderRows(container, list.length, withDiet);
+
+    const rows = Array.from(container.querySelectorAll(".attendee-row"));
+    list.forEach((a, i) => {
+      if (!rows[i]) return;
+      rows[i].querySelector(".name").value = a.name || "";
+      if (withDiet) rows[i].querySelector(".diet").value = a.diet || "";
+    });
   }
 
-  const paymentInfo = document.getElementById("paymentInfo");
-  const paymentAmount = document.getElementById("paymentAmount");
+  // -------------------------
+  // HAE RSVP (korjattu endpoint)
+  // -------------------------
 
-  if (totalToPay > 0) {
+  try {
+    const response = await fetch(`${API_BASE}/rsvp/${encodeURIComponent(familyId)}`);
 
-    paymentAmount.innerText =
-      paymentParts.join(" + ") +
-      " — Yhteensä: " + totalToPay + " €";
+    if (response.ok) {
+      const rsvpData = await response.json();
+      console.log("RSVP DATA:", rsvpData);
 
-    paymentInfo.classList.remove("hidden");
+      // Prefill checkboxit
+      document.getElementById("chkFri").checked = !!rsvpData.friAttending;
+      document.getElementById("chkSat").checked = !!rsvpData.satAttending;
+      document.getElementById("chkSun").checked = !!rsvpData.sunAttending;
 
-  } else {
-    paymentInfo.classList.add("hidden");
-  }
-}
+      document.getElementById("friCount").value = rsvpData.friCount || 0;
+      document.getElementById("satCount").value = rsvpData.satCount || 0;
+      document.getElementById("sunCount").value = rsvpData.sunCount || 0;
 
-// Päivitetään hinta kun perjantain osallistujamäärä muuttuu
-document.getElementById("friCount").addEventListener("change", calculatePayment);
+      // Näytä detailit jos tarvii
+      document.getElementById("friDetails").classList.toggle("hidden", !rsvpData.friAttending);
+      document.getElementById("satDetails").classList.toggle("hidden", !rsvpData.satAttending);
+      document.getElementById("sunDetails").classList.toggle("hidden", !rsvpData.sunAttending);
 
-// Päivitetään hinta myös kun perjantai checkbox menee päälle/pois
-document.getElementById("chkFri").addEventListener("change", () => {
-  // jos checkbox pois -> asetetaan friCount 0, niin hinta putoaa oikein
-  if (!document.getElementById("chkFri").checked) {
-    document.getElementById("friCount").value = "0";
-  }
-  calculatePayment();
-});
+      // Renderöi rivit
+      renderRows(document.getElementById("satAttendees"), rsvpData.satCount || 0, true);
+      renderRows(document.getElementById("sunAttendees"), rsvpData.sunCount || 0, true);
 
-// Lemmikit
+      fillAttendees("satAttendees", rsvpData.satAttendees, true);
+      fillAttendees("sunAttendees", rsvpData.sunAttendees, true);
 
-const petsLabel = document.getElementById("accomPets");
-const petRow = document.getElementById("petRow");
+      document.getElementById("txtNotes").value = rsvpData.notes || "";
 
-if (accommodation.PetsAllowed) {
-  petsLabel.innerText = "Lemmikit sallittu";
-} else if (accommodation) {
-  petsLabel.innerText = "Ei lemmikkejä";
-  petRow.classList.add("hidden");
-}
+      document.getElementById("chkAccommodation").checked = !!rsvpData.accommodation;
 
-// Checkbox logiikka
-
-document.getElementById("chkAccommodation")
-  .addEventListener("change", function () {
-
-    if (this.checked && accommodation.PetsAllowed) {
-      petRow.classList.remove("hidden");
-    } else {
-      petRow.classList.add("hidden");
-      document.getElementById("chkPet").checked = false;
+      calculatePayment();
     }
-  });
 
-  calculatePayment();
+  } catch (error) {
+    console.error("RSVP fetch failed", error);
+  }
 
- document.getElementById("btnSubmit")
-  .addEventListener("click", async function () {
+  // -------------------------
+  // TALLENNUS (korjattu endpoint + camelCase)
+  // -------------------------
 
-    const rsvpData = {
-  FamilyId: familyId,
-  DisplayName: login.DisplayName,
-  FriAttending: document.getElementById("chkFri").checked,
-  FriCount: Number(document.getElementById("friCount").value || 0),
-  SatAttending: document.getElementById("chkSat").checked,
-  SatCount: Number(document.getElementById("satCount").value || 0),
-  SunAttending: document.getElementById("chkSun").checked,
-  SunCount: Number(document.getElementById("sunCount").value || 0),
-  Accommodation: document.getElementById("chkAccommodation").checked,
-  Notes: document.getElementById("txtNotes").value,
-  PaymentSummary: document.getElementById("paymentAmount").innerText
-};
+  document.getElementById("btnSubmit")
+    .addEventListener("click", async function () {
 
-console.log("SENDING RSVP:", rsvpData);
+      const rsvpData = {
+        familyId: familyId,
+        displayName: login.DisplayName,
 
-    const response = await fetch(
-  "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/saveRsvp",
+        friAttending: document.getElementById("chkFri").checked,
+        friCount: Number(document.getElementById("friCount").value || 0),
 
-      {
+        satAttending: document.getElementById("chkSat").checked,
+        satCount: Number(document.getElementById("satCount").value || 0),
+        satAttendees: collectAttendees("satAttendees", true),
+
+        sunAttending: document.getElementById("chkSun").checked,
+        sunCount: Number(document.getElementById("sunCount").value || 0),
+        sunAttendees: collectAttendees("sunAttendees", true),
+
+        accommodation: document.getElementById("chkAccommodation").checked,
+
+        notes: document.getElementById("txtNotes").value || "",
+
+        paymentSummary: document.getElementById("paymentAmount").innerText || ""
+      };
+
+      console.log("SENDING RSVP:", rsvpData);
+
+      const response = await fetch(`${API_BASE}/rsvp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(rsvpData)
-      }
-    );
+      });
 
-    if (response.ok) {
-      window.location.href = "kiitos.html";
-    } else {
-      alert("Tallennus epäonnistui.");
-    }
-});
+      if (response.ok) {
+        window.location.href = "kiitos.html";
+      } else {
+        alert("Tallennus epäonnistui.");
+      }
+  });
 
 })();
 </script>
