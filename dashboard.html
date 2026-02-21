@@ -537,8 +537,6 @@ if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
 } else {
 
   // Näytä majoituksen hinta
-// Näytä majoituksen hinta (korjattu versio)
-
 const pricePerPerson =
   accommodation.PricePerPerson ??
   accommodation.pricePerPerson ??
@@ -549,17 +547,19 @@ const total =
   accommodation.accommodationTotal ??
   0;
 
-if (pricePerPerson > 0 && login.Guests > 0) {
+const guests =
+  login.Guests ??
+  login.guests ??
+  0;
+
+if (pricePerPerson && guests) {
 
   document.getElementById("accomPrice").innerText =
-    login.Guests +
-    " × " +
-    pricePerPerson +
-    " € = " +
-    total +
-    " €";
+    guests + " × " +
+    pricePerPerson + " € = " +
+    total + " €";
 
-} else if (total > 0) {
+} else if (total) {
 
   document.getElementById("accomPrice").innerText =
     total + " €";
