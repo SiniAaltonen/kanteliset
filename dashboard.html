@@ -492,6 +492,20 @@
   const login = JSON.parse(loginRaw);
   const familyId = login.FamilyId;
 
+  // 🔐 Tarkista onko jo vastattu
+try {
+  const checkResponse = await fetch(`${API_BASE}/rsvp/${encodeURIComponent(familyId)}`);
+
+  if (checkResponse.ok) {
+    // RSVP löytyy → ohjataan vastaussivulle
+    window.location.replace("vastaus.html");
+    return;
+  }
+
+} catch (err) {
+  console.error("RSVP check failed", err);
+}
+
   if (!familyId) {
     alert("Kirjautumistiedot puutteelliset.");
     window.location.replace("index.html");
