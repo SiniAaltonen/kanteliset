@@ -147,52 +147,74 @@
   const rsvp = await fetchRsvp();
   if (!rsvp) return;
 
-  function pick(obj, camelKey) {
-  const pascalKey = camelKey.charAt(0).toUpperCase() + camelKey.slice(1);
-  return obj?.[camelKey] ?? obj?.[pascalKey];
-}
-
-const friAttending = !!pick(rsvp, "friAttending");
-const friCount = Number(pick(rsvp, "friCount") || 0);
-
-const satAttending = !!pick(rsvp, "satAttending");
-const satCount = Number(pick(rsvp, "satCount") || 0);
-
-const sunAttending = !!pick(rsvp, "sunAttending");
-const sunCount = Number(pick(rsvp, "sunCount") || 0);
-
-const accommodation = !!pick(rsvp, "accommodation");
-const paymentSummary = (pick(rsvp, "paymentSummary") || "").toString();
-const notes = (pick(rsvp, "notes") || "").toString();
-
-  // Päivitysaika jos talletat sen payloadiin joskus; muuten jätetään piiloon
-  if (rsvp.UpdatedUtc) {
-    document.getElementById("updatedUtc").innerText = `Päivitetty: ${rsvp.UpdatedUtc}`;
+  function pick(obj, key) {
+    const pascal = key.charAt(0).toUpperCase() + key.slice(1);
+    return obj?.[key] ?? obj?.[pascal];
   }
 
-  // Osallistumiset
- let html = '<div class="section-title">Osallistuminen</div>';
-html += `<div class="line">Perjantai spa: <strong>${friAttending ? "Kyllä" : "Ei"}</strong> (${friCount} hlö)</div>`;
-html += `<div class="line">Lauantai juhla: <strong>${satAttending ? "Kyllä" : "Ei"}</strong> (${satCount} hlö)</div>`;
-html += `<div class="line">Sunnuntai brunssi: <strong>${sunAttending ? "Kyllä" : "Ei"}</strong> (${sunCount} hlö)</div>`;
-attendanceSection.innerHTML = html;
+  const friAttending = !!pick(rsvp, "friAttending");
+  const friCount = Number(pick(rsvp, "friCount") || 0);
+  const friAttendees = pick(rsvp, "friAttendees") || [];
 
-  attendanceSection.innerHTML = html;
+  const satAttending = !!pick(rsvp, "satAttending");
+  const satCount = Number(pick(rsvp, "satCount") || 0);
+  const satAttendees = pick(rsvp, "satAttendees") || [];
 
-if (accommodation) {
-  document.getElementById("accommodationSection").classList.remove("hidden");
-  document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
-}
+  const sunAttending = !!pick(rsvp, "sunAttending");
+  const sunCount = Number(pick(rsvp, "sunCount") || 0);
+  const sunAttendees = pick(rsvp, "sunAttendees") || [];
 
-if (paymentSummary.trim() !== "") {
-  document.getElementById("paymentSection").classList.remove("hidden");
-  document.getElementById("paymentInfoBox").innerText = paymentSummary;
-}
+  const accommodation = !!pick(rsvp, "accommodation");
+  const paymentSummary = (pick(rsvp, "paymentSummary") || "").toString();
+  const notes = (pick(rsvp, "notes") || "").toString();
 
-if (notes.trim() !== "") {
-  document.getElementById("notesSection").classList.remove("hidden");
-  document.getElementById("notesBox").innerText = notes;
-}
+  function renderAttendees(list) {
+    if (!Array.isArray(list) || list.length === 0) return "";
+    let html = `<div style="margin-top:8px; margin-left:10px;">`;
+    list.forEach(a => {
+      html += `<div style="margin-bottom:4px;">• ${a.name || ""}`;
+      if (a.diet && a.diet.trim() !== "") {
+        html += ` – <em>${a.diet}</em>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+    return html;
+  }
+
+  let html = '<div class="section-title">Osallistuminen</div>';
+
+  html += `<div class="line">
+    Perjantai spa: <strong>${friAttending ? "Kyllä" : "Ei"}</strong> (${friCount} hlö)
+    ${renderAttendees(friAttendees)}
+  </div>`;
+
+  html += `<div class="line">
+    Lauantai juhla: <strong>${satAttending ? "Kyllä" : "Ei"}</strong> (${satCount} hlö)
+    ${renderAttendees(satAttendees)}
+  </div>`;
+
+  html += `<div class="line">
+    Sunnuntai brunssi: <strong>${sunAttending ? "Kyllä" : "Ei"}</strong> (${sunCount} hlö)
+    ${renderAttendees(sunAttendees)}
+  </div>`;
+
+  document.getElementById("attendanceSection").innerHTML = html;
+
+  if (accommodation) {
+    document.getElementById("accommodationSection").classList.remove("hidden");
+    document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
+  }
+
+  if (paymentSummary.trim() !== "") {
+    document.getElementById("paymentSection").classList.remove("hidden");
+    document.getElementById("paymentInfoBox").innerText = paymentSummary;
+  }
+
+  if (notes.trim() !== "") {
+    document.getElementById("notesSection").classList.remove("hidden");
+    document.getElementById("notesBox").innerText = notes;
+  }
 
 })();
 </script>
