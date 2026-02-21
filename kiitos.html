@@ -17,9 +17,7 @@
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    body {
-      background: #faf9f7;
-    }
+    body { background: #faf9f7; }
 
     .summary-card {
       background: #fff;
@@ -50,6 +48,7 @@
       margin-top: 20px;
       font-weight: 600;
       font-size: 18px;
+      white-space: pre-wrap;
     }
 
     .btn-soft {
@@ -59,14 +58,17 @@
       padding: 14px 24px;
       border: none;
       margin-top: 25px;
+      display: inline-block;
+      text-decoration: none;
     }
+    .btn-soft:hover { opacity: 0.9; color: #fff; }
 
-    .btn-soft:hover {
-      opacity: 0.9;
-    }
+    .hidden { display: none; }
 
-    .hidden {
-      display: none;
+    /* 🔥 Pakotetaan hero-otsikko valkoiseksi */
+    .hero-title {
+      color: #fff !important;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.45);
     }
   </style>
 </head>
@@ -74,17 +76,16 @@
 <body>
 
 <!-- HERO -->
-<header style="background-image:url(images/villavellamo.jpg); 
+<header style="background-image:url(images/villavellamo.jpg);
                background-size:cover;
                background-position:center;
                padding:120px 0;
-               color:white;
                text-align:center;">
   <div style="background:rgba(0,0,0,0.35); padding:40px 0;">
-    <h1 style="font-family:'Sacramento'; font-size:48px;">
+    <h1 class="hero-title" style="font-family:'Sacramento'; font-size:48px; margin:0;">
       Kiitos vastauksestanne ❤️
     </h1>
-    <p style="font-size:18px;">
+    <p style="font-size:18px; color:#fff; margin-top:10px;">
       Olemme tallentaneet ilmoittautumisenne
     </p>
   </div>
@@ -115,8 +116,9 @@
         </div>
 
         <div class="text-center">
-          <a href="dashboard.html" class="btn btn-soft">
-            Muokkaa vastausta
+          <!-- ✅ Read-only tarkasteluun -->
+          <a href="vastaus.html" class="btn-soft">
+            Tarkastele vastaustasi
           </a>
         </div>
 
@@ -140,53 +142,46 @@
   const login = JSON.parse(loginRaw);
   const familyId = login.FamilyId;
 
-  document.getElementById("familyName").innerText =
-    login.DisplayName;
+  document.getElementById("familyName").innerText = login.DisplayName;
+
+  // ✅ Tähän sinun oikea Function App base URL
+  const API_BASE = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api";
+
+  async function fetchRsvp() {
+    // 1) uusi REST-tyyli: /api/rsvp/{familyId}
+    let res = await fetch(`${API_BASE}/rsvp/${encodeURIComponent(familyId)}`);
+    if (res.ok) return await res.json();
+
+    // 2) fallback vanhaan: /api/getRsvp?familyId=
+    res = await fetch(`${API_BASE}/getRsvp?familyId=${encodeURIComponent(familyId)}`);
+    if (res.ok) return await res.json();
+
+    return null;
+  }
 
   try {
+    const rsvp = await fetchRsvp();
+    if (!rsvp) return;
 
-    const response = await fetch(
-      "https://<sun-funktion-app>.azurewebsites.net/api/getRsvp?familyId=" + familyId
-    );
+    const attendanceSection = document.getElementById("attendanceSection");
+    let html = '<div class="section-title">Osallistuminen</div>';
 
-    if (!response.ok) return;
+    if (rsvp.FriAttending) html += `<div class="line">Perjantai spa: ${rsvp.FriCount} hlö</div>`;
+    if (rsvp.SatAttending) html += `<div class="line">Lauantai juhla: ${rsvp.SatCount} hlö</div>`;
+    if (rsvp.SunAttending) html += `<div class="line">Sunnuntai brunssi: ${rsvp.SunCount} hlö</div>`;
 
-    const rsvp = await response.json();
-
-    const attendanceSection =
-      document.getElementById("attendanceSection");
-
-    let attendanceHtml = '<div class="section-title">Osallistuminen</div>';
-
-    if (rsvp.friAttending)
-      attendanceHtml += `<div class="line">Perjantai spa: ${rsvp.friCount} hlö</div>`;
-
-    if (rsvp.satAttending)
-      attendanceHtml += `<div class="line">Lauantai juhla: ${rsvp.satCount} hlö</div>`;
-
-    if (rsvp.sunAttending)
-      attendanceHtml += `<div class="line">Sunnuntai brunssi: ${rsvp.sunCount} hlö</div>`;
-
-    attendanceSection.innerHTML = attendanceHtml;
+    attendanceSection.innerHTML = html;
 
     // Majoitus
-    if (rsvp.accommodation) {
-      document.getElementById("accommodationSection")
-        .classList.remove("hidden");
-
-      document.getElementById("accommodationInfo")
-        .innerHTML = `<div class="line">Majoitus varattu</div>`;
+    if (rsvp.Accommodation) {
+      document.getElementById("accommodationSection").classList.remove("hidden");
+      document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
     }
 
-    // Maksut
-    if (rsvp.paymentSummary &&
-        rsvp.paymentSummary.trim() !== "") {
-
-      document.getElementById("paymentSection")
-        .classList.remove("hidden");
-
-      document.getElementById("paymentInfoBox")
-        .innerText = rsvp.paymentSummary;
+    // Maksu
+    if (rsvp.PaymentSummary && String(rsvp.PaymentSummary).trim() !== "") {
+      document.getElementById("paymentSection").classList.remove("hidden");
+      document.getElementById("paymentInfoBox").innerText = rsvp.PaymentSummary;
     }
 
   } catch (err) {
