@@ -1843,3 +1843,8 @@ form label {
 .hidden-auth {
   display: none !important;
 }
+
+
+#paymentAmount {
+  white-space: pre-line;
+}

@@ -708,9 +708,61 @@ if (
 
   if (totalToPay > 0) {
 
-    paymentAmount.innerText =
-  paymentParts.join(" + ") +
-  "\nYhteensä: " + totalToPay + " €";
+   let output = "";
+
+if (spaChecked &&
+    !accommodationData.IsSpaHosted &&
+    accommodationData.SpaPricePerPerson > 0 &&
+    friCountValue > 0) {
+
+  const spaTotal = accommodationData.SpaPricePerPerson * friCountValue;
+
+  output +=
+    "Spa " +
+    friCountValue +
+    " × " +
+    accommodationData.SpaPricePerPerson +
+    " € = " +
+    spaTotal +
+    " €\n";
+}
+
+if (accommodationChecked &&
+    !accommodationData.IsAccommodationHosted &&
+    accommodationData.AccommodationTotal > 0) {
+
+  if (accommodationData.PricePerPerson > 0 && login.Guests > 0) {
+
+    output +=
+      "Majoitus " +
+      login.Guests +
+      " × " +
+      accommodationData.PricePerPerson +
+      " € = " +
+      accommodationData.AccommodationTotal +
+      " €\n";
+
+  } else {
+
+    output +=
+      "Majoitus " +
+      accommodationData.AccommodationTotal +
+      " €\n";
+  }
+}
+
+if (totalToPay > 0) {
+
+  output += "\nYhteensä: " + totalToPay + " €";
+
+  paymentAmount.innerText = output;
+  paymentInfo.classList.remove("hidden");
+
+} else {
+
+  paymentAmount.innerText = "";
+  paymentInfo.classList.add("hidden");
+} 
 
     paymentInfo.classList.remove("hidden");
 
