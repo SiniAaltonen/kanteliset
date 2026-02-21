@@ -86,7 +86,7 @@
       Kiitos vastauksestanne!
     </h1>
     <p style="font-size:18px; color:#fff; margin-top:10px;">
-      Olemme tallentaneet ilmoittautumisenne, emme malta odottaa että näemme teidät! 
+      Olemme tallentaneet ilmoittautumisenne, emme malta odottaa että näemme teidät!
     </p>
   </div>
 </header>
@@ -116,7 +116,6 @@
         </div>
 
         <div class="text-center">
-          <!-- ✅ Read-only tarkasteluun -->
           <a href="vastaus.html" class="btn-soft">
             Tarkastele vastaustasi
           </a>
@@ -144,7 +143,6 @@
 
   document.getElementById("familyName").innerText = login.DisplayName;
 
-  // ✅ Tähän sinun oikea Function App base URL
   const API_BASE = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api";
 
   async function fetchRsvp() {
@@ -163,25 +161,42 @@
     const rsvp = await fetchRsvp();
     if (!rsvp) return;
 
+    function pick(obj, camelKey) {
+      const pascalKey = camelKey.charAt(0).toUpperCase() + camelKey.slice(1);
+      return obj?.[camelKey] ?? obj?.[pascalKey];
+    }
+
+    const friAttending = !!pick(rsvp, "friAttending");
+    const friCount = Number(pick(rsvp, "friCount") || 0);
+
+    const satAttending = !!pick(rsvp, "satAttending");
+    const satCount = Number(pick(rsvp, "satCount") || 0);
+
+    const sunAttending = !!pick(rsvp, "sunAttending");
+    const sunCount = Number(pick(rsvp, "sunCount") || 0);
+
+    const accommodation = !!pick(rsvp, "accommodation");
+    const paymentSummary = (pick(rsvp, "paymentSummary") || "").toString();
+
     const attendanceSection = document.getElementById("attendanceSection");
     let html = '<div class="section-title">Osallistuminen</div>';
 
-    if (rsvp.FriAttending) html += `<div class="line">Perjantai spa: ${rsvp.FriCount} hlö</div>`;
-    if (rsvp.SatAttending) html += `<div class="line">Lauantai juhla: ${rsvp.SatCount} hlö</div>`;
-    if (rsvp.SunAttending) html += `<div class="line">Sunnuntai brunssi: ${rsvp.SunCount} hlö</div>`;
+    html += `<div class="line">Perjantai spa: ${friAttending ? `${friCount} hlö` : `Ei (${friCount} hlö)`}</div>`;
+    html += `<div class="line">Lauantai juhla: ${satAttending ? `${satCount} hlö` : `Ei (${satCount} hlö)`}</div>`;
+    html += `<div class="line">Sunnuntai brunssi: ${sunAttending ? `${sunCount} hlö` : `Ei (${sunCount} hlö)`}</div>`;
 
     attendanceSection.innerHTML = html;
 
     // Majoitus
-    if (rsvp.Accommodation) {
+    if (accommodation) {
       document.getElementById("accommodationSection").classList.remove("hidden");
       document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
     }
 
     // Maksu
-    if (rsvp.PaymentSummary && String(rsvp.PaymentSummary).trim() !== "") {
+    if (paymentSummary.trim() !== "") {
       document.getElementById("paymentSection").classList.remove("hidden");
-      document.getElementById("paymentInfoBox").innerText = rsvp.PaymentSummary;
+      document.getElementById("paymentInfoBox").innerText = paymentSummary;
     }
 
   } catch (err) {

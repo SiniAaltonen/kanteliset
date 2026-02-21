@@ -147,38 +147,52 @@
   const rsvp = await fetchRsvp();
   if (!rsvp) return;
 
+  function pick(obj, camelKey) {
+  const pascalKey = camelKey.charAt(0).toUpperCase() + camelKey.slice(1);
+  return obj?.[camelKey] ?? obj?.[pascalKey];
+}
+
+const friAttending = !!pick(rsvp, "friAttending");
+const friCount = Number(pick(rsvp, "friCount") || 0);
+
+const satAttending = !!pick(rsvp, "satAttending");
+const satCount = Number(pick(rsvp, "satCount") || 0);
+
+const sunAttending = !!pick(rsvp, "sunAttending");
+const sunCount = Number(pick(rsvp, "sunCount") || 0);
+
+const accommodation = !!pick(rsvp, "accommodation");
+const paymentSummary = (pick(rsvp, "paymentSummary") || "").toString();
+const notes = (pick(rsvp, "notes") || "").toString();
+
   // Päivitysaika jos talletat sen payloadiin joskus; muuten jätetään piiloon
   if (rsvp.UpdatedUtc) {
     document.getElementById("updatedUtc").innerText = `Päivitetty: ${rsvp.UpdatedUtc}`;
   }
 
   // Osallistumiset
-  const attendanceSection = document.getElementById("attendanceSection");
-  let html = '<div class="section-title">Osallistuminen</div>';
-
-  html += `<div class="line">Perjantai spa: <strong>${rsvp.FriAttending ? "Kyllä" : "Ei"}</strong> (${rsvp.FriCount || 0} hlö)</div>`;
-  html += `<div class="line">Lauantai juhla: <strong>${rsvp.SatAttending ? "Kyllä" : "Ei"}</strong> (${rsvp.SatCount || 0} hlö)</div>`;
-  html += `<div class="line">Sunnuntai brunssi: <strong>${rsvp.SunAttending ? "Kyllä" : "Ei"}</strong> (${rsvp.SunCount || 0} hlö)</div>`;
+ let html = '<div class="section-title">Osallistuminen</div>';
+html += `<div class="line">Perjantai spa: <strong>${friAttending ? "Kyllä" : "Ei"}</strong> (${friCount} hlö)</div>`;
+html += `<div class="line">Lauantai juhla: <strong>${satAttending ? "Kyllä" : "Ei"}</strong> (${satCount} hlö)</div>`;
+html += `<div class="line">Sunnuntai brunssi: <strong>${sunAttending ? "Kyllä" : "Ei"}</strong> (${sunCount} hlö)</div>`;
+attendanceSection.innerHTML = html;
 
   attendanceSection.innerHTML = html;
 
-  // Majoitus
-  if (rsvp.Accommodation) {
-    document.getElementById("accommodationSection").classList.remove("hidden");
-    document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
-  }
+if (accommodation) {
+  document.getElementById("accommodationSection").classList.remove("hidden");
+  document.getElementById("accommodationInfo").innerHTML = `<div class="line">Majoitus varattu</div>`;
+}
 
-  // Maksu
-  if (rsvp.PaymentSummary && String(rsvp.PaymentSummary).trim() !== "") {
-    document.getElementById("paymentSection").classList.remove("hidden");
-    document.getElementById("paymentInfoBox").innerText = rsvp.PaymentSummary;
-  }
+if (paymentSummary.trim() !== "") {
+  document.getElementById("paymentSection").classList.remove("hidden");
+  document.getElementById("paymentInfoBox").innerText = paymentSummary;
+}
 
-  // Lisätiedot
-  if (rsvp.Notes && String(rsvp.Notes).trim() !== "") {
-    document.getElementById("notesSection").classList.remove("hidden");
-    document.getElementById("notesBox").innerText = rsvp.Notes;
-  }
+if (notes.trim() !== "") {
+  document.getElementById("notesSection").classList.remove("hidden");
+  document.getElementById("notesBox").innerText = notes;
+}
 
 })();
 </script>
