@@ -28,7 +28,13 @@ async function login() {
     sessionStorage.setItem("login", JSON.stringify(data));
     sessionStorage.setItem("isLoggedIn", "true");
 
-    window.location.href = "/dashboard.html";
+    const role = (data.Role || data.role || "").toLowerCase();
+
+if (role === "admin") {
+  window.location.href = "/admin.html";
+} else {
+  window.location.href = "/dashboard.html";
+}
   } catch (err) {
     console.error(err);
     alert("Tekninen virhe");
