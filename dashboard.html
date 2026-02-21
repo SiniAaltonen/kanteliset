@@ -512,6 +512,45 @@
   document.getElementById("invitedCountLabel").innerText = login.Guests || 0;
 
   // -------------------------
+// MAJOITUS (palautettu)
+// -------------------------
+
+const accommodation = login.Accommodation;
+const accommodationCard = document.getElementById("accommodationCard");
+const accommodationWrapper = document.getElementById("accommodationWrapper");
+
+if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
+  accommodationCard.classList.add("hidden");
+} else {
+
+  accommodationCard.classList.remove("hidden");
+  accommodationWrapper.classList.remove("hidden");
+
+  document.getElementById("accomTitle").innerText =
+    accommodation.Title || "";
+
+  document.getElementById("accomDescription").innerText =
+    accommodation.Description || "";
+
+  document.getElementById("accomShare").innerText =
+    accommodation.ShareText || "";
+
+  document.getElementById("accomImage").src =
+    "images/" + accommodation.Image;
+
+  // Lemmikit
+  const petsLabel = document.getElementById("accomPets");
+  const petRow = document.getElementById("petRow");
+
+  if (accommodation.PetsAllowed) {
+    petsLabel.innerText = "Lemmikit sallittu";
+  } else {
+    petsLabel.innerText = "Ei lemmikkejä";
+    petRow.classList.add("hidden");
+  }
+}
+
+  // -------------------------
   // HELPERIT (uusi)
   // -------------------------
 
