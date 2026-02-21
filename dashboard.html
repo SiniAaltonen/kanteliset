@@ -622,11 +622,22 @@ function calculatePayment() {
 
     totalToPay += spaTotal;
 
-    paymentParts.push(
-      "Spa " + friCountValue + " × " +
-      accommodationData.SpaPricePerPerson + " €"
-    );
-  }
+   if (accommodationData.PricePerPerson > 0 && login.Guests > 0) {
+
+  const perPerson = accommodationData.PricePerPerson;
+  const guestCount = login.Guests;
+  const total = accommodationData.AccommodationTotal;
+
+  paymentParts.push(
+    "Majoitus " + guestCount + " × " + perPerson + " €"
+  );
+
+} else {
+
+  paymentParts.push(
+    "Majoitus " + accommodationData.AccommodationTotal + " €"
+  );
+}
 
   // ------------------
   // MAJOITUS
