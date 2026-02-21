@@ -671,35 +671,6 @@ function calculatePayment() {
   }
 }
 
-  // MAJOITUS
-  if (
-    accommodationChecked &&
-    accommodationData &&
-    !accommodationData.IsAccommodationHosted &&
-    accommodationData.AccommodationTotal > 0
-  ) {
-    totalToPay += accommodationData.AccommodationTotal;
-
-    paymentParts.push(
-      "Majoitus " + accommodationData.AccommodationTotal + " €"
-    );
-  }
-
-  const paymentInfo = document.getElementById("paymentInfo");
-  const paymentAmount = document.getElementById("paymentAmount");
-
-  if (totalToPay > 0) {
-    paymentAmount.innerText =
-      paymentParts.join(" + ") +
-      " — Yhteensä: " + totalToPay + " €";
-
-    paymentInfo.classList.remove("hidden");
-  } else {
-    paymentInfo.classList.add("hidden");
-    paymentAmount.innerText = "";
-  }
-}
-
   // -------------------------
   // HAE RSVP (korjattu endpoint)
   // -------------------------
