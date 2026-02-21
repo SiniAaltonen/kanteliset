@@ -537,20 +537,32 @@ if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
 } else {
 
   // Näytä majoituksen hinta
-if (accommodation.PricePerPerson > 0 && login.Guests > 0) {
+// Näytä majoituksen hinta (korjattu versio)
+
+const pricePerPerson =
+  accommodation.PricePerPerson ??
+  accommodation.pricePerPerson ??
+  0;
+
+const total =
+  accommodation.AccommodationTotal ??
+  accommodation.accommodationTotal ??
+  0;
+
+if (pricePerPerson > 0 && login.Guests > 0) {
 
   document.getElementById("accomPrice").innerText =
     login.Guests +
     " × " +
-    accommodation.PricePerPerson +
+    pricePerPerson +
     " € = " +
-    accommodation.AccommodationTotal +
+    total +
     " €";
 
-} else if (accommodation.AccommodationTotal > 0) {
+} else if (total > 0) {
 
   document.getElementById("accomPrice").innerText =
-    accommodation.AccommodationTotal + " €";
+    total + " €";
 
 } else {
 
