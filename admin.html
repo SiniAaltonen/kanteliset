@@ -1,164 +1,95 @@
 <!DOCTYPE html>
-<html class="no-js">
+<html>
 <head>
-<meta charset="utf-8">
-<title>Admin – RSVP:t</title>
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="stylesheet" href="css/style.css">
-
-<style>
-body { background:#faf9f7; }
-.wrap {
-  background:#fff;
-  border-radius:16px;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
-  padding: 24px;
-  margin-top: 24px;
-}
-.pill {
-  display:inline-block;
-  padding:6px 12px;
-  border-radius:999px;
-  background:rgba(0,0,0,0.05);
-  margin-right:8px;
-  margin-bottom:6px;
-}
-pre {
-  white-space:pre-wrap;
-  font-family:inherit;
-  font-size:14px;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Admin – Vastaukset</title>
+  <style>
+    body { font-family: Arial; padding: 40px; background: #f5f5f5; }
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 { margin-top: 0; }
+  </style>
 </head>
-
 <body>
-<div class="container">
-<div class="wrap">
 
-<h2>Admin – RSVP:t</h2>
-<div id="whoami" style="margin-bottom:12px;"></div>
-
-<div id="summary"></div>
-
-<div style="margin:14px 0;">
-  <input id="filter" class="form-control" placeholder="Hae (nimi / familyId)" style="max-width:360px;">
-</div>
-
-<div class="table-responsive">
-<table class="table table-striped">
-<thead>
-<tr>
-  <th>FamilyId</th>
-  <th>Nimi</th>
-  <th>Pe</th>
-  <th>La</th>
-  <th>Su</th>
-  <th>Majoitus</th>
-  <th>Maksu</th>
-  <th>Lisätiedot</th>
-</tr>
-</thead>
-<tbody id="rows"></tbody>
-</table>
-</div>
-
-</div>
-</div>
+<h1>Kaikki RSVP-vastaukset</h1>
+<div id="results"></div>
 
 <script>
-(async function () {
+const baseUrl = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/rsvp/";
 
-  const API_BASE = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api";
+// ⚠️ Lisää tänne kaikki familyId:t
+const familyIds = [
+  "KANTELINEN-05",
+  "KANTELINEN-789",
+  "AALTONEN-029",
+"KOISTINEN-033",
+"KOKKONEN-0458",
+"OVASKA-059",
+"JÄNTTI-067",
+"KURISJÄRVI-077",
+"SALIN-083",
+"AALAS-094",
+"HUR-101",
+"PUSENIUS-1155",
+"HEISKA-1289",
+"KOSKIPALO-1341",
+"KAITARANTA-1447",
+"VAITTINEN-1555",
+"AUVINEN-1618",
+"MUSTONEN-1792",
+"PULKKINEN-1814",
+"VESTERINEN-1999",
+"SYRJÄ-2013",
+"LINDBLOM-2581",
+"HELAKORPI-2291",
+"YRJÖLÄ-2338",
+"RAUTAVUORI-2491",
+"GAZDAG-2580",
+"OKSMAN-2695",
+"HURSKAINEN-2766",
+"SVENSSON-2818",
+"TESTI-299",
+"TESTI-288"
+];
 
-  const loginRaw = sessionStorage.getItem("login");
-  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+async function loadData() {
+  const container = document.getElementById("results");
 
-  if (!isLoggedIn || !loginRaw) {
-    window.location.replace("index.html");
-    return;
-  }
+  for (const id of familyIds) {
+    try {
+      const res = await fetch(baseUrl + id);
+      if (!res.ok) continue;
 
-  const login = JSON.parse(loginRaw);
+      const data = await res.json();
 
-  if ((login.Role || "").toLowerCase() !== "admin") {
-    alert("Ei oikeuksia admin-näkymään.");
-    window.location.replace("dashboard.html");
-    return;
-  }
+      const card = document.createElement("div");
+      card.className = "card";
 
-  document.getElementById("whoami").innerText =
-    `Kirjautunut: ${login.DisplayName} (admin)`;
-
-  let data = [];
-
-try {
-  const res = await fetch(
-  `${API_BASE}/admin/rsvps?familyId=${encodeURIComponent(login.FamilyId)}`
-);
-
-  if (!res.ok) throw new Error();
-  data = await res.json();
-} catch {
-  alert("Admin RSVP -haku epäonnistui.");
-  return;
-}
-
-  renderSummary(data);
-  renderTable(data);
-
-  document.getElementById("filter").addEventListener("input", (e) => {
-    const q = (e.target.value || "").toLowerCase().trim();
-    if (!q) { renderTable(data); return; }
-
-    const filtered = data.filter(x => {
-      const fid = (x.FamilyId || x.familyId || "").toLowerCase();
-      const name = ((x.payload?.DisplayName) || "").toLowerCase();
-      return fid.includes(q) || name.includes(q);
-    });
-
-    renderTable(filtered);
-  });
-
-  function renderSummary(list) {
-
-    const totalSat = list.reduce((s,x)=>s+(x.payload?.SatCount||0),0);
-    const totalFri = list.reduce((s,x)=>s+(x.payload?.FriCount||0),0);
-    const totalSun = list.reduce((s,x)=>s+(x.payload?.SunCount||0),0);
-
-    document.getElementById("summary").innerHTML = `
-      <div class="pill">Vastauksia: ${list.length}</div>
-      <div class="pill">Pe yhteensä: ${totalFri} hlö</div>
-      <div class="pill">La yhteensä: ${totalSat} hlö</div>
-      <div class="pill">Su yhteensä: ${totalSun} hlö</div>
-    `;
-  }
-
-  function renderTable(list) {
-
-    const tbody = document.getElementById("rows");
-    tbody.innerHTML = "";
-
-    for (const item of list) {
-
-      const p = item.payload || {};
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-        <td><strong>${item.FamilyId || ""}</strong></td>
-        <td>${p.DisplayName || ""}</td>
-        <td>${p.FriCount || 0}</td>
-        <td>${p.SatCount || 0}</td>
-        <td>${p.SunCount || 0}</td>
-        <td>${p.Accommodation ? "Kyllä" : "Ei"}</td>
-        <td><pre>${p.PaymentSummary || ""}</pre></td>
-        <td><pre>${p.Notes || ""}</pre></td>
+      card.innerHTML = `
+        <h2>${data.displayName}</h2>
+        <p><strong>Perjantai:</strong> ${data.friAttending ? "Kyllä" : "Ei"} (${data.friCount})</p>
+        <p><strong>Lauantai:</strong> ${data.satAttending ? "Kyllä" : "Ei"} (${data.satCount})</p>
+        <p><strong>Sunnuntai:</strong> ${data.sunAttending ? "Kyllä" : "Ei"} (${data.sunCount})</p>
+        <p><strong>Majoitus:</strong> ${data.accommodation ? "Kyllä" : "Ei"}</p>
+        <p><strong>Muistiinpanot:</strong> ${data.notes}</p>
+        <p><strong>Maksuyhteenveto:</strong> ${data.paymentSummary}</p>
       `;
 
-      tbody.appendChild(tr);
+      container.appendChild(card);
+
+    } catch (err) {
+      console.log("Ei vastausta:", id);
     }
   }
+}
 
-})();
+loadData();
 </script>
 
 </body>
