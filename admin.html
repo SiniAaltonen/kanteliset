@@ -1,92 +1,185 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Admin – Vastaukset</title>
-  <style>
-    body { font-family: Arial; padding: 40px; background: #f5f5f5; }
-    .card {
-      background: white;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    h2 { margin-top: 0; }
-  </style>
+<meta charset="UTF-8">
+<title>Admin – RSVP</title>
+
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f7f3ef;
+  padding: 40px;
+  color: #333;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.section-title {
+  margin-top: 40px;
+  font-size: 22px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 6px;
+}
+
+.summary-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.not-responded {
+  background: #fff4f4;
+  padding: 10px 15px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+}
+</style>
 </head>
+
 <body>
 
 <h1>Kaikki RSVP-vastaukset</h1>
-<div id="results"></div>
+
+<div id="summary" class="summary-box"></div>
+
+<div id="responded"></div>
+<div id="notResponded"></div>
 
 <script>
 const baseUrl = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/rsvp/";
 
-// ⚠️ Lisää tänne kaikki familyId:t
 const familyIds = [
-  "KANTELINEN-05",
-  "KANTELINEN-789",
-  "AALTONEN-029",
-"KOISTINEN-033",
-"KOKKONEN-0458",
-"OVASKA-059",
-"JÄNTTI-067",
-"KURISJÄRVI-077",
-"SALIN-083",
-"AALAS-094",
-"HUR-101",
-"PUSENIUS-1155",
-"HEISKA-1289",
-"KOSKIPALO-1341",
-"KAITARANTA-1447",
-"VAITTINEN-1555",
-"AUVINEN-1618",
-"MUSTONEN-1792",
-"PULKKINEN-1814",
-"VESTERINEN-1999",
-"SYRJÄ-2013",
-"LINDBLOM-2581",
-"HELAKORPI-2291",
-"YRJÖLÄ-2338",
-"RAUTAVUORI-2491",
-"GAZDAG-2580",
-"OKSMAN-2695",
-"HURSKAINEN-2766",
-"SVENSSON-2818",
-"TESTI-299",
-"TESTI-288"
+  "KANTELINEN-05","KANTELINEN-789","AALTONEN-029","KOISTINEN-033",
+  "KOKKONEN-0458","OVASKA-059","JÄNTTI-067","KURISJÄRVI-077",
+  "SALIN-083","AALAS-094","HUR-101","PUSENIUS-1155",
+  "HEISKA-1289","KOSKIPALO-1341","KAITARANTA-1447","VAITTINEN-1555",
+  "AUVINEN-1618","MUSTONEN-1792","PULKKINEN-1814","VESTERINEN-1999",
+  "SYRJÄ-2013","LINDBLOM-2581","HELAKORPI-2291","YRJÖLÄ-2338",
+  "RAUTAVUORI-2491","GAZDAG-2580","OKSMAN-2695","HURSKAINEN-2766",
+  "SVENSSON-2818","TESTI-299","TESTI-288"
 ];
 
+let summary = {
+  fri: 0,
+  sat: 0,
+  sun: 0,
+  spa: 0
+};
+
 async function loadData() {
-  const container = document.getElementById("results");
+
+  const responded = [];
+  const notResponded = [];
 
   for (const id of familyIds) {
+
     try {
       const res = await fetch(baseUrl + id);
-      if (!res.ok) continue;
+
+      if (!res.ok) {
+        notResponded.push(id);
+        continue;
+      }
 
       const data = await res.json();
 
-      const card = document.createElement("div");
-      card.className = "card";
+      summary.fri += data.friCount || 0;
+      summary.sat += data.satCount || 0;
+      summary.sun += data.sunCount || 0;
 
-      card.innerHTML = `
-        <h2>${data.displayName}</h2>
-        <p><strong>Perjantai:</strong> ${data.friAttending ? "Kyllä" : "Ei"} (${data.friCount})</p>
-        <p><strong>Lauantai:</strong> ${data.satAttending ? "Kyllä" : "Ei"} (${data.satCount})</p>
-        <p><strong>Sunnuntai:</strong> ${data.sunAttending ? "Kyllä" : "Ei"} (${data.sunCount})</p>
-        <p><strong>Majoitus:</strong> ${data.accommodation ? "Kyllä" : "Ei"}</p>
-        <p><strong>Muistiinpanot:</strong> ${data.notes}</p>
-        <p><strong>Maksuyhteenveto:</strong> ${data.paymentSummary}</p>
-      `;
+      if (data.paymentSummary && data.paymentSummary.includes("Spa")) {
+        summary.spa += data.friCount || 0;
+      }
 
-      container.appendChild(card);
+      responded.push(data);
 
-    } catch (err) {
-      console.log("Ei vastausta:", id);
+    } catch {
+      notResponded.push(id);
     }
   }
+
+  renderSummary();
+  renderResponded(responded);
+  renderNotResponded(notResponded);
+}
+
+function renderSummary() {
+  document.getElementById("summary").innerHTML = `
+    <h2>Yhteenveto</h2>
+    <p><strong>Perjantai:</strong> ${summary.fri} hlö</p>
+    <p><strong>Lauantai:</strong> ${summary.sat} hlö</p>
+    <p><strong>Sunnuntai:</strong> ${summary.sun} hlö</p>
+    <p><strong>Spa:</strong> ${summary.spa} hlö</p>
+  `;
+}
+
+function renderResponded(list) {
+
+  const container = document.getElementById("responded");
+  container.innerHTML = `<div class="section-title">Vastanneet</div>`;
+
+  list.forEach(data => {
+
+    const spaNames = (data.paymentSummary && data.paymentSummary.includes("Spa"))
+      ? (data.satAttendees || [])
+          .map(p => p.name)
+          .join("<br>")
+      : "";
+
+    const diets = [
+      ...(data.satAttendees || []),
+      ...(data.sunAttendees || [])
+    ]
+    .filter(p => p.diet && p.diet.trim() !== "" && p.diet !== "-")
+    .map(p => `${p.name}: ${p.diet}`)
+    .join("<br>");
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <h3>${data.displayName}</h3>
+      <p><strong>Perjantai:</strong> ${data.friAttending ? "Kyllä" : "Ei"} (${data.friCount})</p>
+      <p><strong>Lauantai:</strong> ${data.satAttending ? "Kyllä" : "Ei"} (${data.satCount})</p>
+      <p><strong>Sunnuntai:</strong> ${data.sunAttending ? "Kyllä" : "Ei"} (${data.sunCount})</p>
+      <p><strong>Majoitus:</strong> ${data.accommodation ? "Kyllä" : "Ei"}</p>
+
+      ${spaNames ? `<p><strong>Spa-osallistujat:</strong><br>${spaNames}</p>` : ""}
+
+      ${diets ? `<p><strong>Erikoisruokavaliot:</strong><br>${diets}</p>` : ""}
+
+      <p><strong>Muistiinpanot:</strong> ${data.notes || "-"}</p>
+      <p><strong>Maksuyhteenveto:</strong> ${data.paymentSummary || "-"}</p>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function renderNotResponded(list) {
+
+  const container = document.getElementById("notResponded");
+  container.innerHTML = `<div class="section-title">Eivät ole vielä vastanneet</div>`;
+
+  list.forEach(id => {
+    const div = document.createElement("div");
+    div.className = "not-responded";
+    div.innerText = id;
+    container.appendChild(div);
+  });
 }
 
 loadData();
