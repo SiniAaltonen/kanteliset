@@ -11,38 +11,37 @@
   <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
 
-  <!-- CSS (sama setti kuin muissa sivuissa) -->
+  <!-- Bootstrap + theme css (same as rest of site) -->
+  <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/animate.css">
   <link rel="stylesheet" href="css/icomoon.css">
-  <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/style.css">
 
   <style>
     :root{
       --pink: #ff5fa2;
-      --bg1: #1b1b1f;
-      --bg2: #0f0f12;
-      --card: rgba(255,255,255,0.08);
-      --card2: rgba(255,255,255,0.12);
-      --stroke: rgba(255,255,255,0.14);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.70);
-      --ok: rgba(80, 227, 194, 0.95);
-      --bad: rgba(255, 99, 132, 0.95);
+      --pinkSoft: rgba(255,95,162,0.14);
+      --ink: #1f1f24;
+      --muted: rgba(31,31,36,0.72);
+      --border: rgba(31,31,36,0.12);
+      --card: #ffffff;
+      --bg: #fbfafc;
+      --bg2: #ffffff;
+      --shadow: 0 18px 60px rgba(0,0,0,0.10);
     }
 
     body{
-      background: radial-gradient(1200px 600px at 20% 10%, rgba(255,95,162,0.25), transparent 60%),
-                  radial-gradient(900px 500px at 85% 20%, rgba(255,255,255,0.12), transparent 55%),
-                  linear-gradient(180deg, var(--bg1), var(--bg2));
-      color: var(--text);
+      background:
+        radial-gradient(900px 450px at 20% 10%, rgba(255,95,162,0.18), transparent 60%),
+        radial-gradient(900px 450px at 85% 20%, rgba(0,0,0,0.04), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color: var(--ink);
       min-height: 100vh;
+      font-family: 'Work Sans', Arial, sans-serif;
     }
 
-    /* Kun visa avataan popup-iframeen, halutaan ettei tule jättimäistä marginaalia */
-    .frame-root {
-      padding: 18px;
-    }
+    /* Works nicely inside the popup iframe */
+    .frame-root{ padding: 18px; }
 
     .quiz-shell{
       max-width: 980px;
@@ -51,91 +50,93 @@
     }
 
     .quiz-hero{
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.88);
       border-radius: 22px;
       overflow: hidden;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+      box-shadow: var(--shadow);
     }
 
     .quiz-hero-top{
-      padding: 26px 26px 14px 26px;
+      padding: 26px 26px 16px 26px;
       position: relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,0.92));
     }
 
     .quiz-title{
       font-family: 'Sacramento', cursive;
-      font-size: 64px;
+      font-size: 68px;
       line-height: 1;
       margin: 0;
-      color: #fff;
-      text-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      color: var(--ink);
     }
 
     .quiz-sub{
       margin-top: 10px;
       color: var(--muted);
       font-size: 16px;
+      max-width: 860px;
     }
 
     .badge-pill{
       display:inline-block;
       padding: 7px 12px;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.18);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9);
       border-radius: 999px;
       font-size: 12px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.82);
+      color: rgba(31,31,36,0.75);
       margin-right: 8px;
       margin-top: 10px;
     }
 
     .close-x{
       position:absolute;
-      top: 16px;
-      right: 16px;
+      top: 14px;
+      right: 14px;
       width: 40px;
       height: 40px;
       border-radius: 12px;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.18);
-      color: #fff;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9);
+      color: var(--ink);
       font-size: 18px;
       line-height: 38px;
       text-align:center;
       cursor:pointer;
       user-select:none;
     }
-    .close-x:hover{ background: rgba(0,0,0,0.30); }
+    .close-x:hover{ background: #fff; }
 
     .quiz-body{
       padding: 18px 26px 26px 26px;
-      border-top: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.10);
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.72);
     }
 
     .cardish{
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      background: var(--card);
       border-radius: 18px;
       padding: 16px;
       margin-bottom: 14px;
     }
 
-    .input-dark{
-      background: rgba(0,0,0,0.20);
-      border: 1px solid var(--stroke);
-      color: #fff;
+    .input-soft{
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--ink);
       border-radius: 14px;
       height: 46px;
       padding: 10px 12px;
       width: 100%;
       outline: none;
     }
-    .input-dark:focus{
-      border-color: rgba(255,95,162,0.55);
+    .input-soft:focus{
+      border-color: rgba(255,95,162,0.65);
       box-shadow: 0 0 0 4px rgba(255,95,162,0.18);
     }
 
@@ -147,30 +148,32 @@
       cursor: pointer;
       width: 100%;
     }
+
     .btn-primary-quiz{
       background: var(--pink);
       color: #fff;
-      box-shadow: 0 14px 40px rgba(255,95,162,0.25);
+      box-shadow: 0 14px 40px rgba(255,95,162,0.22);
     }
-    .btn-primary-quiz:hover{ filter: brightness(0.97); }
+    .btn-primary-quiz:hover{ filter: brightness(0.98); }
+
     .btn-soft{
-      background: rgba(255,255,255,0.10);
-      color: #fff;
-      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.95);
+      color: var(--ink);
+      border: 1px solid var(--border);
     }
-    .btn-soft:hover{ background: rgba(255,255,255,0.14); }
+    .btn-soft:hover{ background: #fff; }
 
     .progress-wrap{
-      margin-top: 10px;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.22);
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9);
       border-radius: 999px;
       height: 12px;
       overflow: hidden;
     }
     .progress-bar{
       height: 100%;
-      background: linear-gradient(90deg, rgba(255,95,162,1), rgba(255,255,255,0.95));
+      background: linear-gradient(90deg, rgba(255,95,162,1), rgba(255,95,162,0.35));
       width: 0%;
       transition: width 220ms ease;
     }
@@ -179,7 +182,9 @@
       font-size: 20px;
       font-weight: 700;
       margin: 0 0 10px 0;
+      color: var(--ink);
     }
+
     .q-meta{
       color: var(--muted);
       font-size: 13px;
@@ -192,20 +197,21 @@
       text-align:left;
       padding: 12px 12px;
       border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.18);
-      color: #fff;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.95);
+      color: var(--ink);
       margin-bottom: 10px;
       cursor:pointer;
     }
-    .option-btn:hover{ background: rgba(0,0,0,0.28); }
-    .option-btn.selected{
-      border-color: rgba(255,95,162,0.65);
-      box-shadow: 0 0 0 4px rgba(255,95,162,0.16);
+    .option-btn:hover{
+      background: rgba(255,95,162,0.06);
+      border-color: rgba(255,95,162,0.28);
     }
-
-    .result-good{ color: var(--ok); font-weight: 700; }
-    .result-bad{ color: var(--bad); font-weight: 700; }
+    .option-btn.selected{
+      border-color: rgba(255,95,162,0.70);
+      box-shadow: 0 0 0 4px rgba(255,95,162,0.14);
+      background: rgba(255,95,162,0.06);
+    }
 
     .tiny{
       font-size: 12px;
@@ -214,12 +220,15 @@
 
     .divider{
       height:1px;
-      background: var(--stroke);
+      background: var(--border);
       margin: 14px 0;
     }
 
+    .ok{ color: #1a9b7a; font-weight: 700; }
+    .warn{ color: #c25454; font-weight: 700; }
+
     @media (max-width: 520px){
-      .quiz-title{ font-size: 48px; }
+      .quiz-title{ font-size: 50px; }
       .quiz-shell{ padding: 10px; }
       .quiz-body{ padding: 14px; }
       .quiz-hero-top{ padding: 18px 18px 10px 18px; }
@@ -239,8 +248,8 @@
 
         <h1 class="quiz-title">Häävisa</h1>
         <div class="quiz-sub">
-          Testaa, tunnetko Sinin & Petrin paremmin kuin muut.  
-          Oikeat vastaukset lasketaan heti ja parhaat tietäjät voidaan palkita häissä.
+          Testaa, tunnetko Sinin & Petrin paremmin kuin muut.
+          Visa arpoo 10 kysymystä — ja lopussa voit halutessasi osallistua kisaan tuloksellasi.
         </div>
 
         <div class="progress-wrap" aria-label="Edistyminen">
@@ -256,11 +265,11 @@
           <div class="q-title">Ensin: kuka siellä visaillee?</div>
           <div class="q-meta">Kirjoita nimesi. (Etunimi riittää.)</div>
 
-          <input id="txtName" class="input-dark" type="text" placeholder="Esim. Veera" maxlength="40">
+          <input id="txtName" class="input-soft" type="text" placeholder="Esim. Veera" maxlength="40">
           <div style="height:10px;"></div>
           <button id="btnStart" class="btn-quiz btn-primary-quiz">Aloita visa</button>
           <div class="tiny" style="margin-top:10px;">
-            Vinkki: Visa arpoo joka kerta eri kysymykset, joten tätä voi pelata myös “uudestaan”… mutta vain parhaat jäävät historiaan.
+            Vinkki: kysymykset arvotaan — eli tätä voi pelata myös “uudestaan”.
           </div>
         </div>
 
@@ -283,7 +292,7 @@
           </div>
 
           <div class="tiny" style="margin-top:10px;">
-            Psst. Tämä on Kanteliset-visa: osa kysymyksistä on helppoja, osa vähän… epäilyttävän tarkkoja.
+            Tämä on Kanteliset-visa: osa on helppoja, osa vähän… epäilyttävän tarkkoja.
           </div>
         </div>
 
@@ -292,7 +301,7 @@
           <div class="q-title">Tulokset</div>
           <div class="q-meta" id="resultSummary"></div>
 
-          <div class="cardish" style="background: rgba(255,255,255,0.05);">
+          <div class="cardish" style="background: rgba(255,255,255,0.98);">
             <div style="font-size:18px; font-weight:700;">
               <span id="resultName"></span>, sait <span id="resultScore"></span>/10 pistettä.
             </div>
@@ -303,7 +312,7 @@
             <input id="chkEnter" type="checkbox" style="margin-top:4px;">
             <span>
               <strong>Haluan osallistua visaan vastauksillani.</strong><br>
-              <span class="tiny">Tallennamme nimen ja pisteet admin-näkymään. (Ei mitään muuta draamaa.)</span>
+              <span class="tiny">Tallennamme nimen ja pisteet admin-näkymään.</span>
             </span>
           </label>
 
@@ -318,7 +327,7 @@
           <div class="divider"></div>
 
           <div class="tiny">
-            Vihje: Jos tulee tasapisteet, voidaan häissä ratkaista voittaja vaikka “nopeus-kysymyksellä” tai kolikolla. 
+            Tasapisteissä voidaan häissä ratkaista voittaja vaikka “nopeus-kysymyksellä”. 👀
           </div>
         </div>
 
@@ -328,144 +337,60 @@
 
   <script>
   (function(){
-    // ------------------------------------------------------------
+    // -----------------------------
     // CONFIG
-    // ------------------------------------------------------------
-    // Vaihda tähän myöhemmin oikea Azure Function -endpoint
+    // -----------------------------
     const SUBMIT_URL = "https://YOUR-FUNCTION-APP.azurewebsites.net/api/submitQuiz";
 
-    // ------------------------------------------------------------
+    // -----------------------------
     // QUESTIONS (pool)
-    // Arvotaan 10 kappaletta joka peliin.
-    // ------------------------------------------------------------
+    // -----------------------------
     const QUESTION_POOL = [
-      {
-        id: "first_trip",
-        q: "Mikä oli Sinin ja Petrin ensimmäinen ulkomaanmatka yhdessä?",
-        options: ["Pääsiäisenä 2019 Budapestiin", "Tukholmaan", "Roomaan", "Tallinnaan"],
-        correctIndex: 0
-      },
-      {
-        id: "first_date_gift",
-        q: "Mitä Petri toi Sinille ensitreffeille mukanaan?",
-        options: ["Kalakukon", "Kukkakimpun", "Suklaata", "Kirjan"],
-        correctIndex: 0
-      },
-      {
-        id: "fav_candy_sini",
-        q: "Mikä on Sinin lempikarkki?",
-        options: ["Naperot", "Salmiakki", "Lakritsipalat", "Suklaakonvehdit"],
-        correctIndex: 0
-      },
-      {
-        id: "fav_candy_pete",
-        q: "Mikä on Petrin lempiherkku?",
-        options: ["Fazerin Sininen suklaa", "Tyrkisk Peber", "Pandat", "Muumimarmeladit"],
-        correctIndex: 0
-      },
-      {
-        id: "honeymoon",
-        q: "Minne lähdemme häämatkalle heti tiistaina häiden jälkeen?",
-        options: ["Mallorcalle", "Lappiin", "Pariisiin", "Madeiralle"],
-        correctIndex: 0
-      },
-      {
-        id: "boardgames_count",
-        q: "Montako lautapeliä Petri omistaa?",
-        options: ["145", "45", "245", "15 (mutta väittää että on 145)"],
-        correctIndex: 0
-      },
-      {
-        id: "sini_boardgame",
-        q: "Mikä on Sinin lempilautapeli?",
-        options: ["Mad King Ludwig", "Carcassonne", "Azul", "Ticket to Ride"],
-        correctIndex: 0
-      },
-      {
-        id: "pete_boardgame",
-        q: "Mikä on Petrin lempilautapeli?",
-        options: ["Arnak: Kadonneet rauniot", "Catan", "Terraforming Mars", "Wingspan"],
-        correctIndex: 0
-      },
-      {
-        id: "proposal_place",
-        q: "Missä Petri kosi Siniä?",
-        options: ["Budapestissä", "Lehmonkärjessä", "Helsingissä", "Kreikassa"],
-        correctIndex: 0
-      },
-      {
-        id: "engagement_date",
-        q: "Mikä on Sinin ja Petrin kihlapäivä?",
-        options: ["18.4.", "27.1.", "23.5.", "1.1."],
-        correctIndex: 0
-      },
-      {
-        id: "anniversary_date",
-        q: "Mikä on Sinin ja Petrin vuosipäivä?",
-        options: ["27.1.", "18.4.", "23.5.", "24.12."],
-        correctIndex: 0
-      },
-      {
-        id: "morninggift_pete",
-        q: "Mitä Petri toivoi huomenlahjaksi Siniltä?",
-        options: ["Paistinpannun", "Kellon", "Solmion", "Sukat (mutta vain jos ne ovat romanttiset)"],
-        correctIndex: 0
-      },
-      {
-        id: "morninggift_sini",
-        q: "Mitä Sini toivoi huomenlahjaksi Petriltä?",
-        options: ["Korvakorut", "Käsilaukun", "Hajuveden", "Toisen paistinpannun"],
-        correctIndex: 0
-      },
+      { id:"first_trip", q:"Mikä oli Sinin ja Petrin ensimmäinen ulkomaanmatka yhdessä?",
+        options:["Pääsiäisenä 2019 Budapestiin","Tukholmaan","Roomaan","Tallinnaan"], correctIndex:0 },
+      { id:"first_date_gift", q:"Mitä Petri toi Sinille ensitreffeille mukanaan?",
+        options:["Kalakukon","Kukkakimpun","Suklaata","Kirjan"], correctIndex:0 },
+      { id:"fav_candy_sini", q:"Mikä on Sinin lempikarkki?",
+        options:["Naperot","Salmiakki","Lakritsipalat","Suklaakonvehdit"], correctIndex:0 },
+      { id:"fav_candy_pete", q:"Mikä on Petrin lempiherkku?",
+        options:["Fazerin Sininen suklaa","Tyrkisk Peber","Pandat","Muumimarmeladit"], correctIndex:0 },
+      { id:"honeymoon", q:"Minne lähdemme häämatkalle heti tiistaina häiden jälkeen?",
+        options:["Mallorcalle","Lappiin","Pariisiin","Madeiralle"], correctIndex:0 },
+      { id:"boardgames_count", q:"Montako lautapeliä Petri omistaa?",
+        options:["145","45","245","15 (mutta väittää että on 145)"], correctIndex:0 },
+      { id:"sini_boardgame", q:"Mikä on Sinin lempilautapeli?",
+        options:["Mad King Ludwig","Carcassonne","Azul","Ticket to Ride"], correctIndex:0 },
+      { id:"pete_boardgame", q:"Mikä on Petrin lempilautapeli?",
+        options:["Arnak: Kadonneet rauniot","Catan","Terraforming Mars","Wingspan"], correctIndex:0 },
+      { id:"proposal_place", q:"Missä Petri kosi Siniä?",
+        options:["Budapestissä","Lehmonkärjessä","Helsingissä","Kreikassa"], correctIndex:0 },
+      { id:"engagement_date", q:"Mikä on Sinin ja Petrin kihlapäivä?",
+        options:["18.4.","27.1.","23.5.","1.1."], correctIndex:0 },
+      { id:"anniversary_date", q:"Mikä on Sinin ja Petrin vuosipäivä?",
+        options:["27.1.","18.4.","23.5.","24.12."], correctIndex:0 },
+      { id:"morninggift_pete", q:"Mitä Petri toivoi huomenlahjaksi Siniltä?",
+        options:["Paistinpannun","Kellon","Solmion","Sukat (mutta vain jos ne ovat romanttiset)"], correctIndex:0 },
+      { id:"morninggift_sini", q:"Mitä Sini toivoi huomenlahjaksi Petriltä?",
+        options:["Korvakorut","Käsilaukun","Hajuveden","Toisen paistinpannun"], correctIndex:0 },
 
-      // --- Lisää hauskoja, turvallisia “Kanteliset-viboja” -kysymyksiä ---
-      {
-        id: "weekend_length",
-        q: "Kuinka monta päivää hääviikonloppu kestää (ohjelmaa pe–su)?",
-        options: ["3", "1", "2", "7 (koska siltä se tuntuu)"],
-        correctIndex: 0
-      },
-      {
-        id: "spa_private",
-        q: "Mikä tekee perjantain Aisti Spa & Sauna -vuorosta erityisen?",
-        options: ["Se on varattu vain meidän seurueelle", "Se on avointa yleisölle", "Siellä on karaoke", "Siellä on pakollinen pukeutumiskoodi"],
-        correctIndex: 0
-      },
-      {
-        id: "villas_time",
-        q: "Mihin aikaan huviloihin pääsee perjantaina?",
-        options: ["Klo 15 alkaen", "Klo 12 alkaen", "Klo 18 alkaen", "Klo 9 alkaen"],
-        correctIndex: 0
-      },
-      {
-        id: "ceremony_time",
-        q: "Mihin aikaan vihkiminen alkaa lauantaina?",
-        options: ["Klo 13", "Klo 15", "Klo 12", "Klo 18"],
-        correctIndex: 0
-      },
-      {
-        id: "friday_spa_time",
-        q: "Mihin aikaan perjantain spa & sauna -vuoro on?",
-        options: ["Klo 20–22", "Klo 18–20", "Klo 19–21", "Klo 21–23"],
-        correctIndex: 0
-      },
-      {
-        id: "snack_tip",
-        q: "Mitä suosittelemme hankkimaan huvilaan perjantaille/lauantaille?",
-        options: ["Iltapalaa ja aamupalaa", "Täytekakun", "Kolme kiloa sipsejä", "Vain vettä ja ilmaa"],
-        correctIndex: 0
-      },
-      {
-        id: "friday_vibe",
-        q: "Mikä on perjantain fiilis?",
-        options: ["Rauha, sauna ja ensimmäiset halaukset", "Sprintti ja deadline", "Hiljainen meditaatio ilman naurua", "Pakollinen maraton"],
-        correctIndex: 0
-      }
+      // Ohjelma- / viikonloppu-asiat
+      { id:"weekend_length", q:"Kuinka monta päivää hääviikonloppu kestää (ohjelmaa pe–su)?",
+        options:["3","1","2","7 (koska siltä se tuntuu)"], correctIndex:0 },
+      { id:"spa_private", q:"Mikä tekee perjantain Aisti Spa & Sauna -vuorosta erityisen?",
+        options:["Se on varattu vain meidän seurueelle","Se on avointa yleisölle","Siellä on karaoke","Siellä on pakollinen pukukoodi"], correctIndex:0 },
+      { id:"villas_time", q:"Mihin aikaan huviloihin pääsee perjantaina?",
+        options:["Klo 15 alkaen","Klo 12 alkaen","Klo 18 alkaen","Klo 9 alkaen"], correctIndex:0 },
+      { id:"ceremony_time", q:"Mihin aikaan vihkiminen alkaa lauantaina?",
+        options:["Klo 13","Klo 15","Klo 12","Klo 18"], correctIndex:0 },
+      { id:"friday_spa_time", q:"Mihin aikaan perjantain spa & sauna -vuoro on?",
+        options:["Klo 20–22","Klo 18–20","Klo 19–21","Klo 21–23"], correctIndex:0 },
+      { id:"snack_tip", q:"Mitä suosittelemme hankkimaan huvilaan perjantaille/lauantaille?",
+        options:["Iltapalaa ja aamupalaa","Täytekakun","Kolme kiloa sipsejä","Vain vettä ja ilmaa"], correctIndex:0 },
     ];
 
-    // ------------------------------------------------------------
+    // -----------------------------
     // DOM
-    // ------------------------------------------------------------
+    // -----------------------------
     const btnClose = document.getElementById("btnClose");
     const progressBar = document.getElementById("progressBar");
     const progressText = document.getElementById("progressText");
@@ -492,24 +417,20 @@
     const btnPlayAgain = document.getElementById("btnPlayAgain");
     const submitHint = document.getElementById("submitHint");
 
-    // ------------------------------------------------------------
-    // STATE
-    // ------------------------------------------------------------
+    // -----------------------------
+    // State
+    // -----------------------------
     let playerName = "";
-    let quiz = [];                 // 10 questions
-    let index = 0;                 // current question index
-    let answers = [];              // selected option index per question
-    let locked = false;
+    let quiz = [];
+    let index = 0;
+    let answers = [];
 
-    // read login session if available
     function getLogin(){
       try{
         const raw = sessionStorage.getItem("login");
         if(!raw) return null;
         return JSON.parse(raw);
-      } catch {
-        return null;
-      }
+      } catch { return null; }
     }
 
     function shuffle(arr){
@@ -522,21 +443,19 @@
     }
 
     function pick10(){
-      const shuffled = shuffle(QUESTION_POOL);
-      return shuffled.slice(0, 10);
+      return shuffle(QUESTION_POOL).slice(0,10);
     }
 
     function setProgress(step){
-      // step: 0 = name, 1..10 = question number, 11 = results
       let pct = 0;
       if(step === 0) pct = 5;
-      else if(step >= 1 && step <= 10) pct = 5 + (step / 10) * 85; // 5..90
+      else if(step >= 1 && step <= 10) pct = 5 + (step/10)*85;
       else pct = 100;
 
       progressBar.style.width = Math.round(pct) + "%";
 
       if(step === 0) progressText.textContent = "Valmiina? Aloitetaan nimestä.";
-      else if(step >= 1 && step <= 10) progressText.textContent = `Kysymys ${step}/10 — anna mennä.`;
+      else if(step >= 1 && step <= 10) progressText.textContent = `Kysymys ${step}/10`;
       else progressText.textContent = "Tulokset valmiina.";
     }
 
@@ -569,56 +488,59 @@
 
       btnPrev.disabled = index === 0;
       btnNext.textContent = index === 9 ? "Näytä tulos" : "Seuraava";
-
       setProgress(index+1);
     }
 
     function scoreQuiz(){
-      let score = 0;
-      for(let i=0; i<quiz.length; i++){
-        if(answers[i] === quiz[i].correctIndex) score++;
+      let s = 0;
+      for(let i=0;i<10;i++){
+        if(answers[i] === quiz[i].correctIndex) s++;
       }
-      return score;
+      return s;
     }
 
     function badgeFor(score){
-      if(score === 10) return "Täydellinen tietäjä. Pelottavaa!";
-      if(score >= 8) return "Todellinen sisäpiiriläinen. Sinä varmasti osallistut brunssille!";
-      if(score >= 6) return "Hyvä taso — selvästi olet ollut mukana tarinassamme.";
-      if(score >= 4) return "Ihan ok… mutta nyt tarvitset lisää tietämystä.";
-      return "Tervetuloa harjoittelijaksi, kaikki alkaa kalakukosta...";
+      if(score === 10) return "Täydellinen Kantelinen-tietäjä. 🤍";
+      if(score >= 8) return "Sisäpiiriläinen. Brunssilla nähdään. 🥐";
+      if(score >= 6) return "Hyvä taso — olet selvästi ollut mukana tarinassa. ✨";
+      if(score >= 4) return "Ihan ok… tarvitset lisää Kanteliset-lorea. 📚";
+      return "Harjoittelija: aloita Budapest + kalakukko. 😄";
     }
 
-    function startNewGame(){
-      playerName = "";
-      quiz = pick10();
-      index = 0;
-      answers = new Array(10).fill(null);
-      chkEnter.checked = false;
-      submitHint.textContent = "";
-      locked = false;
+    function showResults(){
+      const s = scoreQuiz();
+      resultName.textContent = playerName;
+      resultScore.textContent = s;
+      resultBadge.textContent = badgeFor(s);
 
-      txtName.value = "";
-      show(stepName);
-      setProgress(0);
+      const answeredCount = answers.filter(a => a !== null).length;
+      const missing = 10 - answeredCount;
+      resultSummary.textContent =
+        missing ? `Vastasit ${answeredCount}/10 kysymykseen. Pisteet laskettiin vastatuista.` :
+                  "Vastasit kaikkiin kysymyksiin — hienoa!";
+
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Lähetä tulos";
+      submitHint.textContent = "";
+      chkEnter.checked = false;
+
+      show(stepResult);
+      setProgress(11);
     }
 
     async function submitResult(){
-      // only if checkbox ticked
       if(!chkEnter.checked){
-        submitHint.textContent = "Valitse “Haluan osallistua visaan vastauksillani”, jos haluat tallentaa tuloksesi.";
+        submitHint.textContent = "Ruksaa osallistuminen, jos haluat tallentaa tuloksesi.";
         return;
       }
 
       const login = getLogin();
-      const familyId = login?.FamilyId || null;
-
       const payload = {
         Name: playerName,
-        FamilyId: familyId,
+        FamilyId: login?.FamilyId || null,
         Score: scoreQuiz(),
         Total: 10,
-        Questions: quiz.map(q => ({ id: q.id, q: q.q, options: q.options, correctIndex: q.correctIndex })),
+        QuizIds: quiz.map(q => q.id),
         Answers: answers,
         SubmittedAt: new Date().toISOString()
       };
@@ -629,78 +551,48 @@
       try{
         const res = await fetch(SUBMIT_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {"Content-Type":"application/json"},
           body: JSON.stringify(payload)
         });
 
         if(res.ok){
-          btnSubmit.textContent = "Lähetetty! ";
-          submitHint.textContent = "Tulos tallennettu, nähdään häissä palkintojenjaossa.";
+          btnSubmit.textContent = "Lähetetty! ✨";
+          submitHint.textContent = "Tulos tallennettu. Nähdään palkintojenjaossa 👀";
         } else {
           btnSubmit.disabled = false;
           btnSubmit.textContent = "Lähetä tulos";
-          submitHint.textContent = "Tallennus epäonnistui (endpoint puuttuu tai ei vastaa). Tämä on ok kehitysvaiheessa.";
+          submitHint.textContent = "Tallennus epäonnistui (endpoint puuttuu tai ei vastaa).";
         }
-      } catch(e){
+      } catch{
         btnSubmit.disabled = false;
         btnSubmit.textContent = "Lähetä tulos";
-        submitHint.textContent = "Tallennus epäonnistui (ei yhteyttä). Tämä on ok kehitysvaiheessa.";
+        submitHint.textContent = "Tallennus epäonnistui (ei yhteyttä).";
       }
     }
 
-    function showResults(){
-      const score = scoreQuiz();
-      resultName.textContent = playerName;
-      resultScore.textContent = score;
-      resultBadge.textContent = badgeFor(score);
-
-      const answeredCount = answers.filter(a => a !== null).length;
-      const missing = 10 - answeredCount;
-
-      resultSummary.textContent =
-        missing > 0
-          ? `Vastasit ${answeredCount}/10 kysymykseen. Pisteet laskettiin vastatuista kohdista.`
-          : "Vastasit kaikkiin kysymyksiin — hienoa!";
-
-      show(stepResult);
-      setProgress(11);
-
-      // reset submit button UI
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = "Lähetä tulos";
-    }
-
     function closeSelf(){
-      // If loaded in iframe (popup), ask parent to close the modal
       try{
         if(window.parent && window.parent !== window && typeof window.parent.closeQuizModal === "function"){
           window.parent.closeQuizModal();
           return;
         }
       } catch {}
-
-      // Otherwise: go back to ohjelma or close tab
-      if(document.referrer && document.referrer.includes("ohjelma.html")){
-        window.location.href = "ohjelma.html#visa";
-      } else {
-        window.location.href = "ohjelma.html#visa";
-      }
+      window.location.href = "ohjelma.html#visa";
     }
 
-    // ------------------------------------------------------------
-    // EVENTS
-    // ------------------------------------------------------------
+    // Events
     btnClose.addEventListener("click", closeSelf);
 
     btnStart.addEventListener("click", () => {
       const name = (txtName.value || "").trim();
       if(!name){
         txtName.focus();
-        txtName.style.boxShadow = "0 0 0 4px rgba(255,95,162,0.18)";
-        setTimeout(()=> txtName.style.boxShadow = "", 450);
         return;
       }
       playerName = name;
+      quiz = pick10();
+      index = 0;
+      answers = new Array(10).fill(null);
       show(stepQuiz);
       renderQuestion();
     });
@@ -713,7 +605,6 @@
     });
 
     btnNext.addEventListener("click", () => {
-      // if last question -> results
       if(index === 9){
         showResults();
         return;
@@ -725,24 +616,16 @@
     btnSubmit.addEventListener("click", submitResult);
 
     btnPlayAgain.addEventListener("click", () => {
-      // new questions (and keep the name to make it snappy)
-      const name = playerName;
+      // keep name, new questions
       quiz = pick10();
       index = 0;
       answers = new Array(10).fill(null);
-      chkEnter.checked = false;
-      submitHint.textContent = "";
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = "Lähetä tulos";
-
-      // keep name
-      playerName = name;
       show(stepQuiz);
       renderQuestion();
     });
 
-    // Start
-    startNewGame();
+    // init
+    setProgress(0);
   })();
   </script>
 </body>
