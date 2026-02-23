@@ -205,7 +205,7 @@
       <div class="col-md-8 col-md-offset-2">
 
         <!-- PERJANTAI -->
-        <div class="card" id="accommodationCardWrapper">
+        <div class="card" id="fridayCard">
           <div class="card-header">
             <h3 class="card-title">Perjantai – Spa & sauna (20:00–22:00)</h3>
             <div class="muted">Yksityiskäyttö • K18 • 39 € / hlö</div>
@@ -261,7 +261,7 @@
         </div>
 
         <!-- SUNNUNTAI -->
-        <div class="card">
+        <div class="card" id="sundayCard">
           <div class="card-header">
             <h3 class="card-title">Sunnuntai – Brunssi</h3>
             <div class="muted">Brunssi hääviikonlopun päätökseksi</div>
@@ -348,7 +348,7 @@
   <div id="paymentAmount" style="font-weight:600; margin-bottom:8px;"></div>
 
   <div>
-    Maksu Sinin ja Petrin hallinnoimalle tilille:<br>
+    Maksu Sinin ja Petrin hallinnoimalle tilille viimeistään 20.3.2026. (mikäli tahdot sopia erillisen maksuaikataulun, ole yhteydessä hääpariin ennen määräpäivää):<br>
     <strong>Sini Aaltonen</strong><br>
     FI15 5722 9020 3631 79
   </div>
@@ -529,14 +529,32 @@ try {
 // -------------------------
 
 const accommodation = login.Accommodation;
+const isSaturdayOnly =
+  accommodation &&
+  accommodation.CalculationMode === "saturdayOnly";
 console.log("Accommodation object:", accommodation);
 console.log("Guests:", login.Guests);
 const accommodationCard = document.getElementById("accommodationCard");
+// 🔹 SaturdayOnly: piilotetaan perjantai ja sunnuntai
+if (isSaturdayOnly) {
+
+  const fridayCard = document.getElementById("fridayCard");
+  const sundayCard = document.getElementById("sundayCard");
+
+  if (fridayCard) fridayCard.classList.add("hidden");
+  if (sundayCard) sundayCard.classList.add("hidden");
+
+}
 const accommodationWrapper = document.getElementById("accommodationWrapper");
 
-if (!accommodation || accommodation.CalculationMode === "noAccommodation") {
+if (
+  !accommodation ||
+  accommodation.CalculationMode === "noAccommodation" ||
+  accommodation.CalculationMode === "saturdayOnly"
+) {
   accommodationCard.classList.add("hidden");
-} else {
+}
+else {
 
   // Näytä majoituksen hinta
 const pricePerPerson =
