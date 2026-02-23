@@ -235,12 +235,12 @@
 
         <div class="badge-pill">Kanteliset 2026</div>
         <div class="badge-pill">10 kysymystä</div>
-        <div class="badge-pill">Palkinto luvassa 👀</div>
+        <div class="badge-pill">Palkinto luvassa</div>
 
         <h1 class="quiz-title">Häävisa</h1>
         <div class="quiz-sub">
           Testaa, tunnetko Sinin & Petrin paremmin kuin muut.  
-          Oikeat vastaukset lasketaan heti — ja parhaat tietäjät voidaan palkita häissä.
+          Oikeat vastaukset lasketaan heti ja parhaat tietäjät voidaan palkita häissä.
         </div>
 
         <div class="progress-wrap" aria-label="Edistyminen">
@@ -318,8 +318,7 @@
           <div class="divider"></div>
 
           <div class="tiny">
-            Vihje: Jos tulee tasapisteet, voidaan häissä ratkaista voittaja vaikka “nopeus-kysymyksellä” tai kolikolla.  
-            (Tai sillä, kuka hakee Petrille paistinpannun.)
+            Vihje: Jos tulee tasapisteet, voidaan häissä ratkaista voittaja vaikka “nopeus-kysymyksellä” tai kolikolla. 
           </div>
         </div>
 
@@ -583,11 +582,11 @@
     }
 
     function badgeFor(score){
-      if(score === 10) return "Täydellinen Kantelinen-tietäjä. Pelottavaa. 🤍";
-      if(score >= 8) return "Todellinen sisäpiiriläinen. Sinut nähdään brunssilla. 🥐";
-      if(score >= 6) return "Hyvä taso — selvästi olet ollut mukana tarinassa. ✨";
-      if(score >= 4) return "Ihan ok… mutta nyt tarvitset lisää Kanteliset-lorea. 📚";
-      return "Tervetuloa harjoittelijaksi. Aloita: Budapest ja kalakukko. 😄";
+      if(score === 10) return "Täydellinen tietäjä. Pelottavaa!";
+      if(score >= 8) return "Todellinen sisäpiiriläinen. Sinä varmasti osallistut brunssille!";
+      if(score >= 6) return "Hyvä taso — selvästi olet ollut mukana tarinassamme.";
+      if(score >= 4) return "Ihan ok… mutta nyt tarvitset lisää tietämystä.";
+      return "Tervetuloa harjoittelijaksi, kaikki alkaa kalakukosta...";
     }
 
     function startNewGame(){
@@ -635,8 +634,8 @@
         });
 
         if(res.ok){
-          btnSubmit.textContent = "Lähetetty! ✨";
-          submitHint.textContent = "Tulos tallennettu — nähdään häissä palkintojenjaossa. 👀";
+          btnSubmit.textContent = "Lähetetty! ";
+          submitHint.textContent = "Tulos tallennettu, nähdään häissä palkintojenjaossa.";
         } else {
           btnSubmit.disabled = false;
           btnSubmit.textContent = "Lähetä tulos";
