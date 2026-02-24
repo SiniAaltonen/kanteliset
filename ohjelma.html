@@ -363,14 +363,6 @@ ja kaunis päätös yhteiselle viikonlopulle.
 <script>
 
 function openProgramModal(){
-
-  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-
-  if(!isLoggedIn){
-    alert("Kirjaudu ensin sisään ilmoittaaksesi ohjelmasta.");
-    return;
-  }
-
   $("#programModal").modal("show");
 }
 
@@ -380,13 +372,22 @@ function closeProgramModal(){
 
 async function submitProgram(){
 
-  const login = JSON.parse(sessionStorage.getItem("login"));
+  const name = document.getElementById("programName").value.trim();
+  const email = document.getElementById("programEmail").value.trim();
+  const phone = document.getElementById("programPhone").value.trim();
+  const description = document.getElementById("programDescription").value.trim();
+
+  if(!name || !email || !phone || !description){
+    alert("Täytä kaikki pakolliset kentät.");
+    return;
+  }
 
   const programData = {
-    FamilyId: login.FamilyId,
-    DisplayName: login.DisplayName,
+    Name: name,
+    Email: email,
+    Phone: phone,
     Type: document.getElementById("programType").value,
-    Description: document.getElementById("programDescription").value,
+    Description: description,
     Duration: Number(document.getElementById("programDuration").value || 0),
     NeedsMic: document.getElementById("programNeedsMic").checked
   };
@@ -409,6 +410,8 @@ async function submitProgram(){
 }
 
 </script>
+
+</script>
 <!-- PROGRAM MODAL -->
 <div id="programModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-md" role="document">
@@ -417,6 +420,23 @@ async function submitProgram(){
         <h4 class="modal-title">Ilmoita ohjelmasta 💍</h4>
       </div>
       <div class="modal-body">
+
+        <div class="form-group">
+          <label>Etunimi & sukunimi *</label>
+          <input type="text" id="programName" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label>Sähköposti *</label>
+          <input type="email" id="programEmail" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label>Puhelinnumero *</label>
+          <input type="tel" id="programPhone" class="form-control" required>
+        </div>
+
+        <hr>
 
         <div class="form-group">
           <label>Ohjelman tyyppi</label>
@@ -429,9 +449,12 @@ async function submitProgram(){
         </div>
 
         <div class="form-group">
-          <label>Kuvaus</label>
-          <textarea id="programDescription" class="form-control" rows="4"
-            placeholder="Kerro lyhyesti mitä suunnittelet"></textarea>
+          <label>Kuvaus *</label>
+          <textarea id="programDescription"
+                    class="form-control"
+                    rows="4"
+                    placeholder="Kerro lyhyesti mitä suunnittelet"
+                    required></textarea>
         </div>
 
         <div class="form-group">
@@ -447,6 +470,7 @@ async function submitProgram(){
         </div>
 
       </div>
+
       <div class="modal-footer">
         <button class="btn btn-default" onclick="closeProgramModal()">Peruuta</button>
         <button class="btn btn-primary" onclick="submitProgram()">Lähetä</button>
