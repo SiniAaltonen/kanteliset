@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Admin – RSVP</title>
+<title>Admin – Kanteliset</title>
 
 <style>
 body {
@@ -14,60 +14,86 @@ body {
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 34px;
   margin-bottom: 30px;
 }
 
 .section-title {
-  margin-top: 40px;
-  font-size: 22px;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 6px;
+  margin-top: 60px;
+  font-size: 24px;
+  border-bottom: 3px solid #ddd;
+  padding-bottom: 8px;
 }
 
 .summary-box {
   background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 .card {
   background: white;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 24px;
+  margin-bottom: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.pill {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.05);
+  margin-right: 8px;
+  font-size: 13px;
+}
+
+.muted {
+  opacity: 0.65;
 }
 
 .not-responded {
   background: #fff4f4;
   padding: 10px 15px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   border-radius: 8px;
+}
+
+.highlight {
+  background: #fdf8f3;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Kaikki RSVP-vastaukset</h1>
+<h1>Admin – Kanteliset</h1>
 
-<div id="summary" class="summary-box"></div>
+<div id="rsvpSummary" class="summary-box"></div>
+<div id="programSummary" class="summary-box"></div>
+
+<div id="programs"></div>
 <div id="responded"></div>
 <div id="notResponded"></div>
 
 <script>
+// ===============================
+// 🔐 ADMIN SUOJAUS
+// ===============================
+const loginRaw = sessionStorage.getItem("login");
 
-// 🔐 ADMIN-SUOJAUS
-const loginDataRaw = sessionStorage.getItem("login");
+if (!loginRaw) window.location.href = "/";
 
-if (!loginDataRaw) {
-  window.location.href = "/";
-}
-
-const loginData = JSON.parse(loginDataRaw);
+const login = JSON.parse(loginRaw);
 
 const allowedAdmins = [
   "ADMIN-SINI",
@@ -77,17 +103,45 @@ const allowedAdmins = [
   "ADMIN-SEREMONIAM"
 ];
 
-if (loginData.Role !== "admin" || !allowedAdmins.includes(loginData.FamilyId)) {
+if (login.Role !== "admin" || !allowedAdmins.includes(login.FamilyId)) {
   window.location.href = "/";
 }
 
-// Jos päästiin tänne → näytetään sivu
 document.body.style.display = "block";
 
 
-// API
-const baseUrl = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/rsvp/";
+// ===============================
+// API URLIT
+// ===============================
+const rsvpBaseUrl =
+  "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/rsvp/";
 
+const programsUrl =
+  "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/admin/programs";
+
+
+// ===============================
+// HELPERS
+// ===============================
+function escapeHtml(str){
+  return (str ?? "")
+    .toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+}
+
+function safeDate(iso){
+  if(!iso) return "-";
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return escapeHtml(iso);
+  return d.toLocaleString("fi-FI");
+}
+
+
+// ===============================
+// RSVP DATA
+// ===============================
 const familyIds = [
   "KANTELINEN-05","KANTELINEN-789","AALTONEN-029","KOISTINEN-033",
   "KOKKONEN-0458","OVASKA-059","JÄNTTI-067","KURISJÄRVI-077",
@@ -96,22 +150,25 @@ const familyIds = [
   "AUVINEN-1618","MUSTONEN-1792","PULKKINEN-1814","VESTERINEN-1999",
   "SYRJÄ-2013","LINDBLOM-2581","HELAKORPI-2291","YRJÖLÄ-2338",
   "RAUTAVUORI-2491","GAZDAG-2580","OKSMAN-2695","HURSKAINEN-2766",
-  "SVENSSON-2818","TESTI-299","TESTI-288"
+  "SVENSSON-2818","TESTI-299","TESTI-288",
+  "KOPONEN-688","ANTTOLAINEN-488","LAITINEN-1985"
 ];
 
-let summary = { fri: 0, sat: 0, sun: 0, spa: 0 };
+let summary = { fri:0, sat:0, sun:0, spa:0 };
 
-async function loadData() {
+async function loadRsvp(){
 
   const responded = [];
   const notResponded = [];
 
-  for (const id of familyIds) {
+  summary = { fri:0, sat:0, sun:0, spa:0 };
 
-    try {
-      const res = await fetch(baseUrl + id);
+  for(const id of familyIds){
 
-      if (!res.ok) {
+    try{
+      const res = await fetch(rsvpBaseUrl + id);
+
+      if(!res.ok){
         notResponded.push(id);
         continue;
       }
@@ -122,25 +179,25 @@ async function loadData() {
       summary.sat += data.satCount || 0;
       summary.sun += data.sunCount || 0;
 
-      if (data.paymentSummary && data.paymentSummary.includes("Spa")) {
+      if(data.paymentSummary && data.paymentSummary.includes("Spa")){
         summary.spa += data.friCount || 0;
       }
 
       responded.push(data);
 
-    } catch {
+    }catch{
       notResponded.push(id);
     }
   }
 
-  renderSummary();
+  renderRsvpSummary();
   renderResponded(responded);
   renderNotResponded(notResponded);
 }
 
-function renderSummary() {
-  document.getElementById("summary").innerHTML = `
-    <h2>Yhteenveto</h2>
+function renderRsvpSummary(){
+  document.getElementById("rsvpSummary").innerHTML = `
+    <h2>RSVP Yhteenveto</h2>
     <p><strong>Perjantai:</strong> ${summary.fri} hlö</p>
     <p><strong>Lauantai:</strong> ${summary.sat} hlö</p>
     <p><strong>Sunnuntai:</strong> ${summary.sun} hlö</p>
@@ -148,64 +205,127 @@ function renderSummary() {
   `;
 }
 
-function renderResponded(list) {
+function renderResponded(list){
 
   const container = document.getElementById("responded");
-  container.innerHTML = `<div class="section-title">Vastanneet</div>`;
+  container.innerHTML = `<div class="section-title">RSVP – Vastanneet</div>`;
 
-  list.forEach(data => {
+  list.forEach(data=>{
 
-    // Spa-nimet
-    const spaNames = (data.paymentSummary && data.paymentSummary.includes("Spa"))
-      ? (data.satAttendees || [])
-          .map(p => p.name)
-          .join("<br>")
-      : "";
+    const spaNames =
+      (data.friAttendees || [])
+        .map(p=>escapeHtml(p.name))
+        .join("<br>");
 
-    // Erikoisruokavaliot
-    const diets = [
-      ...(data.satAttendees || []),
-      ...(data.sunAttendees || [])
-    ]
-    .filter(p => p.diet && p.diet.trim() !== "" && p.diet !== "-")
-    .map(p => `${p.name}: ${p.diet}`)
-    .join("<br>");
+    const diets =
+      [...(data.satAttendees || []), ...(data.sunAttendees || [])]
+      .filter(p=>p.diet && p.diet.trim() !== "" && p.diet !== "-")
+      .map(p=>`${escapeHtml(p.name)}: ${escapeHtml(p.diet)}`)
+      .join("<br>");
 
-    const card = document.createElement("div");
-    card.className = "card";
+    const card=document.createElement("div");
+    card.className="card";
 
-    card.innerHTML = `
-      <h3>${data.displayName}</h3>
-      <p><strong>Perjantai:</strong> ${data.friAttending ? "Kyllä" : "Ei"} (${data.friCount})</p>
-      <p><strong>Lauantai:</strong> ${data.satAttending ? "Kyllä" : "Ei"} (${data.satCount})</p>
-      <p><strong>Sunnuntai:</strong> ${data.sunAttending ? "Kyllä" : "Ei"} (${data.sunCount})</p>
+    card.innerHTML=`
+      <h3>${escapeHtml(data.displayName)}</h3>
+
+      <div class="highlight">
+        <strong>Osallistuminen:</strong><br>
+        Pe: ${data.friAttending ? "Kyllä" : "Ei"} (${data.friCount})<br>
+        La: ${data.satAttending ? "Kyllä" : "Ei"} (${data.satCount})<br>
+        Su: ${data.sunAttending ? "Kyllä" : "Ei"} (${data.sunCount})
+      </div>
+
       <p><strong>Majoitus:</strong> ${data.accommodation ? "Kyllä" : "Ei"}</p>
 
       ${spaNames ? `<p><strong>Spa-osallistujat:</strong><br>${spaNames}</p>` : ""}
+
       ${diets ? `<p><strong>Erikoisruokavaliot:</strong><br>${diets}</p>` : ""}
 
-      <p><strong>Muistiinpanot:</strong> ${data.notes || "-"}</p>
-      <p><strong>Maksuyhteenveto:</strong> ${data.paymentSummary || "-"}</p>
+      <p><strong>Muistiinpanot:</strong><br>${escapeHtml(data.notes || "-")}</p>
+
+      <p><strong>Maksuyhteenveto:</strong><br>${escapeHtml(data.paymentSummary || "-")}</p>
     `;
 
     container.appendChild(card);
   });
 }
 
-function renderNotResponded(list) {
+function renderNotResponded(list){
+  const container=document.getElementById("notResponded");
+  container.innerHTML=`<div class="section-title">Ei vielä vastanneet</div>`;
 
-  const container = document.getElementById("notResponded");
-  container.innerHTML = `<div class="section-title">Eivät ole vielä vastanneet</div>`;
-
-  list.forEach(id => {
-    const div = document.createElement("div");
-    div.className = "not-responded";
-    div.innerText = id;
+  list.forEach(id=>{
+    const div=document.createElement("div");
+    div.className="not-responded";
+    div.innerText=id;
     container.appendChild(div);
   });
 }
 
-loadData();
+
+// ===============================
+// PROGRAMS
+// ===============================
+async function loadPrograms(){
+
+  const container=document.getElementById("programs");
+  const summaryBox=document.getElementById("programSummary");
+
+  try{
+    const res=await fetch(programsUrl);
+    if(!res.ok){
+      container.innerHTML=`<div class="section-title">Ohjelmailmoitukset</div>
+      <div class="card">Haku epäonnistui (${res.status})</div>`;
+      return;
+    }
+
+    const programs=await res.json();
+
+    summaryBox.innerHTML=`
+      <h2>Ohjelmailmoitukset</h2>
+      <p><strong>Yhteensä:</strong> ${programs.length}</p>
+    `;
+
+    container.innerHTML=`<div class="section-title">Ohjelmailmoitukset</div>`;
+
+    programs.forEach(p=>{
+      const card=document.createElement("div");
+      card.className="card";
+
+      card.innerHTML=`
+        <h3>${escapeHtml(p.name)}</h3>
+
+        <div>
+          <span class="pill">${escapeHtml(p.type)}</span>
+          <span class="pill">${p.duration} min</span>
+          <span class="pill">${p.needsMic ? "Tarvitsee mikin" : "Ei tekniikkaa"}</span>
+        </div>
+
+        <p><strong>Email:</strong> ${escapeHtml(p.email)}</p>
+        <p><strong>Puhelin:</strong> ${escapeHtml(p.phone)}</p>
+
+        <p><strong>Kuvaus:</strong><br>${escapeHtml(p.description)}</p>
+
+        <p class="muted">Luotu: ${safeDate(p.createdUtc)}</p>
+      `;
+
+      container.appendChild(card);
+    });
+
+  }catch{
+    container.innerHTML=`<div class="section-title">Ohjelmailmoitukset</div>
+    <div class="card">Virhe haussa</div>`;
+  }
+}
+
+
+// ===============================
+// INIT
+// ===============================
+loadRsvp();
+loadPrograms();
+
 </script>
 
 </body>
