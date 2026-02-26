@@ -243,7 +243,7 @@
         <h1 class="quiz-title">Häävisa</h1>
         <div class="quiz-sub">
           Testaa, tunnetko Sinin & Petrin paremmin kuin muut.
-          Visa arpoo 10 kysymystä — ja lopussa voit halutessasi osallistua kisaan tuloksellasi.
+          Visa arpoo 10 kysymystä ja lopussa voit halutessasi osallistua kisaan tuloksellasi.
         </div>
 
         <div class="progress-wrap" aria-label="Edistyminen">
@@ -263,7 +263,7 @@
           <div style="height:10px;"></div>
           <button id="btnStart" class="btn-quiz btn-primary-quiz">Aloita visa</button>
           <div class="tiny" style="margin-top:10px;">
-            Vinkki: kysymykset arvotaan — eli tätä voi pelata myös uudestaan.
+            Vinkki: kysymykset arvotaan eli tätä voi pelata myös uudestaan.
           </div>
         </div>
 
@@ -306,7 +306,7 @@
             <input id="chkEnter" type="checkbox" style="margin-top:4px;">
             <span>
               <strong>Haluan osallistua visaan tuloksellani.</strong><br>
-              <span class="tiny">Tallennamme nimen ja pistemäärän admin-näkymään.</span>
+              <span class="tiny">Tallennamme nimen ja pistemäärän.</span>
             </span>
           </label>
 
@@ -321,7 +321,7 @@
           <div class="divider"></div>
 
           <div class="tiny">
-            Kiitos kun pelasit — nähdään juhlahumussa 🤍
+            Kiitos kun pelasit, nähdään juhlissa!
           </div>
         </div>
 
@@ -336,7 +336,7 @@
     // -----------------------------
     // Vaihda tämä omaan Function Appiin:
     // Esim: https://fa-kanteliset-xxxxx.westeurope-01.azurewebsites.net/api/submitQuiz
-    const SUBMIT_URL = "https://YOUR-FUNCTION-APP.azurewebsites.net/api/submitQuiz";
+    const SUBMIT_URL = "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/submitQuiz";
 
     // -----------------------------
     // QUESTIONS (pool) - neutraali, ei piikittelyä
@@ -344,13 +344,13 @@
     // -----------------------------
     const QUESTION_POOL = [
       { id:"first_trip", q:"Mikä oli Sinin ja Petrin ensimmäinen ulkomaanmatka yhdessä?",
-        options:["Pääsiäisenä 2019 Budapestiin","Tukholmaan","Roomaan","Tallinnaan"], correctIndex:0 },
+        options:["Pääsiäisenä 2019 Budapestiin","Vappuna Tukholmaan","Juhannuksena Roomaan","Viikonloppuna Tallinnaan"], correctIndex:0 },
 
       { id:"first_date_gift", q:"Mitä Petri toi Sinille ensitreffeille mukanaan?",
-        options:["Kalakukon","Kukkakimpun","Suklaata","Kirjan"], correctIndex:0 },
+        options:["Kalakukon","Kukkakimpun","Suklaata","Lautapelin"], correctIndex:0 },
 
       { id:"fav_candy_sini", q:"Mikä on Sinin lempikarkki?",
-        options:["Naperot","Salmiakki","Lakritsi","Suklaakonvehdit"], correctIndex:0 },
+        options:["Naperot","Bubsit","Lakritsi","FAzerin sininen suklaa"], correctIndex:0 },
 
       { id:"fav_candy_pete", q:"Mikä on Petrin lempiherkku?",
         options:["Fazerin Sininen suklaa","Tyrkisk Peber","Pandat","Muumimarmeladit"], correctIndex:0 },
@@ -368,13 +368,16 @@
         options:["Arnak: Kadonneet rauniot","Catan","Terraforming Mars","Wingspan"], correctIndex:0 },
 
       { id:"proposal_place", q:"Missä Petri kosi Siniä?",
-        options:["Budapestissä","Lehmonkärjessä","Helsingissä","Kreikassa"], correctIndex:0 },
+        options:["Budapestissä","Italiassa","Helsingissä","Kreikassa"], correctIndex:0 },
 
       { id:"engagement_date", q:"Mikä on Sinin ja Petrin kihlapäivä?",
         options:["18.4.","27.1.","23.5.","1.1."], correctIndex:0 },
 
       { id:"anniversary_date", q:"Mikä on Sinin ja Petrin vuosipäivä?",
         options:["27.1.","18.4.","23.5.","24.12."], correctIndex:0 },
+
+      { id:"anniversary_date", q:"Mitä Sini toivoo huomenlahjaksi?",
+        options:["Korvakoruja","Kaulakorua","Rannekorua","Viikonloppumatkaa"], correctIndex:0 },
 
       // Hääviikonlopun asiat (helpompia, reiluja kaikille)
       { id:"weekend_length", q:"Kuinka monta päivää hääviikonlopun ohjelmaa on (pe–su)?",
@@ -537,11 +540,11 @@
     }
 
     function badgeFor(score){
-      if(score === 10) return "Täydet pisteet — huikea suoritus! 🤍";
-      if(score >= 8) return "Todella hyvä! ✨";
-      if(score >= 6) return "Hyvä tulos — kiitos kun pelasit!";
-      if(score >= 4) return "Hyvä yritys — uudella kierroksella voi nousta lisää.";
-      return "Kiitos osallistumisesta — pelaa halutessasi uudelleen! 😊";
+      if(score === 10) return "Täydet pisteet, huikea suoritus!";
+      if(score >= 8) return "Todella hyvä!";
+      if(score >= 6) return "Hyvä tulos, kiitos kun pelasit!";
+      if(score >= 4) return "Hyvä yritys, uudella kierroksella voit nostaa pisteitäsi.";
+      return "Kiitos osallistumisesta, pelaa halutessasi uudelleen!";
     }
 
     function showResults(){
