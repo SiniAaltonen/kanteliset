@@ -106,6 +106,130 @@ h1 {
 }
 .kv .k{ font-size: 11px; letter-spacing: .10em; text-transform: uppercase; opacity: .6; }
 .kv .v{ margin-top: 4px; font-weight: 700; }
+
+/* ===============================
+   SEATING CHART (Pöytäkartta)
+   =============================== */
+
+.seating-card{
+  background:#fff;
+  padding:22px;
+  margin-bottom:25px;
+  border-radius:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  border:1px solid rgba(0,0,0,0.10);
+}
+
+.seating-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+
+.seating-title{
+  margin:0;
+  font-size:18px;
+  font-weight:800;
+}
+
+.seating-sub{
+  margin-top:6px;
+  opacity:.7;
+  font-size:13px;
+}
+
+.seating-wrap{
+  border:1px solid rgba(0,0,0,0.10);
+  border-radius:16px;
+  overflow:hidden;
+  background:#fafafa;
+}
+
+/* Skaalautuva canvas pohjakuvan mukaan */
+.seating-stage{
+  position:relative;
+  width:100%;
+  aspect-ratio: 1136 / 768; /* sama fiilis kuin sun kuvassa; vaihda jos oma kuva eri */
+}
+
+.seating-stage img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* Overlay missä pöydät ja labelit */
+.seating-overlay{
+  position:absolute;
+  inset:0;
+}
+
+.table{
+  position:absolute;
+  transform: translate(-50%, -50%);
+  border-radius:999px;
+  background: rgba(44, 110, 195, 0.90);
+  border: 2px solid rgba(20,70,140,0.9);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:800;
+  user-select:none;
+}
+
+.table.small{ width:72px; height:72px; }
+.table.medium{ width:86px; height:86px; }
+.table.large{ width:96px; height:96px; }
+
+.table .ttext{
+  line-height:1.1;
+  font-size:12px;
+  padding:6px;
+}
+
+.table .ttext .hl{
+  display:block;
+  font-size:13px;
+}
+
+.table:hover{
+  filter: brightness(1.03);
+  outline: 3px solid rgba(255,95,162,0.35);
+  cursor: default;
+}
+
+/* Hääpari-boksi */
+.table.head{
+  border-radius:12px;
+  width:110px;
+  height:46px;
+  background: rgba(44, 110, 195, 0.95);
+}
+
+.table.head .ttext{ font-size:12px; }
+
+/* Pieni selite oikeaan alanurkkaan */
+.seating-note{
+  position:absolute;
+  right:14px;
+  bottom:14px;
+  background: rgba(255,255,255,0.88);
+  border:1px solid rgba(0,0,0,0.10);
+  border-radius:14px;
+  padding:10px 12px;
+  font-size:12px;
+  opacity:.9;
+  max-width: 320px;
+}
 </style>
 </head>
 
@@ -115,6 +239,7 @@ h1 {
 
 <div id="rsvpSummary" class="summary-box"></div>
 <div id="programSummary" class="summary-box"></div>
+<div id="seatingChart" class="seating-card"></div>
 
 <div id="programs"></div>
 <div id="responded"></div>
@@ -408,10 +533,102 @@ async function loadPrograms(){
 }
 
 // ===============================
+// SEATING CHART (Pöytäkartta)
+// ===============================
+
+// 1) Vaihda tähän sun pohjakuvan tiedostonimi (laita se images-kansioon)
+//    Voit käyttää samaa kuvaa jonka lähetit (tallenna esim. images/poytakartta.png)
+const SEATING_BG_IMAGE = "images/poytakartta.png";
+
+// 2) Pöytien sijainnit prosentteina (x,y) suhteessa koko kuvaan
+//    Nämä on “lähellä” sun kuvassa olevia paikkoja. Säädä myöhemmin 1–2% kerrallaan.
+const TABLES = [
+  { id:"head", label:"Hääpari", size:"head", x: 36, y: 9, seats: 2 },
+
+  { id:"T1", label:"8 hlö",  size:"medium", x: 15, y: 18, seats: 8 },
+  { id:"T2", label:"8 hlö",  size:"medium", x: 10, y: 29, seats: 8 },
+
+  { id:"T3", label:"10 hlö", size:"large",  x: 26, y: 26, seats: 10 },
+  { id:"T4", label:"10 hlö", size:"large",  x: 34, y: 20, seats: 10 },
+
+  { id:"T5", label:"8 hlö",  size:"medium", x: 33, y: 38, seats: 8 },
+  { id:"T6", label:"8 hlö",  size:"medium", x: 23, y: 46, seats: 8 },
+
+  { id:"T7", label:"8 hlö",  size:"medium", x: 39, y: 48, seats: 8 },
+  { id:"T8", label:"8 hlö",  size:"medium", x: 46, y: 38, seats: 8 },
+
+  { id:"T9", label:"8 hlö",  size:"medium", x: 46, y: 22, seats: 8 }
+];
+
+// 3) Tulevaisuutta varten: istumapaikkojen nimet per pöytä
+//    Lisää myöhemmin: SEAT_ASSIGNMENTS["T1"] = ["Nimi 1", "Nimi 2", ...]
+const SEAT_ASSIGNMENTS = {
+  // "T1": ["Hannu", "Elina", "—", ...]
+};
+
+function renderSeatingChart(){
+  const host = document.getElementById("seatingChart");
+  if(!host) return;
+
+  host.innerHTML = `
+    <div class="seating-top">
+      <div>
+        <h2 class="seating-title">Pöytäkartta</h2>
+        <div class="seating-sub">Tämä on visuaalinen luonnos. Myöhemmin lisätään nimipaikat pöytiin.</div>
+      </div>
+      <div class="badge-row">
+        <span class="badge-gray">Admin</span>
+        <span class="badge-gray">Villa Vellamo</span>
+      </div>
+    </div>
+
+    <div class="seating-wrap">
+      <div class="seating-stage">
+        <img src="${SEATING_BG_IMAGE}" alt="Pöytäkartta">
+        <div class="seating-overlay" id="seatingOverlay"></div>
+
+        <div class="seating-note">
+          <strong>Vinkki:</strong> Jos haluat siirtää pöytää, muuta sen x/y arvoa (prosentteina) TABLES-listassa.
+        </div>
+      </div>
+    </div>
+  `;
+
+  const overlay = document.getElementById("seatingOverlay");
+  overlay.innerHTML = "";
+
+  TABLES.forEach(t => {
+    const el = document.createElement("div");
+    el.className = `table ${t.size === "head" ? "head" : (t.size || "medium")}`;
+    el.style.left = `${t.x}%`;
+    el.style.top  = `${t.y}%`;
+
+    // Näytetään pöydän label + (halutessa) montako nimeä asetettu
+    const assignedCount = Array.isArray(SEAT_ASSIGNMENTS[t.id]) ? SEAT_ASSIGNMENTS[t.id].filter(Boolean).length : 0;
+    const infoLine = (t.id === "head") ? "" : `<span class="hl">${t.label}</span>`;
+    const smallLine = (t.id === "head") ? "" : `<span style="opacity:.85; font-weight:700; font-size:11px;">${assignedCount}/${t.seats}</span>`;
+
+    el.innerHTML = `
+      <div class="ttext">
+        <span class="hl">${t.id === "head" ? "Hääpari" : ""}</span>
+        ${t.id === "head" ? "" : infoLine}
+        ${t.id === "head" ? "" : smallLine}
+      </div>
+    `;
+
+    // Tooltip (näkyy hoverissa)
+    el.title = `${t.id} • ${t.seats} paikkaa` + (assignedCount ? ` • nimetty ${assignedCount}` : "");
+
+    overlay.appendChild(el);
+  });
+}
+
+// ===============================
 // INIT
 // ===============================
 loadRsvp();
 loadPrograms();
+renderSeatingChart();
 </script>
 
 </body>
