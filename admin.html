@@ -72,99 +72,100 @@ h1 {
   margin-top: 10px;
 }
 
-  .announce-card{
-    background: #fff;
-    padding: 22px;
-    margin-bottom: 25px;
-    border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.10);
-  }
+/* ohjelmailmoitukset (uusi ulkoasu) */
+.announce-card{
+  background: #fff;
+  padding: 22px;
+  margin-bottom: 25px;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.10);
+}
 
-  .announce-top{
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
+.announce-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
-  .announce-title{
-    margin: 0;
-    font-size: 18px;
-    font-weight: 800;
-  }
+.announce-title{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
 
-  .announce-sub{
-    margin-top: 6px;
-    opacity: .7;
-    font-size: 13px;
-  }
+.announce-sub{
+  margin-top: 6px;
+  opacity: .7;
+  font-size: 13px;
+}
 
-  .badge-row{
-    display:flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-  }
+.badge-row{
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
 
-  .badge-pink{
-    display:inline-block;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(255,95,162,0.12);
-    border: 1px solid rgba(255,95,162,0.25);
-    font-size: 12px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
+.badge-pink{
+  display:inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,95,162,0.12);
+  border: 1px solid rgba(255,95,162,0.25);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
 
-  .badge-gray{
-    display:inline-block;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(0,0,0,0.05);
-    border: 1px solid rgba(0,0,0,0.08);
-    font-size: 12px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
+.badge-gray{
+  display:inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.08);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
 
-  .desc-box{
-    margin-top: 14px;
-    background: #fdf8f3;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 14px;
-    padding: 12px 14px;
-    line-height: 1.6;
-  }
+.desc-box{
+  margin-top: 14px;
+  background: #fdf8f3;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  line-height: 1.6;
+}
 
-  .kv-grid{
-    margin-top: 14px;
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  @media (max-width: 760px){
-    .kv-grid{ grid-template-columns: 1fr; }
-  }
+.kv-grid{
+  margin-top: 14px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 760px){
+  .kv-grid{ grid-template-columns: 1fr; }
+}
 
-  .kv{
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 14px;
-    padding: 10px 12px;
-    background: #fff;
-  }
-  .kv .k{
-    font-size: 11px;
-    letter-spacing: .10em;
-    text-transform: uppercase;
-    opacity: .6;
-  }
-  .kv .v{
-    margin-top: 4px;
-    font-weight: 700;
-  }
+.kv{
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: #fff;
+}
+.kv .k{
+  font-size: 11px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .6;
+}
+.kv .v{
+  margin-top: 4px;
+  font-weight: 700;
+}
 </style>
 </head>
 
@@ -181,13 +182,17 @@ h1 {
 
 <script>
 // ===============================
-// 🔐 ADMIN SUOJAUS
+// 🔐 ADMIN SUOJAUS (varmempi caseille)
 // ===============================
 const loginRaw = sessionStorage.getItem("login");
-
 if (!loginRaw) window.location.href = "/";
 
-const login = JSON.parse(loginRaw);
+let login = null;
+try { login = JSON.parse(loginRaw); } catch { login = null; }
+if (!login) window.location.href = "/";
+
+const role = login.Role ?? login.role ?? "";
+const familyId = login.FamilyId ?? login.familyId ?? "";
 
 const allowedAdmins = [
   "ADMIN-SINI",
@@ -197,7 +202,7 @@ const allowedAdmins = [
   "ADMIN-SEREMONIAM"
 ];
 
-if (login.Role !== "admin" || !allowedAdmins.includes(login.FamilyId)) {
+if (role !== "admin" || !allowedAdmins.includes(familyId)) {
   window.location.href = "/";
 }
 
@@ -234,7 +239,7 @@ function safeDate(iso){
 
 
 // ===============================
-// RSVP DATA
+// RSVP DATA (nimet + listaus)
 // ===============================
 const FAMILY_NAME_BY_ID = {
   "KANTELINEN-05": "Hannu ja Elina",
@@ -276,6 +281,9 @@ const FAMILY_NAME_BY_ID = {
 function getFamilyLabel(id){
   return FAMILY_NAME_BY_ID[id] ? `${FAMILY_NAME_BY_ID[id]} (${id})` : id;
 }
+
+// ✅ tämä puuttui aiemmin: id-lista
+const familyIds = Object.keys(FAMILY_NAME_BY_ID);
 
 let summary = { fri:0, sat:0, sun:0, spa:0 };
 
@@ -395,7 +403,6 @@ async function loadPrograms(){
   const container = document.getElementById("programs");
   const summaryBox = document.getElementById("programSummary");
 
-  // Hardkoodattu testidata (näkyy jos API palauttaa tyhjää tai haku epäonnistuu)
   const fallbackPrograms = [
     {
       name: "Heidi Ovaska",
@@ -411,7 +418,6 @@ async function loadPrograms(){
 
   function render(programs){
 
-    // järjestys: uusimmat ensin
     const sorted = (programs || []).slice().sort((a,b) => {
       const da = new Date(a.createdUtc || a.CreatedUtc || 0).getTime();
       const db = new Date(b.createdUtc || b.CreatedUtc || 0).getTime();
@@ -432,7 +438,6 @@ async function loadPrograms(){
 
     sorted.forEach(p => {
 
-      // tuki sekä camelCase että PascalCase (jos backend joskus vaihtuu)
       const name = escapeHtml(p.name ?? p.Name ?? "");
       const type = escapeHtml(p.type ?? p.Type ?? "");
       const email = escapeHtml(p.email ?? p.Email ?? "");
@@ -490,14 +495,12 @@ async function loadPrograms(){
     if(!res.ok){
       container.innerHTML = `<div class="section-title">Ohjelmailmoitukset</div>
       <div class="card">Haku epäonnistui (${res.status})</div>`;
-      // Näytä silti esimerkkikortti:
       render(fallbackPrograms);
       return;
     }
 
     let programs = await res.json();
 
-    // jos api palauttaa tyhjää → näytä testidata
     if(!Array.isArray(programs) || programs.length === 0){
       programs = fallbackPrograms;
     }
