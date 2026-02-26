@@ -374,8 +374,14 @@
       { id:"anniversary_date", q:"Mikä on Sinin ja Petrin vuosipäivä?",
         options:["27.1.","18.4.","23.5.","24.12."], correctIndex:0 },
 
-      { id:"anniversary_date", q:"Mitä Sini toivoo huomenlahjaksi?",
+      { id:"gift_wish_sini", q:"Mitä Sini toivoo huomenlahjaksi?",
         options:["Korvakoruja","Kaulakorua","Rannekorua","Viikonloppumatkaa"], correctIndex:0 },
+
+      { id:"Coco", q:"Minkä ikäinen Sinin ja Peten koira Coco on?",
+        options:["10","11","7","6"], correctIndex:0 },
+
+      { id:"Capo", q:"Minkä ikäinen Sinin ja Peten koira Capo on?",
+        options:["4","5","3","2"], correctIndex:0 },
 
       // Hääviikonlopun asiat (helpompia, reiluja kaikille)
       { id:"weekend_length", q:"Kuinka monta päivää hääviikonlopun ohjelmaa on (pe–su)?",
@@ -573,12 +579,19 @@
       }
 
       const login = getLogin();
-      const payload = {
-        name: playerName,
-        familyId: login?.FamilyId || null,
-        score: scoreQuiz(),
-        total: 10
-      };
+
+const familyId =
+  (login && (login.FamilyId || login.familyId || login.familyID)) || null;
+
+const payload = {
+  name: playerName,
+  familyId: familyId,
+  score: scoreQuiz(),
+  total: 10
+};
+
+// helpottaa testausta, voit poistaa myöhemmin:
+console.log("submitQuiz payload:", payload);
 
       btnSubmit.disabled = true;
       btnSubmit.textContent = "Lähetetään…";
