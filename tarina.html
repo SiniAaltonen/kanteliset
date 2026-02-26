@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kanteliset — Meidän tarina</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/wedding.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,400italic,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/animate.css">
+  <link rel="stylesheet" href="css/icomoon.css">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/magnific-popup.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="js/modernizr-2.6.2.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="js/respond.min.js"></script>
+  <![endif]-->
+
+  <style>
+    :root{
+      --pink:#ff5fa2;
+      --ink:#1f1f24;
+      --muted: rgba(31,31,36,0.72);
+      --border: rgba(31,31,36,0.12);
+      --card:#fff;
+      --shadow: 0 18px 60px rgba(0,0,0,0.10);
+      --soft: rgba(255,95,162,0.12);
+    }
+
+    /* Hero */
+    #fh5co-header.fh5co-cover.fh5co-cover-sm{
+      background-position:center center;
+    }
+    .story-hero-badges{ margin-top: 14px; }
+    .story-pill{
+      display:inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(0,0,0,0.18);
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin: 6px 6px 0 0;
+    }
+
+    /* Section headings */
+    .story-heading h2{ margin-bottom: 10px; }
+    .story-heading p{
+      color: var(--muted);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* Timeline grid */
+    .story-grid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 28px;
+    }
+    @media(min-width: 992px){
+      .story-grid{
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
+    }
+
+    .story-card{
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    /* ✅ CARD IMAGE: no zoom, cleaner look */
+    .story-media{
+      height: 340px;            /* hieman isompi -> luonnollisempi */
+      position: relative;
+      overflow: hidden;
+      background: #f4f4f6;
+    }
+    .story-media img{
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;        /* pitää kortit yhdenmukaisina */
+      object-position: center;  /* voit vaihtaa esim. center top yksittäiselle kuvalle */
+      transform: none !important;  /* ei zoomia */
+      filter: none;             /* ei “harmaannusta” */
+    }
+
+    /* ✅ Very light overlay ONLY for label readability (not dark) */
+    .story-media::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.10));
+      pointer-events:none;
+    }
+
+    .story-chip{
+      position:absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 3;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      backdrop-filter: blur(6px);
+    }
+    .story-chip i{
+      font-size: 14px;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .story-body{ padding: 18px 18px 20px 18px; }
+    .story-title{
+      font-weight: 700;
+      font-size: 18px;
+      margin: 0 0 6px 0;
+      color: var(--ink);
+    }
+
+    .story-date{
+      font-size: 12px;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: rgba(31,31,36,0.60);
+      margin-bottom: 10px;
+    }
+
+    .story-text{
+      color: rgba(31,31,36,0.78);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .story-quote{
+      margin-top: 14px;
+      border-left: 3px solid rgba(255,95,162,0.65);
+      background: var(--soft);
+      padding: 12px 12px 12px 14px;
+      border-radius: 14px;
+      color: rgba(31,31,36,0.78);
+      font-style: italic;
+    }
+
+    /* Couple split block */
+    .story-split{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.75);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .story-split .inner{ padding: 22px; }
+    .story-split h3{ margin-top:0; font-weight:700; }
+
+    .story-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.92);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(31,31,36,0.68);
+      margin-bottom: 14px;
+    }
+
+    /* Small photo row */
+    .photo-row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    @media(min-width: 768px){
+      .photo-row{ grid-template-columns: 1fr 1fr 1fr 1fr; }
+    }
+    .mini-photo{
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.08);
+      background: #f4f4f6;
+    }
+    .mini-photo img{
+      width:100%;
+      height: 160px;
+      object-fit: cover;
+      object-position: center;
+      display:block;
+      filter: none;
+      transform: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="fh5co-loader"></div>
+
+  <div id="page">
+
+    <!-- NAV -->
+    <nav class="fh5co-nav" role="navigation">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-2">
+            <div id="fh5co-logo"><a href="index.html">Kanteliset<strong>.</strong></a></div>
+          </div>
+          <div class="col-xs-10 text-right menu-1">
+            <ul>
+              <li><a href="index.html">Etusivu</a></li>
+
+              <li class="has-dropdown">
+                <a href="info.html">Tärkeää</a>
+                <ul class="dropdown">
+                  <li><a href="info.html#saapuminen">Saapuminen & Osoite</a></li>
+                  <li><a href="info.html#majoitus">Majoitus</a></li>
+                  <li><a href="info.html#pukukoodi">Pukukoodi</a></li>
+                  <li><a href="info.html#aikataulu">Aikataulu</a></li>
+                  <li><a href="info.html#faq">Usein kysyttyä</a></li>
+                </ul>
+              </li>
+
+              <li class="has-dropdown">
+                <a href="ohjelma.html">Ohjelma</a>
+                <ul class="dropdown">
+                  <li><a href="ohjelma.html#perjantai">Perjantai & Aktiviteetit</a></li>
+                  <li><a href="ohjelma.html#puhe">Pidä puhe / Ilmoita ohjelma</a></li>
+                  <li><a href="ohjelma.html#spotify">Lisää bilebiisi</a></li>
+                  <li><a href="ohjelma.html#visa">Häävisa</a></li>
+                  <li><a href="ohjelma.html#brunssi">Brunssi</a></li>
+                </ul>
+              </li>
+
+              <li class="active"><a href="tarina.html">Meidän tarina</a></li>
+              <li><a href="gallery.html">Galleria</a></li>
+
+              <li id="navDashboard" class="hidden-auth"><a href="dashboard.html">Ilmoittautuminen</a></li>
+              <li id="navLogout" class="hidden-auth"><a href="#" onclick="logout(); return false;">Kirjaudu ulos</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner"
+      style="background-image:url(images/sinijapete1.jpg);">
+      <div class="overlay"></div>
+      <div class="fh5co-container">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2 text-center">
+            <div class="display-t">
+              <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                <h1>Meidän tarina</h1>
+                <h2>Pieniä hetkiä, joiden ansiosta me kokoonnumme nyt yhdessä juhlistamaan meidän avioliittoa.</h2>
+
+                <div class="story-hero-badges">
+                  <span class="story-pill">22.–24.5.2026</span>
+                  <span class="story-pill">Lehmonkärki</span>
+                  <span class="story-pill">Sini & Petri</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- INTRO SPLIT -->
+    <div class="fh5co-section-gray">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1 animate-box">
+            <div class="story-split">
+              <div class="inner">
+                <div class="story-kicker"><i class="icon-heart2"></i> Meidän tarina</div>
+                <h3>Pienistä hetkistä kasvoi jotain, joka tuntui heti omalta.</h3>
+                <p style="color: rgba(31,31,36,0.78); line-height: 1.8; margin-bottom: 0;">
+                 Meidän tarina alkoi ajasta, jolloin arkemme oli kaikkea muuta kuin ennustettavaa: Sini lensi töissä maailmalle ja palasi kotiin aina uusien aikavyöhykkeiden ja tarinoiden kanssa. Sillä välin Pete piti huolta Cocosta ja heidän välilleen syntyi oma, vahva side: luottamusta, rutiineja ja sellaista hiljaista läheisyyttä, joka kasvaa vain ajan kanssa. Jokaisen kaukolennon jälkeen Sini suuntasi fiatilla Peten ja Cocon luo Kuopioon, ja toisinaan viikonloppuisin Pete ajoi Kirkkonummelle Coco sylissään, jotta saatiin olla samassa paikassa edes hetki pidempään. Matkojen, ajokilometrien ja odottamisen keskellä opittiin, että tärkeintä ei ole täydellinen aikataulu, vaan tahto valita toisensa yhä uudelleen. Nyt tämä viikonloppu tuntuu erityiseltä, koska se kokoaa yhteen ihmiset, jotka ovat kulkeneet mukana meidän matkallamme. Tämän vuoksi arvostammekin eniten aikaa, jonka vietämme yhdessä juhlien merkeissä. Se merkitsee meille kaikkein eniten.
+                </p>
+
+                <div class="photo-row">
+                  <div class="mini-photo"><img src="images/maisema.jpg" alt="Story 1"></div>
+                  <div class="mini-photo"><img src="images/sini_lento.jpg" alt="Story 2"></div>
+                  <div class="mini-photo"><img src="images/pete_coco.jpg" alt="Story 3"></div>
+                  <div class="mini-photo"><img src="images/paikkarit.jpg" alt="Story 4"></div>
+                </div>
+                <div class="tiny" style="margin-top: 10px; color: rgba(31,31,36,0.62);">
+                  Kuvia vuodelta 2019
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY TIMELINE -->
+    <div id="fh5co-couple-story">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2 text-center fh5co-heading animate-box story-heading">
+            <span>Matkan varrelta</span>
+            <h2>Hetkiä, jotka muistamme</h2>
+            <p>
+              Tässä jaamme matkan varrelta pieniä hetkiä, jotka jäivät mieleen ja kasvoivat yhteiseksi tarinaksi. Jokainen niistä vei meitä askel askeleelta tähän viikonloppuun.
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 animate-box">
+            <div class="story-grid">
+
+              <!-- Card 1 -->
+              <div class="story-card">
+                <div class="story-media">
+                  <img src="images/sinijapete2019.jpg" alt="Ensitreffit">
+                  <div class="story-chip"><i class="icon-coffee"></i> Treffejä</div>
+                </div>
+                <div class="story-body">
+                  <div class="story-date">2019</div>
+                  <h3 class="story-title">Oli ensitreffimme</h3>
+                  <p class="story-text">
+                    Jokainen yhdessä vietetty aika tuntui erityiseltä. Teimme monista hetkistä vielä erityisempiä ja kävimme paljon treffeillä Kuopiossa, Espoossa, Helsingissä ja Vantaalla. Kaikki uutuuselokuvat käytiin aina katsomassa yhdessä.
+                  </p>
+                  <div class="story-quote">Parasta on viettää aikaa yhdessä.</div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="story-card">
+                <div class="story-media">
+                  <img src="images/pete_ikea.jpg" alt="Ensimmäinen matka">
+                  <div class="story-chip"><i class="icon-airplane"></i> Hassut rutiinit</div>
+                </div>
+                <div class="story-body">
+                  <div class="story-date">2019</div>
+                  <h3 class="story-title">Ikeasta tuli vakipaikkamme</h3>
+                  <p class="story-text">
+                    Pete pääsi nauttimaan Sinin työedusta edullisten id-lippujen parissa. Lentäminen nopeutti Kuopio-Helsinki väliä ja lento taittui 20 minuutissa. Sini tuli aina hakemaan Peten lentokentältä ja meille tuli tavaksi mennä aina Ikeaan syömään siitä suoraan.
+                  </p>
+                  <div class="story-quote">Eikö jokainen perjantai ole kruunattu lihapullilla?</div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="story-card">
+                <div class="story-media">
+                  <img src="images/japani.jpg" alt="Arki ja työ">
+                  <div class="story-chip"><i class="icon-briefcase"></i> Arki & työ</div>
+                </div>
+                <div class="story-body">
+                  <div class="story-date">2019–2022</div>
+                  <h3 class="story-title">Aikavyöhykkeitä ja odottamista</h3>
+                  <p class="story-text">
+                    Sinin työ vei maailmalle ja aikataulut elivät. Välillä paluulento peruuntui ja suunnitelmat muutuivat viime hetkellä. 
+                    Ikävä oli suurta, mutta Sini tutki maailmaa layovereilla ja onneksi on olemassa puhelimet nykyaikana, jotka tekivät tuhansien kilometrien välimatkasta paljon pienemmän.
+                  </p>
+                  <div class="story-quote">Vaellus Japanissa oli ikimuistoinen.</div>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="story-card">
+                <div class="story-media">
+                  <img src="images/sini_japani.jpg" alt="Coco ja koti">
+                  <div class="story-chip"><i class="icon-home"></i> Seikkailu</div>
+                </div>
+                <div class="story-body">
+                  <div class="story-date">2019–2022</div>
+                  <h3 class="story-title">Aikaeroväsymyksesssä maaiman tutkimista</h3>
+                  <p class="story-text">
+                    Ennen koronasulkuja Sini matkusti ympäri maailmaa ja näki ja koki eri paikkoja, eri ruokia ja vietti aina aikaa aktiivisesti layoverilla. 
+                    Tämä kaikki kuitenkin muuttui, kun korona saapui ja Sini vietti aikaa vain hotellihuoneissa usein lukittuna.
+                  </p>
+                  <div class="story-quote">Viimeisiä retkiä Japanissa ennen koronasulkuja.</div>
+                </div>
+              </div>
+
+              <!-- Card 5 -->
+              <div class="story-card">
+                <div class="story-media">
+                  <img src="images/koti.jpg" alt="Kosinta">
+                  <div class="story-chip"><i class="icon-diamond"></i> Koti</div>
+                </div>
+                <div class="story-body">
+                  <div class="story-date">2019-2026</div>
+                  <h3 class="story-title">Rutiinit, jotka tekivät kodin</h3>
+                  <p class="story-text">
+                    Aina mukana oli Coco. Hän oli joko Peten kanssa viettämässä arkea Kuopiossa tai sitten Pete ja Coco olivat Kirkkonummella Sinin kanssa. Coco on matkustanut niin paljon autolla, että hän ei hyväksy muuta kuin 120 km/h nopeutta.
+                  </p>
+                  <div class="story-quote">Pieni matkustaja.</div>
+                </div>
+              </div>
+
+              <!-- Card 6 -->
+              <div class="story-card">
+                <div class="story-media">
+                  <img src="images/sinijapete.jpg" alt="Kohti häitä">
+                  <div class="story-chip"><i class="icon-calendar"></i> Kohti häitä</div>
+                </div>
+                <div class="story-body">
+                  <div class="story-date">2024–2026</div>
+                  <h3 class="story-title">Kohti viikonloppua</h3>
+                  <p class="story-text">
+                    Odotus häitä kohtaan on kova! Kihlautumisen ja kihlajaisten jälkeen alkoi kova häiden suunnittelu ja uskomatonta, että tuo päivä on pian täällä! 
+                    Onneksi hyvin suunniteltu on puoliksi tehty!
+                  </p>
+                  <div class="story-quote">Ihanaa, että olette mukana!</div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="text-center" style="margin-top: 24px;">
+              <p style="color: rgba(31,31,36,0.70);">
+                Osallistu visaan luettuasi tämä sivu ja muistathan laittaa omat bilebiisisi soittolistallemme Ohjelma-sivuilla.
+              </p>
+              <a href="ohjelma.html" class="btn btn-primary" style="border-radius:14px; background: var(--pink); border:0;">
+                Siirry ohjelmaan
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="fh5co-footer" role="contentinfo">
+      <div class="container">
+        <div class="row copyright">
+          <div class="col-md-12 text-center">
+            <p><small class="block">&copy; 2026 Kanteliset.</small></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+  </div>
+
+  <!-- JS -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery.easing.1.3.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.countTo.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/magnific-popup-options.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- Auth -->
+  <script src="js/auth.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      const ok = sessionStorage.getItem("isLoggedIn") === "true";
+      if (!ok) return;
+      document.querySelectorAll("#navDashboard, #navLogout")
+        .forEach(el => el.classList.remove("hidden-auth"));
+    });
+  </script>
+</body>
+</html>
