@@ -236,17 +236,46 @@ function safeDate(iso){
 // ===============================
 // RSVP DATA
 // ===============================
-const familyIds = [
-  "KANTELINEN-05","KANTELINEN-789","AALTONEN-029","KOISTINEN-033",
-  "KOKKONEN-0458","OVASKA-059","JÄNTTI-067","KURISJÄRVI-077",
-  "SALIN-083","AALAS-094","HUR-101","PUSENIUS-1155",
-  "HEISKA-1289","KOSKIPALO-1341","KAITARANTA-1447","VAITTINEN-1555",
-  "AUVINEN-1618","MUSTONEN-1792","PULKKINEN-1814","VESTERINEN-1999",
-  "SYRJÄ-2013","LINDBLOM-2581","HELAKORPI-2291","YRJÖLÄ-2338",
-  "RAUTAVUORI-2491","GAZDAG-2580","OKSMAN-2695","HURSKAINEN-2766",
-  "SVENSSON-2818","TESTI-299","TESTI-288",
-  "KOPONEN-688","ANTTOLAINEN-488","LAITINEN-1985"
-];
+const FAMILY_NAME_BY_ID = {
+  "KANTELINEN-05": "Hannu ja Elina",
+  "KANTELINEN-789": "Hanna-Riikka, Väinö ja Aleksanteri",
+  "AALTONEN-029": "Äiti ja iskä Aaltonen",
+  "KOISTINEN-033": "Päivi ja Peku",
+  "KOKKONEN-0458": "Henna, Aava ja Marko",
+  "OVASKA-059": "Heidi, Sami, Saaga ja Sampo",
+  "JÄNTTI-067": "Petja",
+  "KURISJÄRVI-077": "Milla",
+  "SALIN-083": "Janika",
+  "AALAS-094": "Veera ja Andreas",
+  "HUR-101": "Indigo ja Tobias",
+  "PUSENIUS-1155": "Ira",
+  "HEISKA-1289": "Jenna",
+  "KOSKIPALO-1341": "Angelica ja Jere",
+  "KAITARANTA-1447": "Mira",
+  "VARTTINEN-1555": "Inga ja Lauri",
+  "AUVINEN-1618": "Mika ja Anu",
+  "MUSTONEN-1792": "Jaana",
+  "PULKKINEN-1814": "Samuli ja Teija",
+  "VESTERINEN-1999": "Ville",
+  "SYRJÄ-2013": "Aleksi ja Andrea",
+  "LINDBLOM-2581": "Tia ja Pate",
+  "HELAKORPI-2291": "Kati ja avec",
+  "YRJÖLÄ-2338": "Pinja, Arno, Marjo ja Ari",
+  "RAUTAVUORI-2491": "Emma ja Saku",
+  "GAZDAG-2580": "Rosa ja Ákoz",
+  "OKSMAN-2695": "Essi",
+  "HURSKAINEN-2766": "Senni ja Jere",
+  "SVENSSON-2818": "Alisa ja Ted",
+  "TESTI-299": "Sini ja Petri",
+  "TESTI-288": "Hääpari",
+  "KOPONEN-688": "Hanne-Maarit ja Pekka",
+  "ANTTOLAINEN-488": "Jaana ja avec",
+  "LAITINEN-1985": "Maarit"
+};
+
+function getFamilyLabel(id){
+  return FAMILY_NAME_BY_ID[id] ? `${FAMILY_NAME_BY_ID[id]} (${id})` : id;
+}
 
 let summary = { fri:0, sat:0, sun:0, spa:0 };
 
@@ -352,7 +381,7 @@ function renderNotResponded(list){
   list.forEach(id=>{
     const div=document.createElement("div");
     div.className="not-responded";
-    div.innerText=id;
+    div.innerText = getFamilyLabel(id);
     container.appendChild(div);
   });
 }
