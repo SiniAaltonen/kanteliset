@@ -20,7 +20,6 @@
   <style>
     :root{
       --pink: #ff5fa2;
-      --pinkSoft: rgba(255,95,162,0.14);
       --ink: #1f1f24;
       --muted: rgba(31,31,36,0.72);
       --border: rgba(31,31,36,0.12);
@@ -40,7 +39,6 @@
       font-family: 'Work Sans', Arial, sans-serif;
     }
 
-    /* Works nicely inside the popup iframe */
     .frame-root{ padding: 18px; }
 
     .quiz-shell{
@@ -60,8 +58,7 @@
     .quiz-hero-top{
       padding: 26px 26px 16px 26px;
       position: relative;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,0.92));
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,0.92));
     }
 
     .quiz-title{
@@ -224,9 +221,6 @@
       margin: 14px 0;
     }
 
-    .ok{ color: #1a9b7a; font-weight: 700; }
-    .warn{ color: #c25454; font-weight: 700; }
-
     @media (max-width: 520px){
       .quiz-title{ font-size: 50px; }
       .quiz-shell{ padding: 10px; }
@@ -269,7 +263,7 @@
           <div style="height:10px;"></div>
           <button id="btnStart" class="btn-quiz btn-primary-quiz">Aloita visa</button>
           <div class="tiny" style="margin-top:10px;">
-            Vinkki: kysymykset arvotaan — eli tätä voi pelata myös “uudestaan”.
+            Vinkki: kysymykset arvotaan — eli tätä voi pelata myös uudestaan.
           </div>
         </div>
 
@@ -292,7 +286,7 @@
           </div>
 
           <div class="tiny" style="margin-top:10px;">
-            Tämä on Kanteliset-visa: osa on helppoja, osa vähän… epäilyttävän tarkkoja.
+            Voit palata taaksepäin ja muuttaa vastausta ennen tulosta.
           </div>
         </div>
 
@@ -311,8 +305,8 @@
           <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer; margin-top:10px;">
             <input id="chkEnter" type="checkbox" style="margin-top:4px;">
             <span>
-              <strong>Haluan osallistua visaan vastauksillani.</strong><br>
-              <span class="tiny">Tallennamme nimen ja pisteet admin-näkymään.</span>
+              <strong>Haluan osallistua visaan tuloksellani.</strong><br>
+              <span class="tiny">Tallennamme nimen ja pistemäärän admin-näkymään.</span>
             </span>
           </label>
 
@@ -327,7 +321,7 @@
           <div class="divider"></div>
 
           <div class="tiny">
-            Tasapisteissä voidaan häissä ratkaista voittaja vaikka “nopeus-kysymyksellä”. 👀
+            Kiitos kun pelasit — nähdään juhlahumussa 🤍
           </div>
         </div>
 
@@ -340,52 +334,76 @@
     // -----------------------------
     // CONFIG
     // -----------------------------
+    // Vaihda tämä omaan Function Appiin:
+    // Esim: https://fa-kanteliset-xxxxx.westeurope-01.azurewebsites.net/api/submitQuiz
     const SUBMIT_URL = "https://YOUR-FUNCTION-APP.azurewebsites.net/api/submitQuiz";
 
     // -----------------------------
-    // QUESTIONS (pool)
+    // QUESTIONS (pool) - neutraali, ei piikittelyä
+    // HUOM: Vaihtoehdot sekoitetaan aina pelin alussa, joten "correctIndex:0" on ok.
     // -----------------------------
     const QUESTION_POOL = [
       { id:"first_trip", q:"Mikä oli Sinin ja Petrin ensimmäinen ulkomaanmatka yhdessä?",
         options:["Pääsiäisenä 2019 Budapestiin","Tukholmaan","Roomaan","Tallinnaan"], correctIndex:0 },
+
       { id:"first_date_gift", q:"Mitä Petri toi Sinille ensitreffeille mukanaan?",
         options:["Kalakukon","Kukkakimpun","Suklaata","Kirjan"], correctIndex:0 },
+
       { id:"fav_candy_sini", q:"Mikä on Sinin lempikarkki?",
-        options:["Naperot","Salmiakki","Lakritsipalat","Suklaakonvehdit"], correctIndex:0 },
+        options:["Naperot","Salmiakki","Lakritsi","Suklaakonvehdit"], correctIndex:0 },
+
       { id:"fav_candy_pete", q:"Mikä on Petrin lempiherkku?",
         options:["Fazerin Sininen suklaa","Tyrkisk Peber","Pandat","Muumimarmeladit"], correctIndex:0 },
+
       { id:"honeymoon", q:"Minne lähdemme häämatkalle heti tiistaina häiden jälkeen?",
         options:["Mallorcalle","Lappiin","Pariisiin","Madeiralle"], correctIndex:0 },
+
       { id:"boardgames_count", q:"Montako lautapeliä Petri omistaa?",
-        options:["145","45","245","15 (mutta väittää että on 145)"], correctIndex:0 },
+        options:["145","120","95","170"], correctIndex:0 },
+
       { id:"sini_boardgame", q:"Mikä on Sinin lempilautapeli?",
         options:["Mad King Ludwig","Carcassonne","Azul","Ticket to Ride"], correctIndex:0 },
+
       { id:"pete_boardgame", q:"Mikä on Petrin lempilautapeli?",
         options:["Arnak: Kadonneet rauniot","Catan","Terraforming Mars","Wingspan"], correctIndex:0 },
+
       { id:"proposal_place", q:"Missä Petri kosi Siniä?",
         options:["Budapestissä","Lehmonkärjessä","Helsingissä","Kreikassa"], correctIndex:0 },
+
       { id:"engagement_date", q:"Mikä on Sinin ja Petrin kihlapäivä?",
         options:["18.4.","27.1.","23.5.","1.1."], correctIndex:0 },
+
       { id:"anniversary_date", q:"Mikä on Sinin ja Petrin vuosipäivä?",
         options:["27.1.","18.4.","23.5.","24.12."], correctIndex:0 },
-      { id:"morninggift_pete", q:"Mitä Petri toivoi huomenlahjaksi Siniltä?",
-        options:["Paistinpannun","Kellon","Solmion","Sukat (mutta vain jos ne ovat romanttiset)"], correctIndex:0 },
-      { id:"morninggift_sini", q:"Mitä Sini toivoi huomenlahjaksi Petriltä?",
-        options:["Korvakorut","Käsilaukun","Hajuveden","Toisen paistinpannun"], correctIndex:0 },
 
-      // Ohjelma- / viikonloppu-asiat
-      { id:"weekend_length", q:"Kuinka monta päivää hääviikonloppu kestää (ohjelmaa pe–su)?",
-        options:["3","1","2","7 (koska siltä se tuntuu)"], correctIndex:0 },
-      { id:"spa_private", q:"Mikä tekee perjantain Aisti Spa & Sauna -vuorosta erityisen?",
-        options:["Se on varattu vain meidän seurueelle","Se on avointa yleisölle","Siellä on karaoke","Siellä on pakollinen pukukoodi"], correctIndex:0 },
+      // Hääviikonlopun asiat (helpompia, reiluja kaikille)
+      { id:"weekend_length", q:"Kuinka monta päivää hääviikonlopun ohjelmaa on (pe–su)?",
+        options:["3","1","2","4"], correctIndex:0 },
+
+      { id:"spa_private", q:"Mikä kuvaa parhaiten perjantain Aisti Spa & Sauna -vuoroa?",
+        options:["Se on varattu vain meidän seurueelle","Se on avoin kaikille hotellivieraille","Se on yritystapahtuma","Se on vain hääparille"], correctIndex:0 },
+
       { id:"villas_time", q:"Mihin aikaan huviloihin pääsee perjantaina?",
-        options:["Klo 15 alkaen","Klo 12 alkaen","Klo 18 alkaen","Klo 9 alkaen"], correctIndex:0 },
+        options:["Klo 15 alkaen","Klo 12 alkaen","Klo 18 alkaen","Klo 10 alkaen"], correctIndex:0 },
+
       { id:"ceremony_time", q:"Mihin aikaan vihkiminen alkaa lauantaina?",
         options:["Klo 13","Klo 15","Klo 12","Klo 18"], correctIndex:0 },
+
       { id:"friday_spa_time", q:"Mihin aikaan perjantain spa & sauna -vuoro on?",
         options:["Klo 20–22","Klo 18–20","Klo 19–21","Klo 21–23"], correctIndex:0 },
-      { id:"snack_tip", q:"Mitä suosittelemme hankkimaan huvilaan perjantaille/lauantaille?",
-        options:["Iltapalaa ja aamupalaa","Täytekakun","Kolme kiloa sipsejä","Vain vettä ja ilmaa"], correctIndex:0 },
+
+      { id:"snack_tip", q:"Mitä suosittelemme varamaan huvilaan perjantaille/lauantaille?",
+        options:["Iltapalaa ja aamupalaa","Jotain pientä välipalaa","Vain juhlaillallisen tarvikkeet","Ei mitään omia eväitä"], correctIndex:0 },
+
+      // Varakysymyksiä (tekee arvonnasta aidomman)
+      { id:"wedding_year", q:"Minä vuonna Kantelisten häitä juhlitaan?",
+        options:["2026","2025","2027","2024"], correctIndex:0 },
+
+      { id:"ceremony_day", q:"Minä päivänä vihkiminen on?",
+        options:["Lauantaina","Perjantaina","Sunnuntaina","Torstaina"], correctIndex:0 },
+
+      { id:"brunch_day", q:"Minä päivänä brunssi on?",
+        options:["Sunnuntaina","Lauantaina","Perjantaina","Maanantaina"], correctIndex:0 },
     ];
 
     // -----------------------------
@@ -442,8 +460,27 @@
       return a;
     }
 
+    function shuffleWithCorrect(question){
+      const pairs = question.options.map((text, idx) => ({
+        text,
+        isCorrect: idx === question.correctIndex
+      }));
+
+      const shuffled = shuffle(pairs);
+      const newOptions = shuffled.map(x => x.text);
+      const newCorrectIndex = shuffled.findIndex(x => x.isCorrect);
+
+      return {
+        ...question,
+        options: newOptions,
+        correctIndex: newCorrectIndex
+      };
+    }
+
     function pick10(){
-      return shuffle(QUESTION_POOL).slice(0,10);
+      return shuffle(QUESTION_POOL)
+        .slice(0,10)
+        .map(q => shuffleWithCorrect(q));
     }
 
     function setProgress(step){
@@ -500,11 +537,11 @@
     }
 
     function badgeFor(score){
-      if(score === 10) return "Täydellinen Kantelinen-tietäjä. 🤍";
-      if(score >= 8) return "Sisäpiiriläinen. Brunssilla nähdään. 🥐";
-      if(score >= 6) return "Hyvä taso — olet selvästi ollut mukana tarinassa. ✨";
-      if(score >= 4) return "Ihan ok… tarvitset lisää Kanteliset-lorea. 📚";
-      return "Harjoittelija: aloita Budapest + kalakukko. 😄";
+      if(score === 10) return "Täydet pisteet — huikea suoritus! 🤍";
+      if(score >= 8) return "Todella hyvä! ✨";
+      if(score >= 6) return "Hyvä tulos — kiitos kun pelasit!";
+      if(score >= 4) return "Hyvä yritys — uudella kierroksella voi nousta lisää.";
+      return "Kiitos osallistumisesta — pelaa halutessasi uudelleen! 😊";
     }
 
     function showResults(){
@@ -536,13 +573,10 @@
 
       const login = getLogin();
       const payload = {
-        Name: playerName,
-        FamilyId: login?.FamilyId || null,
-        Score: scoreQuiz(),
-        Total: 10,
-        QuizIds: quiz.map(q => q.id),
-        Answers: answers,
-        SubmittedAt: new Date().toISOString()
+        name: playerName,
+        familyId: login?.FamilyId || null,
+        score: scoreQuiz(),
+        total: 10
       };
 
       btnSubmit.disabled = true;
@@ -557,7 +591,7 @@
 
         if(res.ok){
           btnSubmit.textContent = "Lähetetty! ✨";
-          submitHint.textContent = "Tulos tallennettu. Nähdään palkintojenjaossa 👀";
+          submitHint.textContent = "Tulos tallennettu. Kiitos osallistumisesta!";
         } else {
           btnSubmit.disabled = false;
           btnSubmit.textContent = "Lähetä tulos";
@@ -616,7 +650,6 @@
     btnSubmit.addEventListener("click", submitResult);
 
     btnPlayAgain.addEventListener("click", () => {
-      // keep name, new questions
       quiz = pick10();
       index = 0;
       answers = new Array(10).fill(null);
@@ -624,7 +657,6 @@
       renderQuestion();
     });
 
-    // init
     setProgress(0);
   })();
   </script>
