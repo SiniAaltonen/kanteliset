@@ -41,9 +41,7 @@ h1 {
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
-.card h3 {
-  margin-top: 0;
-}
+.card h3 { margin-top: 0; }
 
 .pill {
   display: inline-block;
@@ -54,9 +52,7 @@ h1 {
   font-size: 13px;
 }
 
-.muted {
-  opacity: 0.65;
-}
+.muted { opacity: 0.65; }
 
 .not-responded {
   background: #fff4f4;
@@ -72,7 +68,7 @@ h1 {
   margin-top: 10px;
 }
 
-/* ohjelmailmoitukset (uusi ulkoasu) */
+/* Ohjelmailmoitukset: uusi siistimpi kortti (ei vaikuta RSVP) */
 .announce-card{
   background: #fff;
   padding: 22px;
@@ -81,91 +77,35 @@ h1 {
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   border: 1px solid rgba(0,0,0,0.10);
 }
-
-.announce-top{
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.announce-title{
-  margin: 0;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.announce-sub{
-  margin-top: 6px;
-  opacity: .7;
-  font-size: 13px;
-}
-
-.badge-row{
-  display:flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
+.announce-title{ margin: 0; font-size: 18px; font-weight: 800; }
+.announce-sub{ margin-top: 6px; opacity: .7; font-size: 13px; }
+.badge-row{ display:flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .badge-pink{
-  display:inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255,95,162,0.12);
-  border: 1px solid rgba(255,95,162,0.25);
-  font-size: 12px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  display:inline-block; padding: 6px 10px; border-radius: 999px;
+  background: rgba(255,95,162,0.12); border: 1px solid rgba(255,95,162,0.25);
+  font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
 }
-
 .badge-gray{
-  display:inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.05);
-  border: 1px solid rgba(0,0,0,0.08);
-  font-size: 12px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  display:inline-block; padding: 6px 10px; border-radius: 999px;
+  background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.08);
+  font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
 }
-
 .desc-box{
-  margin-top: 14px;
-  background: #fdf8f3;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 14px;
-  padding: 12px 14px;
-  line-height: 1.6;
+  margin-top: 14px; background: #fdf8f3; border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px; padding: 12px 14px; line-height: 1.6;
 }
-
 .kv-grid{
-  margin-top: 14px;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  margin-top: 14px; display:grid; grid-template-columns: 1fr 1fr; gap: 10px;
 }
-@media (max-width: 760px){
-  .kv-grid{ grid-template-columns: 1fr; }
-}
-
+@media (max-width: 760px){ .kv-grid{ grid-template-columns: 1fr; } }
 .kv{
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 14px;
   padding: 10px 12px;
   background: #fff;
 }
-.kv .k{
-  font-size: 11px;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  opacity: .6;
-}
-.kv .v{
-  margin-top: 4px;
-  font-weight: 700;
-}
+.kv .k{ font-size: 11px; letter-spacing: .10em; text-transform: uppercase; opacity: .6; }
+.kv .v{ margin-top: 4px; font-weight: 700; }
 </style>
 </head>
 
@@ -182,7 +122,7 @@ h1 {
 
 <script>
 // ===============================
-// 🔐 ADMIN SUOJAUS (varmempi caseille)
+// 🔐 ADMIN SUOJAUS (case-varma, ei riko vanhaa)
 // ===============================
 const loginRaw = sessionStorage.getItem("login");
 if (!loginRaw) window.location.href = "/";
@@ -208,7 +148,6 @@ if (role !== "admin" || !allowedAdmins.includes(familyId)) {
 
 document.body.style.display = "block";
 
-
 // ===============================
 // API URLIT
 // ===============================
@@ -217,7 +156,6 @@ const rsvpBaseUrl =
 
 const programsUrl =
   "https://fa-kanteliset-chdhg2g0aub8f0gy.westeurope-01.azurewebsites.net/api/admin/programs";
-
 
 // ===============================
 // HELPERS
@@ -237,10 +175,22 @@ function safeDate(iso){
   return d.toLocaleString("fi-FI");
 }
 
+// ===============================
+// RSVP DATA (täsmälleen sama id-lista kuin toimivassa versiossa)
+// ===============================
+const familyIds = [
+  "KANTELINEN-05","KANTELINEN-789","AALTONEN-029","KOISTINEN-033",
+  "KOKKONEN-0458","OVASKA-059","JÄNTTI-067","KURISJÄRVI-077",
+  "SALIN-083","AALAS-094","HUR-101","PUSENIUS-1155",
+  "HEISKA-1289","KOSKIPALO-1341","KAITARANTA-1447","VARTTINEN-1555",
+  "AUVINEN-1618","MUSTONEN-1792","PULKKINEN-1814","VESTERINEN-1999",
+  "SYRJÄ-2013","LINDBLOM-2581","HELAKORPI-2291","YRJÖLÄ-2338",
+  "RAUTAVUORI-2491","GAZDAG-2580","OKSMAN-2695","HURSKAINEN-2766",
+  "SVENSSON-2818","TESTI-299","TESTI-288",
+  "KOPONEN-688","ANTTOLAINEN-488","LAITINEN-1985"
+];
 
-// ===============================
-// RSVP DATA (nimet + listaus)
-// ===============================
+// ✅ sama nimimappaus kuin sun C#-konfigissa
 const FAMILY_NAME_BY_ID = {
   "KANTELINEN-05": "Hannu ja Elina",
   "KANTELINEN-789": "Hanna-Riikka, Väinö ja Aleksanteri",
@@ -281,9 +231,6 @@ const FAMILY_NAME_BY_ID = {
 function getFamilyLabel(id){
   return FAMILY_NAME_BY_ID[id] ? `${FAMILY_NAME_BY_ID[id]} (${id})` : id;
 }
-
-// ✅ tämä puuttui aiemmin: id-lista
-const familyIds = Object.keys(FAMILY_NAME_BY_ID);
 
 let summary = { fri:0, sat:0, sun:0, spa:0 };
 
@@ -394,133 +341,77 @@ function renderNotResponded(list){
   });
 }
 
-
 // ===============================
-// PROGRAMS
+// PROGRAMS (jätetään toimivaksi; jos haluat, voidaan myöhemmin tehdä fallback)
 // ===============================
 async function loadPrograms(){
 
-  const container = document.getElementById("programs");
-  const summaryBox = document.getElementById("programSummary");
+  const container=document.getElementById("programs");
+  const summaryBox=document.getElementById("programSummary");
 
-  const fallbackPrograms = [
-    {
-      name: "Heidi Ovaska",
-      email: "heidi.ovaska82@gmail.com",
-      phone: "0442756950",
-      type: "Puhe",
-      description: "Puhe hääparille",
-      duration: 10,
-      needsMic: true,
-      createdUtc: "2026-02-26T09:40:30.2357955+00:00"
-    }
-  ];
-
-  function render(programs){
-
-    const sorted = (programs || []).slice().sort((a,b) => {
-      const da = new Date(a.createdUtc || a.CreatedUtc || 0).getTime();
-      const db = new Date(b.createdUtc || b.CreatedUtc || 0).getTime();
-      return db - da;
-    });
-
-    summaryBox.innerHTML = `
-      <h2>Ohjelmailmoitukset</h2>
-      <p><strong>Yhteensä:</strong> ${sorted.length}</p>
-    `;
-
-    container.innerHTML = `<div class="section-title">Ohjelmailmoitukset</div>`;
-
-    if(sorted.length === 0){
-      container.innerHTML += `<div class="card">Ei ohjelmailmoituksia.</div>`;
+  try{
+    const res=await fetch(programsUrl);
+    if(!res.ok){
+      container.innerHTML=`<div class="section-title">Ohjelmailmoitukset</div>
+      <div class="card">Haku epäonnistui (${res.status})</div>`;
       return;
     }
 
-    sorted.forEach(p => {
+    const programs=await res.json();
 
-      const name = escapeHtml(p.name ?? p.Name ?? "");
-      const type = escapeHtml(p.type ?? p.Type ?? "");
-      const email = escapeHtml(p.email ?? p.Email ?? "");
-      const phone = escapeHtml(p.phone ?? p.Phone ?? "");
-      const desc = escapeHtml(p.description ?? p.Description ?? "");
-      const duration = (p.duration ?? p.Duration ?? "-");
-      const needsMic = (p.needsMic ?? p.NeedsMic) ? true : false;
-      const createdUtc = (p.createdUtc ?? p.CreatedUtc ?? "");
+    summaryBox.innerHTML=`
+      <h2>Ohjelmailmoitukset</h2>
+      <p><strong>Yhteensä:</strong> ${programs.length}</p>
+    `;
+
+    container.innerHTML=`<div class="section-title">Ohjelmailmoitukset</div>`;
+
+    programs.forEach(p=>{
 
       const card = document.createElement("div");
       card.className = "announce-card";
 
       card.innerHTML = `
-        <div class="announce-top">
-          <div>
-            <h3 class="announce-title">${type || "Ohjelma"} — ${name || "-"}</h3>
-            <div class="announce-sub">Luotu: ${safeDate(createdUtc)}</div>
+        <h3 class="announce-title">${escapeHtml(p.type)} — ${escapeHtml(p.name)}</h3>
+        <div class="announce-sub">Luotu: ${safeDate(p.createdUtc)}</div>
 
-            <div class="badge-row">
-              ${type ? `<span class="badge-pink">${type}</span>` : ""}
-              <span class="badge-gray">${duration} min</span>
-              <span class="badge-gray">${needsMic ? "Tarvitsee mikin" : "Ei tekniikkaa"}</span>
-            </div>
-          </div>
+        <div class="badge-row">
+          <span class="badge-pink">${escapeHtml(p.type)}</span>
+          <span class="badge-gray">${p.duration} min</span>
+          <span class="badge-gray">${p.needsMic ? "Tarvitsee mikin" : "Ei tekniikkaa"}</span>
         </div>
 
         <div class="desc-box">
           <strong>Kuvaus</strong><br>
-          ${desc || "-"}
+          ${escapeHtml(p.description || "-")}
         </div>
 
         <div class="kv-grid">
           <div class="kv">
             <div class="k">Sähköposti</div>
-            <div class="v">
-              ${email ? `<a href="mailto:${encodeURIComponent(p.email ?? p.Email ?? "")}">${email}</a>` : "-"}
-            </div>
+            <div class="v">${escapeHtml(p.email || "-")}</div>
           </div>
           <div class="kv">
             <div class="k">Puhelin</div>
-            <div class="v">
-              ${phone ? `<a href="tel:${escapeHtml(p.phone ?? p.Phone ?? "")}">${phone}</a>` : "-"}
-            </div>
+            <div class="v">${escapeHtml(p.phone || "-")}</div>
           </div>
         </div>
       `;
 
       container.appendChild(card);
     });
-  }
-
-  try{
-    const res = await fetch(programsUrl);
-
-    if(!res.ok){
-      container.innerHTML = `<div class="section-title">Ohjelmailmoitukset</div>
-      <div class="card">Haku epäonnistui (${res.status})</div>`;
-      render(fallbackPrograms);
-      return;
-    }
-
-    let programs = await res.json();
-
-    if(!Array.isArray(programs) || programs.length === 0){
-      programs = fallbackPrograms;
-    }
-
-    render(programs);
 
   }catch{
-    container.innerHTML = `<div class="section-title">Ohjelmailmoitukset</div>
+    container.innerHTML=`<div class="section-title">Ohjelmailmoitukset</div>
     <div class="card">Virhe haussa</div>`;
-    render(fallbackPrograms);
   }
 }
-
 
 // ===============================
 // INIT
 // ===============================
 loadRsvp();
 loadPrograms();
-
 </script>
 
 </body>
